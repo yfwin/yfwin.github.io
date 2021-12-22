@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yfwin.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="今天看了一篇关于TCP三次握手和四次挥手的博文，经不住喜爱，特意把文章COPY下来了。原文传送门 TCP是面向连接的协议。运输连接是用来传送TCP报文的。TCP的运输连接有三个过程，即建立连接、数据传输和连接释放。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP三次握手和四次挥手">
+<meta property="og:url" content="https://yfwin.github.io/4b75af21.html">
+<meta property="og:site_name" content="逸风小站">
+<meta property="og:description" content="今天看了一篇关于TCP三次握手和四次挥手的博文，经不住喜爱，特意把文章COPY下来了。原文传送门 TCP是面向连接的协议。运输连接是用来传送TCP报文的。TCP的运输连接有三个过程，即建立连接、数据传输和连接释放。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/955921/202104/955921-20210406164857647-1421360202.png">
+<meta property="og:image" content="https://img2020.cnblogs.com/blog/955921/202104/955921-20210406164922288-1940126940.png">
+<meta property="article:published_time" content="2021-12-18T03:51:03.000Z">
+<meta property="article:modified_time" content="2021-12-21T02:23:52.493Z">
+<meta property="article:author" content="万般自然">
+<meta property="article:tag" content="TCP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img2020.cnblogs.com/blog/955921/202104/955921-20210406164857647-1421360202.png">
+
+<link rel="canonical" href="https://yfwin.github.io/4b75af21.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TCP三次握手和四次挥手 | 逸风小站</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?36c68a4efde8cf04280a2ee4d0bb624a";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="逸风小站" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">逸风小站</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一念放下，万般自然。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-notes">
+
+    <a href="/notes/" rel="section"><i class="fas fa-comment-dots fa-fw"></i>说说</a>
+
+  </li>
+        <li class="menu-item menu-item-messages">
+
+    <a href="/messages/" rel="section"><i class="fas fa-envelope fa-fw"></i>留言板</a>
+
+  </li>
+        <li class="menu-item menu-item-books">
+
+    <a href="/books/" rel="section"><i class="fas fa-book fa-fw"></i>书籍</a>
+
+  </li>
+        <li class="menu-item menu-item-links">
+
+    <a href="/links/" rel="section"><i class="fas fa-user-friends fa-fw"></i>友链</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/4b75af21.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/files/logo.png">
+      <meta itemprop="name" content="万般自然">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TCP三次握手和四次挥手
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表</span>
+
+              <time title="创建时间：2021-12-18 11:51:03" itemprop="dateCreated datePublished" datetime="2021-12-18T11:51:03+08:00">2021-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新</span>
+                <time title="修改时间：2021-12-21 10:23:52" itemprop="dateModified" datetime="2021-12-21T10:23:52+08:00">2021-12-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/TCP/" itemprop="url" rel="index"><span itemprop="name">TCP</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论：</span>
+    
+    <a title="valine" href="/4b75af21.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/4b75af21.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今天看了一篇关于TCP三次握手和四次挥手的博文，经不住喜爱，特意把文章COPY下来了。<a target="_blank" rel="noopener" href="https://blog.csdn.net/wwl012345/article/details/90261423">原文传送门</a></p>
+<p>TCP是面向连接的协议。运输连接是用来传送TCP报文的。TCP的运输连接有三个过程，即建立连接、数据传输和连接释放。</p>
+<span id="more"></span>
+
+<p>TCP连接建立过程中要解决以下三个问题：</p>
+<ul>
+<li>1.要使每一方都能够确认对方的存在。</li>
+<li>2.要允许双方协商一些参数</li>
+<li>3.能够对运输实体资源进行分配</li>
+</ul>
+<p>TCP连接的建立采用客户机／服务器模式，主动发起连接建立的应用进程叫做客户机，而被动等待连接建立的应用进程叫做服务器。</p>
+<p>TCP的连接建立：<br><img src="https://img2020.cnblogs.com/blog/955921/202104/955921-20210406164857647-1421360202.png" alt="image"></p>
+<p>１.首先，客户机与服务器的TCP进程都处于CLOSED（关闭）状态，当要进行TCP连接时，客户机主动打开连接，服务器被动打开连接（这是因为服务请求总是由客户机向服务器发起，因为想要请求的资源都在服务器上，所以客户机想要获取资源就必须主动向服务器发起请求，而不能是等待服务器向自己（客户机）发起请求）。</p>
+<p>２.然后，服务器的TCP进程先创建传输控制块TCB（传输控制块TCB存储了每一个连接中的重要信息，如：TCP连接表，指向发送和接收缓存的指针，指向重传队列的指针，当前的发送和接收序号，等等），此时，服务器就处于LISTEN（收听）状态。同样的，客户机也会首先创建一个传输控制块TCB发送给服务器。这样，准备工作就做好了。</p>
+<p>３.现在就可以开始真正的三次握手了。首先，客户机先向服务器发送连接请求报文段，该报文段中将首部中的同步位SYN置为１（只有当SYN置为１时，才能表明客户机想要和服务器建立连接），并且随机选择一个初始序号ｘ，注意此时的SYN数据报中并没有携带数据，但是仍旧要消耗掉一个序号（意思就是下次客户机发送数据的时候，序号为x+１），此时客户机进入到SYN-SENT（同步已发送）状态。</p>
+<p>４.此时，服务器收到客户机的请求时，如果同意与该客户机进行连接，则需要向客户机发送确认报文。在发送报文中需要将SYN与ACK都置为１（当ACK置为1时，表明服务器同意与客户机进行连接；同时将SYN置为1，表明服务器想要和客户机建立连接），并且随机选择一个初始序号y，确认号为x+1（确认号表明服务器渴望收到的下一个报文段的第一个数据字节的序号，因为之前发送了x，所以下一个序号为x+1），注意此时的SYN数据报中并没有携带数据，但是也要消耗掉一个序号（同样的，也就是说服务器下次发送数据的时候，序号为y+1），此时TCP服务器进程进入到SYN-RCVD（同步收到）阶段。</p>
+<p>顺便提一句，在这两个阶段会发送SYN　Flooding攻击。</p>
+<p>5.TCP客户端收到服务器的确认后，还要再向服务器给出确认。确认报文段中ACK置为1，确认号为ack=y+1(因为之前服务器给客户机发送的序号为y，因此现在客户机向服务器发送的确认号为ack=y+1，意思是客户机渴望收到的下一个报文段的第一个数据字节为y+1)此时客户机的发送序号为x+1（这是因为刚才刚才客户机向服务器发送连接请求时消耗了序号x，因此此时的序号为x+1）注意：在进行第三次握手时，ACK报文段可以携带数据，也可以不携带数据，如果携带数据，则消耗一个序列，这样客户机下次发送报文段时的序号为x+2，如果不携带数据则不消耗序号，下次客户机发送报文段时的序号为x+1。这时TCP连接已经建立，客户机和服务器都进入到ESTABLISHED（已建立连接）状态。</p>
+<p>其实上面的三次握手实质上就相当于是下列的对话：</p>
+<p>－客户机：服务器，我想要和你建立连接，你同意吗？（SYN＝１）</p>
+<p>－服务器：客户机，我同意和你建立连接（ACK＝１）；我也想和你建立连接，你同意吗？（SYN＝１）</p>
+<p>－客户机：服务器，我同意和你建立连接。（ACK＝１）</p>
+<p>其实，在进行第二次握手时（即服务器向客户机进行应答时），可以看作时发了两次包，先回答客户机的服务请求（ACK＝１，ａｃｋ＝x+１），然后再向客户机发出请求（SYN＝１，ｓｅｑ＝ｙ）</p>
+<p>常见面试问题：</p>
+<p>问：三次握手中，为什么客户机最后还要再向服务器发送一次确认呢？</p>
+<p>答：这是为了防止已失效的连接请求报文段突然又传到了服务器。所谓“已失效的连接请求报文段”是这样产生的。考虑一种正常的情况，客户机发出连接请求，但因为连接请求报文丢失而未收到确认。于是客户机再重传了一次连接请求，后来收到了确认，建立了连接。数据传输完后，就释放了连接。客户机共发送了两个连接请求报文段，其中第一个丢失，第二个到达了服务器，没有所谓的“已失效的连接请求报文段”。</p>
+<p>但是如果出现了一种异常情况，即客户机发出的第一个报文段并没有丢失，而是在某个节点上长时间滞留了，直至客户机向服务器发送了第二个报文段并且已经完成数据传输释放了连接，此时，第一个报文到达服务器后会被误以为是客户机重新发起的一次连接请求，实质上是一个早已失效的连接请求。如果没有第三次握手，那么这个连接就建立了，但是客户机并不会向服务器发送任何请求，这样连接就会一直持续，白白的消耗网络资源。</p>
+<p>TCP的连接释放：<br><img src="https://img2020.cnblogs.com/blog/955921/202104/955921-20210406164922288-1940126940.png" alt="image"></p>
+<p>１.数据传输结束后，通信的双方都可以释放连接。此时，客户机和服务器都处于ESTABLISHED（已建立连接）状态。</p>
+<p>２.假设客户机请求完资源了，想要释放连接。首先，客户机的应用进程先向服务器发出连接释放报文段，该报文段中将首部的终止控制位FIN置为１（只有当FIN置为１时，才能表明客户机想要和服务器断开连接），并且序号为ｕ（注意：此时的ｕ不是随机产生的，而是之前客户机传送的数据的最后一个字节的序号加１）。此时客户机进入到FIN－WAIT－１（终止等待１）状态，等待服务器的确认。</p>
+<p>３.服务器收到连接释放报文后发出确认，在发送报文中将首部中的ACK置为１（ACK置为１，表面服务器同意与客户机释放连接），并且产生序号ｖ（注意：此时的v不是随机产生的，而是之前服务器传送的数据的最后一个字节的序号加１），并且发出确认号为u+１（确认号表明服务器渴望收到的下一个报文段的第一个数据字节的序号，因为之前发送了u，所以下一个序号为u+1）。此时服务器就进入CLOSE－WAIT（关闭等待）状态，客户机进入FIN-WAIT-2状态。</p>
+<p>此时，从客户机到服务器这个方向的连接就被释放了，也就是说，客户机已经没有数据要向服务器发送了，但是如果服务器向客户机发送数据，客户机仍要接收数据。也就是说：从客户机到服务器的连接已经被释放了，但是从服务器到客户机的连接还没被释放。此时，TCP连接处于半关闭状态。</p>
+<p>4.如果服务器向客户机也没有要发送的数据的话，那么服务器的应用进程就可以向客户机发出连接释放报文段（注意此时还是服务器向客户机发送数据），该报文段中将首部的终止控制位FIN置为1（只有当FIN置为１时，才能表明客户机想要和服务器断开连接），ACK也置为1，并且序号为w（重点注意，此时的w不一定等于v+1。如果在客户机释放了连接之后，服务器向客户机仍旧发送了一部分数据，那么此时w不等于v+1，但是如果期间没有再发送数据，那么w就等于v+1。总而言之，这个w等于服务器上一次发送的数据的最后一个字节加1），并且发送确认号为u+1（确认号表明服务器渴望收到的下一个报文段的第一个数据字节的序号，因为之前发送了u，所以下一个序号为u+1）。此时服务器就进入了LAST-ACK（最后确认）状态。</p>
+<p>5.客户机收到服务器的连接释放报文后，必须对此报文进行确认。在该报文段中将ACK置为1，确认号为w+1（确认号表明服务器渴望收到的下一个报文段的第一个数据字节的序号，因为之前发送了w，所以下一个序号为w+1），产生序号为u+1（因为上一个发送的数据的序号为u）。此时服务器进入到TIME-WAIT（等待时间）状态。但是，此时TCP连接还没有被释放掉。必须经过2MSL后服务器才能进入到CLOSED状态。（注：MSL叫做最长报文段寿命，RFC建议为两分钟，也就是说，要经过四分钟才能进入到CLOSED状态）。</p>
+<p>其实上面的四次挥手实质上就相当于是下列的对话：</p>
+<p>-客户机：服务器，我想和你断开连接，你同意吗？（FIN=1）</p>
+<p>-服务器：我同意（ACK=1）</p>
+<p>（在此期间，服务器可能还会向客户机发送数据，但是客户机却不能再向服务器发送数据）</p>
+<p>-服务器：客户机，我想要和你断开连接，你同意吗？（FIN=1）</p>
+<p>-客户机：我同意。（ACK=1）</p>
+<p>再等待2MSL时间后就真正断开了连接。</p>
+<p>常见面试问题：</p>
+<p>问：为什么客户机发送完最后一个数据后要在TIME-WAIT状态等待 2MSL（四分钟）的时间呢？</p>
+<p>答：第一：为了保证客户机最后发送的那个ACK报文段能够到达服务器。这个ACK报文段可能会丢失。因而使处在LAST-ACK状态的B收不到对已发送的FIN＋ACK报文段的确认。服务器会超时重传这个FIN＋ACK报文段，而客户机就能在2MSL时间内收到这个重传的FIN+ACK报文段。接着客户机重传一次确认，重新启动2MSL计时器，最后客户机和服务器都可以进入到CLOSED（关闭）状态。如果没有2MSL等待时间，那么就无法收到重传的FIN+ ACK包，无法进入正常的CLOSED状态。</p>
+<p>第二，防止“已失效的连接请求报文段”出现在本连接中。客户机在发送完最后一个ACK报文段，再经过时间2MSL，就可以使本连接持续的时间内所产生的报文段都从网络中消失。这样就可以使下一个新的连接中不会出现这种旧的连接请求报文段。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/TCP/" rel="tag"><i class="fa fa-tag"></i> TCP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/e029a9b3.html" rel="prev" title="Github 网站 DNS 被污染解决方法">
+      <i class="fa fa-chevron-left"></i> Github 网站 DNS 被污染解决方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/d1ea0eaa.html" rel="next" title="常用特殊字符图案">
+      常用特殊字符图案 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="万般自然"
+      src="/files/logo.png">
+  <p class="site-author-name" itemprop="name">万般自然</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:biubiu200@163.com" title="E-Mail → mailto:biubiu200@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">万般自然</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'kvpalhbVKDB8YeNEgb8wgi4y-gzGzoHsz',
+      appKey     : 't0XzeLazzVgDkuwqktWJ6mYn',
+      placeholder: "O(∩_∩)O~，留下你的脚步吧！",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
