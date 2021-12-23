@@ -125,9 +125,9 @@
     <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
-        <li class="menu-item menu-item-about">
+        <li class="menu-item menu-item-archives">
 
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">35</span></a>
 
   </li>
         <li class="menu-item menu-item-tags">
@@ -138,11 +138,6 @@
         <li class="menu-item menu-item-categories">
 
     <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">7</span></a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">20</span></a>
 
   </li>
         <li class="menu-item menu-item-tools">
@@ -157,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-messages">
 
-    <a href="/messages/" rel="section"><i class="fas fa-envelope fa-fw"></i>留言板</a>
+    <a href="/messages/" rel="section"><i class="fas fa-envelope fa-fw"></i>留言</a>
 
   </li>
         <li class="menu-item menu-item-books">
@@ -168,6 +163,11 @@
         <li class="menu-item menu-item-links">
 
     <a href="/links/" rel="section"><i class="fas fa-user-friends fa-fw"></i>友链</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -224,7 +224,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/6ec72dcd.html">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/5de839d7.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/files/logo.png">
@@ -238,7 +238,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/6ec72dcd.html" class="post-title-link" itemprop="url">05 | 深入浅出索引（下）</a>
+            <a href="/5de839d7.html" class="post-title-link" itemprop="url">20 | 幻读是什么，幻读有什么问题</a>
         </h2>
 
         <div class="post-meta">
@@ -249,7 +249,7 @@
               <span class="post-meta-item-text">发表</span>
               
 
-              <time title="创建时间：2021-12-22 14:43:59 / 修改时间：16:27:55" itemprop="dateCreated datePublished" datetime="2021-12-22T14:43:59+08:00">2021-12-22</time>
+              <time title="创建时间：2021-12-23 00:16:40 / 修改时间：11:05:09" itemprop="dateCreated datePublished" datetime="2021-12-23T00:16:40+08:00">2021-12-23</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -278,8 +278,8 @@
       </span>
       <span class="post-meta-item-text">评论：</span>
     
-    <a title="valine" href="/6ec72dcd.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/6ec72dcd.html" itemprop="commentCount"></span>
+    <a title="valine" href="/5de839d7.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/5de839d7.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -294,10 +294,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>在上一篇文章中，我和你介绍了InnoDB索引的数据结构模型，今天我们再继续聊聊跟MySQL索引有关的概念。</p>
+          <p>在上一篇文章最后，我给你留了一个关于加锁规则的问题。今天，我们就从这个问题说起吧。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/6ec72dcd.html" rel="contents">
+              <a class="btn" href="/5de839d7.html" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -321,7 +321,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/d89ca279.html">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/20b6c3f5.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/files/logo.png">
@@ -335,7 +335,419 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/d89ca279.html" class="post-title-link" itemprop="url">04 | 深入浅出索引（上）</a>
+            <a href="/20b6c3f5.html" class="post-title-link" itemprop="url">19 | 为什么我只查一行的语句，也执行这么慢</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表</span>
+
+              <time title="创建时间：2021-12-22 23:28:34" itemprop="dateCreated datePublished" datetime="2021-12-22T23:28:34+08:00">2021-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新</span>
+                <time title="修改时间：2021-12-23 11:05:09" itemprop="dateModified" datetime="2021-12-23T11:05:09+08:00">2021-12-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2/" itemprop="url" rel="index"><span itemprop="name">MySQL实战45讲</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论：</span>
+    
+    <a title="valine" href="/20b6c3f5.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/20b6c3f5.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>一般情况下，如果我跟你说查询性能优化，你首先会想到一些复杂的语句，想到查询需要返回大量的数据。但有些情况下，“查一行”，也会执行得特别慢。今天，我就跟你聊聊这个有趣的话题，看看什么情况下，会出现这个现象。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/20b6c3f5.html" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/9b95946f.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/files/logo.png">
+      <meta itemprop="name" content="万般自然">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/9b95946f.html" class="post-title-link" itemprop="url">18 | 为什么这些SQL语句逻辑相同，性能却差异巨大</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表</span>
+
+              <time title="创建时间：2021-12-22 22:47:36" itemprop="dateCreated datePublished" datetime="2021-12-22T22:47:36+08:00">2021-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新</span>
+                <time title="修改时间：2021-12-23 11:05:09" itemprop="dateModified" datetime="2021-12-23T11:05:09+08:00">2021-12-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2/" itemprop="url" rel="index"><span itemprop="name">MySQL实战45讲</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论：</span>
+    
+    <a title="valine" href="/9b95946f.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/9b95946f.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在MySQL中，有很多看上去逻辑相同，但性能却差异巨大的SQL语句。对这些语句使用不当的话，就会不经意间导致整个数据库的压力变大。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/9b95946f.html" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/a6416269.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/files/logo.png">
+      <meta itemprop="name" content="万般自然">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/a6416269.html" class="post-title-link" itemprop="url">17 | 如何正确地显示随机消息</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表</span>
+
+              <time title="创建时间：2021-12-22 22:18:13" itemprop="dateCreated datePublished" datetime="2021-12-22T22:18:13+08:00">2021-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新</span>
+                <time title="修改时间：2021-12-23 11:05:09" itemprop="dateModified" datetime="2021-12-23T11:05:09+08:00">2021-12-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2/" itemprop="url" rel="index"><span itemprop="name">MySQL实战45讲</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论：</span>
+    
+    <a title="valine" href="/a6416269.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/a6416269.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>我在上一篇文章，为你讲解完order by语句的几种执行模式后，就想到了之前一个做英语学习App的朋友碰到过的一个性能问题。今天这篇文章，我就从这个性能问题说起，和你说说MySQL中的另外一种排序需求，希望能够加深你对MySQL排序逻辑的理解。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/a6416269.html" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/1d189ae5.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/files/logo.png">
+      <meta itemprop="name" content="万般自然">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/1d189ae5.html" class="post-title-link" itemprop="url">16 | “orderby”是怎么工作的</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表</span>
+
+              <time title="创建时间：2021-12-22 21:56:42" itemprop="dateCreated datePublished" datetime="2021-12-22T21:56:42+08:00">2021-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新</span>
+                <time title="修改时间：2021-12-23 11:05:09" itemprop="dateModified" datetime="2021-12-23T11:05:09+08:00">2021-12-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2/" itemprop="url" rel="index"><span itemprop="name">MySQL实战45讲</span></a>
+                </span>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">评论：</span>
+    
+    <a title="valine" href="/1d189ae5.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/1d189ae5.html" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在你开发应用的时候，一定会经常碰到需要根据指定的字段排序来显示结果的需求。还是以我们前面举例用过的市民表为例，假设你要查询城市是“杭州”的所有人名字，并且按照姓名排序返回前1000个人的姓名、年龄。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/1d189ae5.html" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/39974b20.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/files/logo.png">
+      <meta itemprop="name" content="万般自然">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/39974b20.html" class="post-title-link" itemprop="url">15 | 答疑文章（一）：日志和索引相关问题</a>
         </h2>
 
         <div class="post-meta">
@@ -346,7 +758,7 @@
               <span class="post-meta-item-text">发表</span>
               
 
-              <time title="创建时间：2021-12-22 12:24:10 / 修改时间：16:28:09" itemprop="dateCreated datePublished" datetime="2021-12-22T12:24:10+08:00">2021-12-22</time>
+              <time title="创建时间：2021-12-22 17:43:00 / 修改时间：17:51:23" itemprop="dateCreated datePublished" datetime="2021-12-22T17:43:00+08:00">2021-12-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -375,8 +787,8 @@
       </span>
       <span class="post-meta-item-text">评论：</span>
     
-    <a title="valine" href="/d89ca279.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/d89ca279.html" itemprop="commentCount"></span>
+    <a title="valine" href="/39974b20.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/39974b20.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -391,10 +803,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>提到数据库索引，我想你并不陌生，在日常工作中会经常接触到。比如某一个SQL查询比较慢，分析完原因之后，你可能就会说“给某个字段加个索引吧”之类的解决方案。但到底什么是索引，索引又是如何工作的呢？今天就让我们一起来聊聊这个话题吧。</p>
+          <p>到目前为止，我已经收集了47个问题，很难通过今天这一篇文章全部展开。所以，我就先从中找了几个联系非常紧密的问题，串了起来，希望可以帮你解决关于日志和索引的一些疑惑。而其他问题，我们就留着后面慢慢展开吧。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/d89ca279.html" rel="contents">
+              <a class="btn" href="/39974b20.html" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -418,7 +830,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/56fc687d.html">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/c3e2259f.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/files/logo.png">
@@ -432,7 +844,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/56fc687d.html" class="post-title-link" itemprop="url">03 | 事务隔离：为什么你改了我还看不见？</a>
+            <a href="/c3e2259f.html" class="post-title-link" itemprop="url">14 | count(*)这么慢，我该怎么办？</a>
         </h2>
 
         <div class="post-meta">
@@ -443,7 +855,7 @@
               <span class="post-meta-item-text">发表</span>
               
 
-              <time title="创建时间：2021-12-22 12:13:58 / 修改时间：16:28:25" itemprop="dateCreated datePublished" datetime="2021-12-22T12:13:58+08:00">2021-12-22</time>
+              <time title="创建时间：2021-12-22 17:35:02 / 修改时间：17:40:36" itemprop="dateCreated datePublished" datetime="2021-12-22T17:35:02+08:00">2021-12-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -472,8 +884,8 @@
       </span>
       <span class="post-meta-item-text">评论：</span>
     
-    <a title="valine" href="/56fc687d.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/56fc687d.html" itemprop="commentCount"></span>
+    <a title="valine" href="/c3e2259f.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/c3e2259f.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -488,10 +900,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>提到事务，你肯定不陌生，和数据库打交道的时候，我们总是会用到事务。最经典的例子就是转账，你要给朋友小王转100块钱，而此时你的银行卡只有100块钱。</p>
+          <p>在开发系统的时候，你可能经常需要计算一个表的行数，比如一个交易系统的所有变更记录总数。这时候你可能会想，一条 <code>select count(*) from t</code>  语句不就解决了吗？</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/56fc687d.html" rel="contents">
+              <a class="btn" href="/c3e2259f.html" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -515,7 +927,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/859aa137.html">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/d831b665.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/files/logo.png">
@@ -529,7 +941,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/859aa137.html" class="post-title-link" itemprop="url">02 | 日志系统：一条SQL更新语句是如何执行的？</a>
+            <a href="/d831b665.html" class="post-title-link" itemprop="url">13 | 为什么表数据删掉一半，表文件大小不变？</a>
         </h2>
 
         <div class="post-meta">
@@ -540,7 +952,7 @@
               <span class="post-meta-item-text">发表</span>
               
 
-              <time title="创建时间：2021-12-22 00:22:49 / 修改时间：16:28:39" itemprop="dateCreated datePublished" datetime="2021-12-22T00:22:49+08:00">2021-12-22</time>
+              <time title="创建时间：2021-12-22 17:22:15 / 修改时间：17:30:01" itemprop="dateCreated datePublished" datetime="2021-12-22T17:22:15+08:00">2021-12-22</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -569,8 +981,8 @@
       </span>
       <span class="post-meta-item-text">评论：</span>
     
-    <a title="valine" href="/859aa137.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/859aa137.html" itemprop="commentCount"></span>
+    <a title="valine" href="/d831b665.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/d831b665.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -585,11 +997,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>前面我们系统了解了一个查询语句的执行流程，并介绍了执行过程中涉及的处理模块。相信你还记得，一条查询语句的执行过程一般是经过连接器、分析器、优化器、执行器等功能模块，最后到达存储引擎。</p>
-<p>那么，一条更新语句的执行流程又是怎样的呢？</p>
+          <p>经常会有同学来问我，我的数据库占用空间太大，我把一个最大的表删掉了一半的数据，怎么表文件的大小还是没变？</p>
+<p>那么今天，我就和你聊聊数据库表的空间回收，看看如何解决这个问题。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/859aa137.html" rel="contents">
+              <a class="btn" href="/d831b665.html" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -613,7 +1025,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/23046aa4.html">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/b4ac2666.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/files/logo.png">
@@ -627,7 +1039,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/23046aa4.html" class="post-title-link" itemprop="url">01 | 基础架构：一条SQL查询语句是如何执行的？</a>
+            <a href="/b4ac2666.html" class="post-title-link" itemprop="url">12 | 为什么我的MySQL会“抖”一下？</a>
         </h2>
 
         <div class="post-meta">
@@ -636,16 +1048,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表</span>
+              
 
-              <time title="创建时间：2021-12-21 23:58:03" itemprop="dateCreated datePublished" datetime="2021-12-21T23:58:03+08:00">2021-12-21</time>
+              <time title="创建时间：2021-12-22 17:11:19 / 修改时间：17:19:33" itemprop="dateCreated datePublished" datetime="2021-12-22T17:11:19+08:00">2021-12-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新</span>
-                <time title="修改时间：2021-12-22 16:28:55" itemprop="dateModified" datetime="2021-12-22T16:28:55+08:00">2021-12-22</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -673,8 +1079,8 @@
       </span>
       <span class="post-meta-item-text">评论：</span>
     
-    <a title="valine" href="/23046aa4.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/23046aa4.html" itemprop="commentCount"></span>
+    <a title="valine" href="/b4ac2666.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/b4ac2666.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -689,11 +1095,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>这是专栏的第一篇文章，我想来跟你聊聊MySQL的基础架构。我们经常说，看一个事儿千万不要直接陷入细节里，你应该先鸟瞰其全貌，这样能够帮助你从高维度理解问题。同样，对于MySQL的学习也是这样。平时我们使用数据库，看到的通常都是一个整体。比如，你有个最简单的表，表里只有一个ID字段，在执行下面这个查询语句时：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> T <span class="keyword">where</span> ID<span class="operator">=</span><span class="number">10</span>；</span><br></pre></td></tr></table></figure>
+          <p>平时的工作中，不知道你有没有遇到过这样的场景，一条SQL语句，正常执行的时候特别快，但是有时也不知道怎么回事，它就会变得特别慢，并且这样的场景很难复现，它不只随机，而且持续时间还很短。</p>
+<p>看上去，这就像是数据库“抖”了一下。今天，我们就一起来看一看这是什么原因。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/23046aa4.html" rel="contents">
+              <a class="btn" href="/b4ac2666.html" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -717,7 +1123,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/cf232bbf.html">
+    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/bc52c5bf.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/files/logo.png">
@@ -731,7 +1137,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/cf232bbf.html" class="post-title-link" itemprop="url">开篇词 | 这一次，让我们一起来搞懂MySQL</a>
+            <a href="/bc52c5bf.html" class="post-title-link" itemprop="url">11 | 怎么给字符串字段加索引？</a>
         </h2>
 
         <div class="post-meta">
@@ -740,16 +1146,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表</span>
+              
 
-              <time title="创建时间：2021-12-21 23:51:26" itemprop="dateCreated datePublished" datetime="2021-12-21T23:51:26+08:00">2021-12-21</time>
+              <time title="创建时间：2021-12-22 17:03:43 / 修改时间：17:10:31" itemprop="dateCreated datePublished" datetime="2021-12-22T17:03:43+08:00">2021-12-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新</span>
-                <time title="修改时间：2021-12-22 16:29:18" itemprop="dateModified" datetime="2021-12-22T16:29:18+08:00">2021-12-22</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -777,8 +1177,8 @@
       </span>
       <span class="post-meta-item-text">评论：</span>
     
-    <a title="valine" href="/cf232bbf.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/cf232bbf.html" itemprop="commentCount"></span>
+    <a title="valine" href="/bc52c5bf.html#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/bc52c5bf.html" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -793,391 +1193,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>你好，我是林晓斌，网名“丁奇”，欢迎加入我的专栏，和我一起开始MySQL学习之旅。我曾先后在百度和阿里任职，从事MySQL数据库方面的工作，一步步地从一个数据库小白成为MySQL内核开发人员。回想起来，从我第一次带着疑问翻MySQL的源码查到答案至今，已经有十个年头了。在这个过程中，走了不少弯路，但同时也收获了很多的知识和思考，希望能在这个专栏里分享给你。</p>
+          <p>现在，几乎所有的系统都支持邮箱登录，如何在邮箱这样的字段上建立合理的索引，是我们今天要讨论的问题。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/cf232bbf.html" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/d1ea0eaa.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/files/logo.png">
-      <meta itemprop="name" content="万般自然">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逸风小站">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/d1ea0eaa.html" class="post-title-link" itemprop="url">常用特殊字符图案</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表</span>
-
-              <time title="创建时间：2021-12-18 17:20:57" itemprop="dateCreated datePublished" datetime="2021-12-18T17:20:57+08:00">2021-12-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新</span>
-                <time title="修改时间：2021-12-21 10:23:52" itemprop="dateModified" datetime="2021-12-21T10:23:52+08:00">2021-12-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%9B%BE%E6%A1%88/" itemprop="url" rel="index"><span itemprop="name">图案</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">评论：</span>
-    
-    <a title="valine" href="/d1ea0eaa.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/d1ea0eaa.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>整理了一波文本图案。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/d1ea0eaa.html" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/4b75af21.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/files/logo.png">
-      <meta itemprop="name" content="万般自然">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逸风小站">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/4b75af21.html" class="post-title-link" itemprop="url">TCP三次握手和四次挥手</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表</span>
-
-              <time title="创建时间：2021-12-18 11:51:03" itemprop="dateCreated datePublished" datetime="2021-12-18T11:51:03+08:00">2021-12-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新</span>
-                <time title="修改时间：2021-12-21 10:23:52" itemprop="dateModified" datetime="2021-12-21T10:23:52+08:00">2021-12-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TCP/" itemprop="url" rel="index"><span itemprop="name">TCP</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">评论：</span>
-    
-    <a title="valine" href="/4b75af21.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/4b75af21.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>今天看了一篇关于TCP三次握手和四次挥手的博文，经不住喜爱，特意把文章COPY下来了。<a target="_blank" rel="noopener" href="https://blog.csdn.net/wwl012345/article/details/90261423">原文传送门</a></p>
-<p>TCP是面向连接的协议。运输连接是用来传送TCP报文的。TCP的运输连接有三个过程，即建立连接、数据传输和连接释放。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/4b75af21.html" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/e029a9b3.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/files/logo.png">
-      <meta itemprop="name" content="万般自然">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逸风小站">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/e029a9b3.html" class="post-title-link" itemprop="url">Github 网站 DNS 被污染解决方法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表</span>
-
-              <time title="创建时间：2021-12-17 21:39:50" itemprop="dateCreated datePublished" datetime="2021-12-17T21:39:50+08:00">2021-12-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新</span>
-                <time title="修改时间：2021-12-21 10:23:52" itemprop="dateModified" datetime="2021-12-21T10:23:52+08:00">2021-12-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Github/" itemprop="url" rel="index"><span itemprop="name">Github</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">评论：</span>
-    
-    <a title="valine" href="/e029a9b3.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/e029a9b3.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>报错 <code>curl: (7) Failed to connect to raw.githubusercontent.com port 443: Connection refused</code></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/e029a9b3.html" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://yfwin.github.io/6e6ff13d.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/files/logo.png">
-      <meta itemprop="name" content="万般自然">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="逸风小站">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/6e6ff13d.html" class="post-title-link" itemprop="url">Node.js 事件循环机制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表</span>
-
-              <time title="创建时间：2021-12-17 17:17:21" itemprop="dateCreated datePublished" datetime="2021-12-17T17:17:21+08:00">2021-12-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新</span>
-                <time title="修改时间：2021-12-22 11:31:16" itemprop="dateModified" datetime="2021-12-22T11:31:16+08:00">2021-12-22</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Node/" itemprop="url" rel="index"><span itemprop="name">Node</span></a>
-                </span>
-            </span>
-
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">评论：</span>
-    
-    <a title="valine" href="/6e6ff13d.html#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/6e6ff13d.html" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="Node-js-事件循环机制"><a href="#Node-js-事件循环机制" class="headerlink" title="Node.js 事件循环机制"></a>Node.js 事件循环机制</h2><p><code>Node.js</code>采用事件驱动和异步<code>I/O</code>的方式，实现了一个单线程、高并发的<code>JavaScript</code>运行时环境，而单线程就意味着同一时间只能做一件事，那么<code>Node.js</code>如何通过单线程来实现高并发和异步<code>I/O</code>？本文将围绕这个问题来探讨<code> Node.js</code> 的单线程模型 。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/6e6ff13d.html" rel="contents">
+              <a class="btn" href="/bc52c5bf.html" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1200,7 +1219,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1268,7 +1287,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">35</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
