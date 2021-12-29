@@ -1,109 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>01 | 基础架构：一条SQL查询语句是如何执行的？</title>
-    <url>/23046aa4.html</url>
-    <content><![CDATA[<p>聊聊 MySQL 的基础架构。<br>我们经常说，看一个事儿千万不要直接陷入细节里，你应该先鸟瞰其全貌，这样能够帮助你从高维度理解问题。<br>同样，对于 MySQL 的学习也是这样。<br>这样当我们碰到 MySQL 的一些异常或者问题时，就能够直戳本质，更为快速地定位并解决问题。</p>
-<span id="more"></span>
-
-<p>平时我们使用数据库，看到的通常都是一个整体。<br>比如，你有个最简单的表，表里只有一个 ID 字段，在执行下面这个查询语句时：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> T <span class="keyword">where</span> ID<span class="operator">=</span><span class="number">10</span>；</span><br></pre></td></tr></table></figure>
-
-<p>我们看到的只是输入一条语句，返回一个结果，却不知道这条语句在 MySQL 内部的执行过程。</p>
-<p>所以我们把 MySQL 拆解一下，看看里面都有哪些“零件”，通过拆解过程，达到对 MySQL 的更深入理解。</p>
-<p>下面是 MySQ L的基本架构示意图，从中你可以清楚地看到 SQL 语句在 MySQL 的各个功能模块中的执行过程。<br><img src="https://flzc.gitee.io/mynote/blog/0d2070e8f84c4801adbfa03bda1f98d9.webp.jpg" alt="MySQL的逻辑架构图"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: ## 999;padding: 2px;">
-        <b>MySQL 的逻辑架构图</b>
-    </div>
-    <br>
-</center>
-
-
-<p>大体来说，MySQL可以分为 <code>Server 层</code> 和 <code>存储引擎层</code> 两部分。</p>
-<p><code>Server 层</code>： 包括连接器、查询缓存、分析器、优化器、执行器等，涵盖MySQL的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。</p>
-<p><code>存储引擎层</code>： 负责数据的存储和提取。其架构模式是插件式的，支持 InnoDB、MyISAM、Memory 等多个存储引擎。<strong>现在最常用的存储引擎是 InnoDB</strong> ，它从 MySQL 5.5.5版本开始成为了默认存储引擎。</p>
-<p>也就是说，执行 create table 建表的时候，如果不指定引擎类型，默认使用的就是InnoDB。<br>我们也可以通过指定存储引擎的类型来选择别的引擎，比如在 create table 语句中使用 engine=memory, 来指定使用内存引擎创建表。<br>不同存储引擎的表数据存取方式不同，支持的功能也不同。</p>
-<p>从图中不难看出，不同的存储引擎共用一个 Server 层，也就是从连接器到执行器的部分。<br>接下来我们结合开头提到的那条 SQL 语句，走一遍整个执行流程，依次看下每个组件的作用。</p>
-<h2 id="连接器"><a href="#连接器" class="headerlink" title="连接器"></a>连接器</h2><p>第一步，你会先连接到这个数据库上，这时候接待你的就是连接器。连接器负责跟客户端建立连接、获取权限、维持和管理连接。<br>连接命令一般是这么写的：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql <span class="literal">-h</span><span class="variable">$ip</span> <span class="literal">-P</span><span class="variable">$port</span> <span class="literal">-u</span><span class="variable">$user</span> <span class="literal">-p</span></span><br></pre></td></tr></table></figure>
-
-<p>输完命令之后，你就需要在交互对话里面输入密码。<br>虽然密码也可以直接跟在 -p 后面写在命令行中，但这样可能会导致你的密码泄露。<br>如果你连的是生产服务器，强烈建议你不要这么做。</p>
-<p>连接命令中的mysql是客户端工具，用来跟服务端建立连接。<br>在完成经典的TCP握手后，连接器就要开始认证你的身份，这个时候用的就是你输入的用户名和密码。</p>
-<p>如果用户名或密码不对，你就会收到一个 <code>Access denied for user</code> 的错误，然后客户端程序结束执行。<br>如果用户名密码认证通过，连接器会到权限表里面查出你拥有的权限。<br>之后，这个连接里面的权限判断逻辑，都将依赖于此时读到的权限。<br>这就意味着，一个用户成功建立连接后，即使你用管理员账号对这个用户的权限做了修改，也不会影响已经存在连接的权限。<br>修改完成后，只有再新建的连接才会使用新的权限设置。</p>
-<p>连接完成后，如果你没有后续的动作，这个连接就处于空闲状态，你可以在 show processlist 命令中看到它。<br>下图是 show processlist 的执行结果，其中的 Command 列显示为“ Sleep ”的这一行，就表示现在系统里面有一个空闲连接。<br><img src="https://flzc.gitee.io/mynote/blog/f2da4aa3a672d48ec05df97b9f992fed.webp.jpg"></p>
-<p>客户端如果太长时间没动静，连接器就会自动将它断开。这个时间是由参数 wait_timeout 控制的，默认值是8小时。</p>
-<p>如果在连接被断开之后，客户端再次发送请求的话，就会收到一个错误提醒： Lost connection to MySQL server during query。这时候如果你要继续，就需要重连，然后再执行请求了。</p>
-<p>数据库里面，<code>长连接</code> 是指连接成功后，如果客户端持续有请求，则一直使用同一个连接。<code>短连接</code> 则是指每次执行完很少的几次查询就断开连接，下次查询再重新建立一个。</p>
-<p>建立连接的过程通常是比较复杂的，所以我建议你在使用中要尽量减少建立连接的动作，也就是尽量使用长连接。</p>
-<p>但是全部使用长连接后，你可能会发现，有些时候 MySQL 占用内存涨得特别快，这是因为 MySQL 在执行过程中临时使用的内存是管理在连接对象里面的。这些资源会在连接断开的时候才释放。所以如果长连接累积下来，可能导致内存占用太大，被系统强行杀掉（ <code>OOM</code> ），从现象看就是MySQL异常重启了。</p>
-<blockquote>
-<p>OOM：内存溢出(Out Of Memory) <a href="https://blog.csdn.net/liang_0609/article/details/93730301">参考文章</a></p>
-</blockquote>
-<p>怎么解决这个问题呢？你可以考虑以下两种方案。</p>
-<ul>
-<li><p>定期断开长连接。使用一段时间，或者程序里面判断执行过一个占用内存的大查询后，断开连接，之后要查询再重连。</p>
-</li>
-<li><p>如果你用的是 MySQL 5.7 或更新版本，可以在每次执行一个比较大的操作后，通过执行 mysql_reset_connection 来重新初始化连接资源。这个过程不需要重连和重新做权限验证，但是会将连接恢复到刚刚创建完时的状态。</p>
-</li>
-</ul>
-<h2 id="查询缓存"><a href="#查询缓存" class="headerlink" title="查询缓存"></a>查询缓存</h2><p>连接建立完成后，你就可以执行select语句了。执行逻辑就会来到第二步：查询缓存。</p>
-<p>MySQL拿到一个查询请求后，会先到查询缓存看看，之前是不是执行过这条语句。之前执行过的语句及其结果可能会以key-value对的形式，被直接缓存在内存中。key是查询的语句，value是查询的结果。如果你的查询能够直接在这个缓存中找到key，那么这个value就会被直接返回给客户端。</p>
-<p>如果语句不在查询缓存中，就会继续后面的执行阶段。执行完成后，执行结果会被存入查询缓存中。你可以看到，如果查询命中缓存，MySQL不需要执行后面的复杂操作，就可以直接返回结果，这个效率会很高。</p>
-<p>但是大多数情况下我会建议你不要使用查询缓存，为什么呢？因为查询缓存往往弊大于利。</p>
-<p>查询缓存的失效非常频繁，只要有对一个表的更新，这个表上所有的查询缓存都会被清空。因此很可能你费劲地把结果存起来，还没使用呢，就被一个更新全清空了。对于更新压力大的数据库来说，查询缓存的命中率会非常低。除非你的业务就是有一张静态表，很长时间才会更新一次。比如，一个系统配置表，那这张表上的查询才适合使用查询缓存。</p>
-<p>好在MySQL也提供了这种“按需使用”的方式。你可以将参数query_cache_type设置成DEMAND，这样对于默认的SQL语句都不使用查询缓存。而对于你确定要使用查询缓存的语句，可以用SQL_CACHE显式指定，像下面这个语句一样：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="built_in">select</span> SQL_CACHE * from T <span class="built_in">where</span> ID=<span class="number">10</span>；</span><br></pre></td></tr></table></figure>
-
-<p>需要注意的是，MySQL 8.0版本直接将查询缓存的整块功能删掉了，也就是说8.0开始彻底没有这个功能了。</p>
-<h2 id="分析器"><a href="#分析器" class="headerlink" title="分析器"></a>分析器</h2><p>如果没有命中查询缓存，就要开始真正执行语句了。首先，MySQL需要知道你要做什么，因此需要对SQL语句做解析。</p>
-<p>分析器先会做“词法分析”。你输入的是由多个字符串和空格组成的一条SQL语句，MySQL需要识别出里面的字符串分别是什么，代表什么。</p>
-<p>MySQL从你输入的”select”这个关键字识别出来，这是一个查询语句。它也要把字符串“T”识别成“表名T”，把字符串“ID”识别成“列ID”。</p>
-<p>做完了这些识别以后，就要做“语法分析”。根据词法分析的结果，语法分析器会根据语法规则，判断你输入的这个SQL语句是否满足MySQL语法。</p>
-<p>如果你的语句不对，就会收到“You have an error in your SQL syntax”的错误提醒，比如下面这个语句select少打了开头的字母“s”。</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; elect * from t <span class="built_in">where</span> ID=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">ERROR <span class="number">1064</span> (<span class="number">42000</span>): You have an error <span class="keyword">in</span> your SQL syntax; check the manual that corresponds to your MySQL server version <span class="keyword">for</span> the right syntax to use near <span class="string">&#x27;elect * from t where ID=1&#x27;</span> at line <span class="number">1</span></span><br></pre></td></tr></table></figure>
-
-<p>一般语法错误会提示第一个出现错误的位置，所以你要关注的是紧接“use near”的内容。</p>
-<h2 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h2><p>经过了分析器，MySQL就知道你要做什么了。在开始执行之前，还要先经过优化器的处理。</p>
-<p>优化器是在表里面有多个索引的时候，决定使用哪个索引；或者在一个语句有多表关联（join）的时候，决定各个表的连接顺序。比如你执行下面这样的语句，这个语句是执行两个表的join：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="built_in">select</span> * from t1 join t2 using(ID)  <span class="built_in">where</span> t1.c=<span class="number">10</span> and t2.d=<span class="number">20</span>;</span><br></pre></td></tr></table></figure>
-
-<p>既可以先从表t1里面取出c=10的记录的ID值，再根据ID值关联到表t2，再判断t2里面d的值是否等于20。<br>也可以先从表t2里面取出d=20的记录的ID值，再根据ID值关联到t1，再判断t1里面c的值是否等于10。<br>这两种执行方法的逻辑结果是一样的，但是执行的效率会有不同，而优化器的作用就是决定选择使用哪一个方案。</p>
-<p>优化器阶段完成后，这个语句的执行方案就确定下来了，然后进入执行器阶段。如果你还有一些疑问，比如优化器是怎么选择索引的，有没有可能选择错等等，没关系，我会在后面的文章中单独展开说明优化器的内容。</p>
-<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><p>MySQL通过分析器知道了你要做什么，通过优化器知道了该怎么做，于是就进入了执行器阶段，开始执行语句。</p>
-<p>开始执行的时候，要先判断一下你对这个表T有没有执行查询的权限，如果没有，就会返回没有权限的错误，如下所示(在工程实现上，如果命中查询缓存，会在查询缓存返回结果的时候，做权限验证。查询也会在优化器之前调用precheck验证权限)。</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="built_in">select</span> * from T <span class="built_in">where</span> ID=<span class="number">10</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">ERROR <span class="number">1142</span> (<span class="number">42000</span>): <span class="built_in">SELECT</span> command denied to user <span class="string">&#x27;b&#x27;</span><span class="string">@&#x27;localhost&#x27; for table &#x27;T&#x27;</span></span><br></pre></td></tr></table></figure>
-
-<p>如果有权限，就打开表继续执行。打开表的时候，执行器就会根据表的引擎定义，去使用这个引擎提供的接口。</p>
-<p>比如我们这个例子中的表T中，ID字段没有索引，那么执行器的执行流程是这样的：</p>
-<p>调用InnoDB引擎接口取这个表的第一行，判断ID值是不是10，如果不是则跳过，如果是则将这行存在结果集中；</p>
-<p>调用引擎接口取“下一行”，重复相同的判断逻辑，直到取到这个表的最后一行。</p>
-<p>执行器将上述遍历过程中所有满足条件的行组成的记录集作为结果集返回给客户端。</p>
-<p>至此，这个语句就执行完成了。</p>
-<p>对于有索引的表，执行的逻辑也差不多。第一次调用的是“取满足条件的第一行”这个接口，之后循环取“满足条件的下一行”这个接口，这些接口都是引擎中已经定义好的。</p>
-<p>你会在数据库的慢查询日志中看到一个rows_examined的字段，表示这个语句执行过程中扫描了多少行。这个值就是在执行器每次调用引擎获取数据行的时候累加的。</p>
-<p>在有些场景下，执行器调用一次，在引擎内部则扫描了多行，因此<strong>引擎扫描行数跟rows_examined并不是完全相同的。</strong>我们后面会专门有一篇文章来讲存储引擎的内部机制，里面会有详细的说明。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>今天我给你介绍了MySQL的逻辑架构，希望你对一个SQL语句完整执行流程的各个阶段有了一个初步的印象。由于篇幅的限制，我只是用一个查询的例子将各个环节过了一遍。如果你还对每个环节的展开细节存有疑问，也不用担心，后续在实战章节中我还会再提到它们。</p>
-<p>我给你留一个问题吧，如果表T中没有字段k，而你执行了这个语句 <code>select * from T where k=1</code> , 那肯定是会报“不存在这个列”的错误： “Unknown column ‘k’ in ‘where clause’”。你觉得这个错误是在我们上面提到的哪个阶段报出来的呢？</p>
-<h2 id="我的疑问"><a href="#我的疑问" class="headerlink" title="我的疑问"></a>我的疑问</h2><p>命令 <code>mysql -h$ip -P$port -u$user -p</code>， 为什么在 -p 后跟密码可能会导致密码泄露？</p>
-<hr>
-<p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
-<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-        <category>MySQL</category>
-        <category>MySQL实战45讲</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-        <tag>MySQL</tag>
-        <tag>MySQL实战45讲</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>02 | 日志系统：一条SQL更新语句是如何执行的？</title>
     <url>/859aa137.html</url>
     <content><![CDATA[<p>前面我们系统了解了一个查询语句的执行流程，并介绍了执行过程中涉及的处理模块。相信你还记得，一条查询语句的执行过程一般是经过连接器、分析器、优化器、执行器等功能模块，最后到达存储引擎。</p>
@@ -210,6 +107,109 @@
 <p>我还跟你介绍了与MySQL日志系统密切相关的“两阶段提交”。两阶段提交是跨系统维持数据逻辑一致性时常用的一个方案，即使你不做数据库内核开发，日常开发中也有可能会用到。</p>
 <p>文章的最后，我给你留一个思考题吧。前面我说到定期全量备份的周期“取决于系统重要性，有的是一天一备，有的是一周一备”。那么在什么场景下，一天一备会比一周一备更有优势呢？或者说，它影响了这个数据库系统的哪个指标？</p>
 <p>你可以把你的思考和观点写在留言区里，我会在下一篇文章的末尾给出我的答案。</p>
+<hr>
+<p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
+<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+        <category>MySQL</category>
+        <category>MySQL实战45讲</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+        <tag>MySQL</tag>
+        <tag>MySQL实战45讲</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>01 | 基础架构：一条SQL查询语句是如何执行的？</title>
+    <url>/23046aa4.html</url>
+    <content><![CDATA[<p>聊聊 MySQL 的基础架构。<br>我们经常说，看一个事儿千万不要直接陷入细节里，你应该先鸟瞰其全貌，这样能够帮助你从高维度理解问题。<br>同样，对于 MySQL 的学习也是这样。<br>这样当我们碰到 MySQL 的一些异常或者问题时，就能够直戳本质，更为快速地定位并解决问题。</p>
+<span id="more"></span>
+
+<p>平时我们使用数据库，看到的通常都是一个整体。<br>比如，你有个最简单的表，表里只有一个 ID 字段，在执行下面这个查询语句时：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> T <span class="keyword">where</span> ID<span class="operator">=</span><span class="number">10</span>；</span><br></pre></td></tr></table></figure>
+
+<p>我们看到的只是输入一条语句，返回一个结果，却不知道这条语句在 MySQL 内部的执行过程。</p>
+<p>所以我们把 MySQL 拆解一下，看看里面都有哪些“零件”，通过拆解过程，达到对 MySQL 的更深入理解。</p>
+<p>下面是 MySQ L的基本架构示意图，从中你可以清楚地看到 SQL 语句在 MySQL 的各个功能模块中的执行过程。<br><img src="https://flzc.gitee.io/mynote/blog/0d2070e8f84c4801adbfa03bda1f98d9.webp.jpg" alt="MySQL的逻辑架构图"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: ## 999;padding: 2px;">
+        <b>MySQL 的逻辑架构图</b>
+    </div>
+    <br>
+</center>
+
+
+<p>大体来说，MySQL可以分为 <code>Server 层</code> 和 <code>存储引擎层</code> 两部分。</p>
+<p><code>Server 层</code>： 包括连接器、查询缓存、分析器、优化器、执行器等，涵盖MySQL的大多数核心服务功能，以及所有的内置函数（如日期、时间、数学和加密函数等），所有跨存储引擎的功能都在这一层实现，比如存储过程、触发器、视图等。</p>
+<p><code>存储引擎层</code>： 负责数据的存储和提取。其架构模式是插件式的，支持 InnoDB、MyISAM、Memory 等多个存储引擎。<strong>现在最常用的存储引擎是 InnoDB</strong> ，它从 MySQL 5.5.5版本开始成为了默认存储引擎。</p>
+<p>也就是说，执行 create table 建表的时候，如果不指定引擎类型，默认使用的就是InnoDB。<br>我们也可以通过指定存储引擎的类型来选择别的引擎，比如在 create table 语句中使用 engine=memory, 来指定使用内存引擎创建表。<br>不同存储引擎的表数据存取方式不同，支持的功能也不同。</p>
+<p>从图中不难看出，不同的存储引擎共用一个 Server 层，也就是从连接器到执行器的部分。<br>接下来我们结合开头提到的那条 SQL 语句，走一遍整个执行流程，依次看下每个组件的作用。</p>
+<h2 id="连接器"><a href="#连接器" class="headerlink" title="连接器"></a>连接器</h2><p>第一步，你会先连接到这个数据库上，这时候接待你的就是连接器。连接器负责跟客户端建立连接、获取权限、维持和管理连接。<br>连接命令一般是这么写的：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql <span class="literal">-h</span><span class="variable">$ip</span> <span class="literal">-P</span><span class="variable">$port</span> <span class="literal">-u</span><span class="variable">$user</span> <span class="literal">-p</span></span><br></pre></td></tr></table></figure>
+
+<p>输完命令之后，你就需要在交互对话里面输入密码。<br>虽然密码也可以直接跟在 -p 后面写在命令行中，但这样可能会导致你的密码泄露。<br>如果你连的是生产服务器，强烈建议你不要这么做。</p>
+<p>连接命令中的mysql是客户端工具，用来跟服务端建立连接。<br>在完成经典的TCP握手后，连接器就要开始认证你的身份，这个时候用的就是你输入的用户名和密码。</p>
+<p>如果用户名或密码不对，你就会收到一个 <code>Access denied for user</code> 的错误，然后客户端程序结束执行。<br>如果用户名密码认证通过，连接器会到权限表里面查出你拥有的权限。<br>之后，这个连接里面的权限判断逻辑，都将依赖于此时读到的权限。<br>这就意味着，一个用户成功建立连接后，即使你用管理员账号对这个用户的权限做了修改，也不会影响已经存在连接的权限。<br>修改完成后，只有再新建的连接才会使用新的权限设置。</p>
+<p>连接完成后，如果你没有后续的动作，这个连接就处于空闲状态，你可以在 show processlist 命令中看到它。<br>下图是 show processlist 的执行结果，其中的 Command 列显示为“ Sleep ”的这一行，就表示现在系统里面有一个空闲连接。<br><img src="https://flzc.gitee.io/mynote/blog/f2da4aa3a672d48ec05df97b9f992fed.webp.jpg"></p>
+<p>客户端如果太长时间没动静，连接器就会自动将它断开。这个时间是由参数 wait_timeout 控制的，默认值是8小时。</p>
+<p>如果在连接被断开之后，客户端再次发送请求的话，就会收到一个错误提醒： Lost connection to MySQL server during query。这时候如果你要继续，就需要重连，然后再执行请求了。</p>
+<p>数据库里面，<code>长连接</code> 是指连接成功后，如果客户端持续有请求，则一直使用同一个连接。<code>短连接</code> 则是指每次执行完很少的几次查询就断开连接，下次查询再重新建立一个。</p>
+<p>建立连接的过程通常是比较复杂的，所以我建议你在使用中要尽量减少建立连接的动作，也就是尽量使用长连接。</p>
+<p>但是全部使用长连接后，你可能会发现，有些时候 MySQL 占用内存涨得特别快，这是因为 MySQL 在执行过程中临时使用的内存是管理在连接对象里面的。这些资源会在连接断开的时候才释放。所以如果长连接累积下来，可能导致内存占用太大，被系统强行杀掉（ <code>OOM</code> ），从现象看就是MySQL异常重启了。</p>
+<blockquote>
+<p>OOM：内存溢出(Out Of Memory) <a href="https://blog.csdn.net/liang_0609/article/details/93730301">参考文章</a></p>
+</blockquote>
+<p>怎么解决这个问题呢？你可以考虑以下两种方案。</p>
+<ul>
+<li><p>定期断开长连接。使用一段时间，或者程序里面判断执行过一个占用内存的大查询后，断开连接，之后要查询再重连。</p>
+</li>
+<li><p>如果你用的是 MySQL 5.7 或更新版本，可以在每次执行一个比较大的操作后，通过执行 mysql_reset_connection 来重新初始化连接资源。这个过程不需要重连和重新做权限验证，但是会将连接恢复到刚刚创建完时的状态。</p>
+</li>
+</ul>
+<h2 id="查询缓存"><a href="#查询缓存" class="headerlink" title="查询缓存"></a>查询缓存</h2><p>连接建立完成后，你就可以执行select语句了。执行逻辑就会来到第二步：查询缓存。</p>
+<p>MySQL拿到一个查询请求后，会先到查询缓存看看，之前是不是执行过这条语句。之前执行过的语句及其结果可能会以key-value对的形式，被直接缓存在内存中。key是查询的语句，value是查询的结果。如果你的查询能够直接在这个缓存中找到key，那么这个value就会被直接返回给客户端。</p>
+<p>如果语句不在查询缓存中，就会继续后面的执行阶段。执行完成后，执行结果会被存入查询缓存中。你可以看到，如果查询命中缓存，MySQL不需要执行后面的复杂操作，就可以直接返回结果，这个效率会很高。</p>
+<p>但是大多数情况下我会建议你不要使用查询缓存，为什么呢？因为查询缓存往往弊大于利。</p>
+<p>查询缓存的失效非常频繁，只要有对一个表的更新，这个表上所有的查询缓存都会被清空。因此很可能你费劲地把结果存起来，还没使用呢，就被一个更新全清空了。对于更新压力大的数据库来说，查询缓存的命中率会非常低。除非你的业务就是有一张静态表，很长时间才会更新一次。比如，一个系统配置表，那这张表上的查询才适合使用查询缓存。</p>
+<p>好在MySQL也提供了这种“按需使用”的方式。你可以将参数query_cache_type设置成DEMAND，这样对于默认的SQL语句都不使用查询缓存。而对于你确定要使用查询缓存的语句，可以用SQL_CACHE显式指定，像下面这个语句一样：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="built_in">select</span> SQL_CACHE * from T <span class="built_in">where</span> ID=<span class="number">10</span>；</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，MySQL 8.0版本直接将查询缓存的整块功能删掉了，也就是说8.0开始彻底没有这个功能了。</p>
+<h2 id="分析器"><a href="#分析器" class="headerlink" title="分析器"></a>分析器</h2><p>如果没有命中查询缓存，就要开始真正执行语句了。首先，MySQL需要知道你要做什么，因此需要对SQL语句做解析。</p>
+<p>分析器先会做“词法分析”。你输入的是由多个字符串和空格组成的一条SQL语句，MySQL需要识别出里面的字符串分别是什么，代表什么。</p>
+<p>MySQL从你输入的”select”这个关键字识别出来，这是一个查询语句。它也要把字符串“T”识别成“表名T”，把字符串“ID”识别成“列ID”。</p>
+<p>做完了这些识别以后，就要做“语法分析”。根据词法分析的结果，语法分析器会根据语法规则，判断你输入的这个SQL语句是否满足MySQL语法。</p>
+<p>如果你的语句不对，就会收到“You have an error in your SQL syntax”的错误提醒，比如下面这个语句select少打了开头的字母“s”。</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; elect * from t <span class="built_in">where</span> ID=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">ERROR <span class="number">1064</span> (<span class="number">42000</span>): You have an error <span class="keyword">in</span> your SQL syntax; check the manual that corresponds to your MySQL server version <span class="keyword">for</span> the right syntax to use near <span class="string">&#x27;elect * from t where ID=1&#x27;</span> at line <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>一般语法错误会提示第一个出现错误的位置，所以你要关注的是紧接“use near”的内容。</p>
+<h2 id="优化器"><a href="#优化器" class="headerlink" title="优化器"></a>优化器</h2><p>经过了分析器，MySQL就知道你要做什么了。在开始执行之前，还要先经过优化器的处理。</p>
+<p>优化器是在表里面有多个索引的时候，决定使用哪个索引；或者在一个语句有多表关联（join）的时候，决定各个表的连接顺序。比如你执行下面这样的语句，这个语句是执行两个表的join：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="built_in">select</span> * from t1 join t2 using(ID)  <span class="built_in">where</span> t1.c=<span class="number">10</span> and t2.d=<span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+
+<p>既可以先从表t1里面取出c=10的记录的ID值，再根据ID值关联到表t2，再判断t2里面d的值是否等于20。<br>也可以先从表t2里面取出d=20的记录的ID值，再根据ID值关联到t1，再判断t1里面c的值是否等于10。<br>这两种执行方法的逻辑结果是一样的，但是执行的效率会有不同，而优化器的作用就是决定选择使用哪一个方案。</p>
+<p>优化器阶段完成后，这个语句的执行方案就确定下来了，然后进入执行器阶段。如果你还有一些疑问，比如优化器是怎么选择索引的，有没有可能选择错等等，没关系，我会在后面的文章中单独展开说明优化器的内容。</p>
+<h2 id="执行器"><a href="#执行器" class="headerlink" title="执行器"></a>执行器</h2><p>MySQL通过分析器知道了你要做什么，通过优化器知道了该怎么做，于是就进入了执行器阶段，开始执行语句。</p>
+<p>开始执行的时候，要先判断一下你对这个表T有没有执行查询的权限，如果没有，就会返回没有权限的错误，如下所示(在工程实现上，如果命中查询缓存，会在查询缓存返回结果的时候，做权限验证。查询也会在优化器之前调用precheck验证权限)。</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">mysql&gt; <span class="built_in">select</span> * from T <span class="built_in">where</span> ID=<span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">ERROR <span class="number">1142</span> (<span class="number">42000</span>): <span class="built_in">SELECT</span> command denied to user <span class="string">&#x27;b&#x27;</span><span class="string">@&#x27;localhost&#x27; for table &#x27;T&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果有权限，就打开表继续执行。打开表的时候，执行器就会根据表的引擎定义，去使用这个引擎提供的接口。</p>
+<p>比如我们这个例子中的表T中，ID字段没有索引，那么执行器的执行流程是这样的：</p>
+<p>调用InnoDB引擎接口取这个表的第一行，判断ID值是不是10，如果不是则跳过，如果是则将这行存在结果集中；</p>
+<p>调用引擎接口取“下一行”，重复相同的判断逻辑，直到取到这个表的最后一行。</p>
+<p>执行器将上述遍历过程中所有满足条件的行组成的记录集作为结果集返回给客户端。</p>
+<p>至此，这个语句就执行完成了。</p>
+<p>对于有索引的表，执行的逻辑也差不多。第一次调用的是“取满足条件的第一行”这个接口，之后循环取“满足条件的下一行”这个接口，这些接口都是引擎中已经定义好的。</p>
+<p>你会在数据库的慢查询日志中看到一个rows_examined的字段，表示这个语句执行过程中扫描了多少行。这个值就是在执行器每次调用引擎获取数据行的时候累加的。</p>
+<p>在有些场景下，执行器调用一次，在引擎内部则扫描了多行，因此<strong>引擎扫描行数跟rows_examined并不是完全相同的。</strong>我们后面会专门有一篇文章来讲存储引擎的内部机制，里面会有详细的说明。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>今天我给你介绍了MySQL的逻辑架构，希望你对一个SQL语句完整执行流程的各个阶段有了一个初步的印象。由于篇幅的限制，我只是用一个查询的例子将各个环节过了一遍。如果你还对每个环节的展开细节存有疑问，也不用担心，后续在实战章节中我还会再提到它们。</p>
+<p>我给你留一个问题吧，如果表T中没有字段k，而你执行了这个语句 <code>select * from T where k=1</code> , 那肯定是会报“不存在这个列”的错误： “Unknown column ‘k’ in ‘where clause’”。你觉得这个错误是在我们上面提到的哪个阶段报出来的呢？</p>
+<h2 id="我的疑问"><a href="#我的疑问" class="headerlink" title="我的疑问"></a>我的疑问</h2><p>命令 <code>mysql -h$ip -P$port -u$user -p</code>， 为什么在 -p 后跟密码可能会导致密码泄露？</p>
 <hr>
 <p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
 <p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
@@ -434,6 +434,101 @@
       </tags>
   </entry>
   <entry>
+    <title>07 | 行锁功过：怎么减少行锁对性能的影响？</title>
+    <url>/4f0e1d85.html</url>
+    <content><![CDATA[<p>在上一篇文章中，我跟你介绍了MySQL的全局锁和表级锁，今天我们就来讲讲MySQL的行锁。</p>
+<span id="more"></span>
+
+<p>MySQL的行锁是在引擎层由各个引擎自己实现的。但并不是所有的引擎都支持行锁，比如MyISAM引擎就不支持行锁。不支持行锁意味着并发控制只能使用表锁，对于这种引擎的表，同一张表上任何时刻只能有一个更新在执行，这就会影响到业务并发度。InnoDB是支持行锁的，这也是MyISAM被InnoDB替代的重要原因之一。</p>
+<p>我们今天就主要来聊聊InnoDB的行锁，以及如何通过减少锁冲突来提升业务并发度。</p>
+<p>顾名思义，行锁就是针对数据表中行记录的锁。这很好理解，比如事务A更新了一行，而这时候事务B也要更新同一行，则必须等事务A的操作完成后才能进行更新。</p>
+<p>当然，数据库中还有一些没那么一目了然的概念和设计，这些概念如果理解和使用不当，容易导致程序出现非预期行为，比如两阶段锁。</p>
+<h1 id="从两阶段锁说起"><a href="#从两阶段锁说起" class="headerlink" title="从两阶段锁说起"></a>从两阶段锁说起</h1><p>我先给你举个例子。在下面的操作序列中，事务B的update语句执行时会是什么现象呢？假设字段id是表t的主键。</p>
+<p><img src="https://flzc.gitee.io/mynote/blog/51f501f718e420244b0a2ec2ce858710.webp"><br>这个问题的结论取决于事务A在执行完两条update语句后，持有哪些锁，以及在什么时候释放。你可以验证一下：实际上事务B的update语句会被阻塞，直到事务A执行commit之后，事务B才能继续执行。</p>
+<p>知道了这个答案，你一定知道了事务A持有的两个记录的行锁，都是在commit的时候才释放的。</p>
+<p>也就是说，在InnoDB事务中，行锁是在需要的时候才加上的，但并不是不需要了就立刻释放，而是要等到事务结束时才释放。这个就是两阶段锁协议。</p>
+<p>知道了这个设定，对我们使用事务有什么帮助呢？那就是，如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁尽量往后放。我给你举个例子。</p>
+<p>假设你负责实现一个电影票在线交易业务，顾客A要在影院B购买电影票。我们简化一点，这个业务需要涉及到以下操作：</p>
+<ol>
+<li><p>从顾客A账户余额中扣除电影票价；</p>
+</li>
+<li><p>给影院B的账户余额增加这张电影票价；</p>
+</li>
+<li><p>记录一条交易日志。</p>
+</li>
+</ol>
+<p>也就是说，要完成这个交易，我们需要update两条记录，并insert一条记录。当然，为了保证交易的原子性，我们要把这三个操作放在一个事务中。那么，你会怎样安排这三个语句在事务中的顺序呢？</p>
+<p>试想如果同时有另外一个顾客C要在影院B买票，那么这两个事务冲突的部分就是语句2了。因为它们要更新同一个影院账户的余额，需要修改同一行数据。</p>
+<p>根据两阶段锁协议，不论你怎样安排语句顺序，所有的操作需要的行锁都是在事务提交的时候才释放的。所以，如果你把语句2安排在最后，比如按照3、1、2这样的顺序，那么影院账户余额这一行的锁时间就最少。这就最大程度地减少了事务之间的锁等待，提升了并发度。</p>
+<p>好了，现在由于你的正确设计，影院余额这一行的行锁在一个事务中不会停留很长时间。但是，这并没有完全解决你的困扰。</p>
+<p>如果这个影院做活动，可以低价预售一年内所有的电影票，而且这个活动只做一天。于是在活动时间开始的时候，你的MySQL就挂了。你登上服务器一看，CPU消耗接近100%，但整个数据库每秒就执行不到100个事务。这是什么原因呢？</p>
+<p>这里，我就要说到死锁和死锁检测了。</p>
+<h1 id="死锁和死锁检测"><a href="#死锁和死锁检测" class="headerlink" title="死锁和死锁检测"></a>死锁和死锁检测</h1><p>当并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无限等待的状态，称为死锁。这里我用数据库中的行锁举个例子。</p>
+<p><img src="https://flzc.gitee.io/mynote/blog/4d0eeec7b136371b79248a0aed005a52.webp"><br>这时候，事务A在等待事务B释放id=2的行锁，而事务B在等待事务A释放id=1的行锁。 事务A和事务B在互相等待对方的资源释放，就是进入了死锁状态。当出现死锁以后，有两种策略：</p>
+<ul>
+<li>一种策略是，直接进入等待，直到超时。这个超时时间可以通过参数innodb_lock_wait_timeout来设置。</li>
+<li>另一种策略是，发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数innodb_deadlock_detect设置为on，表示开启这个逻辑。</li>
+</ul>
+<p>在InnoDB中，innodb_lock_wait_timeout的默认值是50s，意味着如果采用第一个策略，当出现死锁以后，第一个被锁住的线程要过50s才会超时退出，然后其他线程才有可能继续执行。对于在线服务来说，这个等待时间往往是无法接受的。</p>
+<p>但是，我们又不可能直接把这个时间设置成一个很小的值，比如1s。这样当出现死锁的时候，确实很快就可以解开，但如果不是死锁，而是简单的锁等待呢？所以，超时时间设置太短的话，会出现很多误伤。</p>
+<p>所以，正常情况下我们还是要采用第二种策略，即：主动死锁检测，而且innodb_deadlock_detect的默认值本身就是on。主动死锁检测在发生死锁的时候，是能够快速发现并进行处理的，但是它也是有额外负担的。</p>
+<p>你可以想象一下这个过程：每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断是否出现了循环等待，也就是死锁。</p>
+<p>那如果是我们上面说到的所有事务都要更新同一行的场景呢？</p>
+<p>每个新来的被堵住的线程，都要判断会不会由于自己的加入导致了死锁，这是一个时间复杂度是O(n)的操作。假设有1000个并发线程要同时更新同一行，那么死锁检测操作就是100万这个量级的。虽然最终检测的结果是没有死锁，但是这期间要消耗大量的CPU资源。因此，你就会看到CPU利用率很高，但是每秒却执行不了几个事务。</p>
+<p>根据上面的分析，我们来讨论一下，怎么解决由这种热点行更新导致的性能问题呢？问题的症结在于，死锁检测要耗费大量的CPU资源。</p>
+<p><strong>一种头痛医头的方法，就是如果你能确保这个业务一定不会出现死锁，可以临时把死锁检测关掉。</strong>但是这种操作本身带有一定的风险，因为业务设计的时候一般不会把死锁当做一个严重错误，毕竟出现死锁了，就回滚，然后通过业务重试一般就没问题了，这是业务无损的。而关掉死锁检测意味着可能会出现大量的超时，这是业务有损的。</p>
+<p><strong>另一个思路是控制并发度。</strong>根据上面的分析，你会发现如果并发能够控制住，比如同一行同时最多只有10个线程在更新，那么死锁检测的成本很低，就不会出现这个问题。一个直接的想法就是，在客户端做并发控制。但是，你会很快发现这个方法不太可行，因为客户端很多。我见过一个应用，有600个客户端，这样即使每个客户端控制到只有5个并发线程，汇总到数据库服务端以后，峰值并发数也可能要达到3000。</p>
+<p>因此，这个并发控制要做在数据库服务端。如果你有中间件，可以考虑在中间件实现；如果你的团队有能修改MySQL源码的人，也可以做在MySQL里面。基本思路就是，对于相同行的更新，在进入引擎之前排队。这样在InnoDB内部就不会有大量的死锁检测工作了。</p>
+<p>可能你会问，如果团队里暂时没有数据库方面的专家，不能实现这样的方案，能不能从设计上优化这个问题呢？</p>
+<p>你可以考虑通过将一行改成逻辑上的多行来减少锁冲突。还是以影院账户为例，可以考虑放在多条记录上，比如10个记录，影院的账户总额等于这10个记录的值的总和。这样每次要给影院账户加金额的时候，随机选其中一条记录来加。这样每次冲突概率变成原来的1/10，可以减少锁等待个数，也就减少了死锁检测的CPU消耗。</p>
+<p>这个方案看上去是无损的，但其实这类方案需要根据业务逻辑做详细设计。如果账户余额可能会减少，比如退票逻辑，那么这时候就需要考虑当一部分行记录变成0的时候，代码要有特殊处理。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>今天，我和你介绍了MySQL的行锁，涉及了两阶段锁协议、死锁和死锁检测这两大部分内容。</p>
+<p>其中，我以两阶段协议为起点，和你一起讨论了在开发的时候如何安排正确的事务语句。这里的原则/我给你的建议是：如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁的申请时机尽量往后放。</p>
+<p>但是，调整语句顺序并不能完全避免死锁。所以我们引入了死锁和死锁检测的概念，以及提供了三个方案，来减少死锁对数据库的影响。减少死锁的主要方向，就是控制访问相同资源的并发事务量。</p>
+<p>最后，我给你留下一个问题吧。如果你要删除一个表里面的前10000行数据，有以下三种方法可以做到：</p>
+<ul>
+<li>第一种，直接执行delete from T limit 10000;</li>
+<li>第二种，在一个连接中循环执行20次 delete from T limit 500;</li>
+<li>第三种，在20个连接中同时执行delete from T limit 500。</li>
+</ul>
+<p>你会选择哪一种方法呢？为什么呢？</p>
+<p>你可以把你的思考和观点写在留言区里，我会在下一篇文章的末尾和你讨论这个问题。感谢你的收听，也欢迎你把这篇文章分享给更多的朋友一起阅读。</p>
+<h1 id="上期问题时间"><a href="#上期问题时间" class="headerlink" title="上期问题时间"></a>上期问题时间</h1><p>上期我给你留的问题是：当备库用–single-transaction做逻辑备份的时候，如果从主库的binlog传来一个DDL语句会怎么样？</p>
+<p>假设这个DDL是针对表t1的， 这里我把备份过程中几个关键的语句列出来：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">Q1:<span class="built_in">SET</span> SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line">Q2:<span class="built_in">START</span> TRANSACTION  WITH CONSISTENT SNAPSHOT；</span><br><span class="line">/* other tables */</span><br><span class="line">Q3:SAVEPOINT <span class="built_in">sp</span>;</span><br><span class="line">/* 时刻 <span class="number">1</span> */</span><br><span class="line">Q4:show create table `t1`;</span><br><span class="line">/* 时刻 <span class="number">2</span> */</span><br><span class="line">Q5:<span class="built_in">SELECT</span> * FROM `t1`;</span><br><span class="line">/* 时刻 <span class="number">3</span> */</span><br><span class="line">Q6:ROLLBACK TO SAVEPOINT <span class="built_in">sp</span>;</span><br><span class="line">/* 时刻 <span class="number">4</span> */</span><br><span class="line">/* other tables */</span><br></pre></td></tr></table></figure>
+
+<p>在备份开始的时候，为了确保RR（可重复读）隔离级别，再设置一次RR隔离级别(Q1);</p>
+<p>启动事务，这里用 WITH CONSISTENT SNAPSHOT确保这个语句执行完就可以得到一个一致性视图（Q2)；</p>
+<p>设置一个保存点，这个很重要（Q3）；</p>
+<p>show create 是为了拿到表结构(Q4)，然后正式导数据 （Q5），回滚到SAVEPOINT sp，在这里的作用是释放 t1的MDL锁 （Q6）。当然这部分属于“超纲”，上文正文里面都没提到。</p>
+<p>DDL从主库传过来的时间按照效果不同，我打了四个时刻。题目设定为小表，我们假定到达后，如果开始执行，则很快能够执行完成。</p>
+<p>参考答案如下：</p>
+<ol>
+<li><p>如果在Q4语句执行之前到达，现象：没有影响，备份拿到的是DDL后的表结构。</p>
+</li>
+<li><p>如果在“时刻 2”到达，则表结构被改过，Q5执行的时候，报 Table definition has changed, please retry transaction，现象：mysqldump终止；</p>
+</li>
+<li><p>如果在“时刻2”和“时刻3”之间到达，mysqldump占着t1的MDL读锁，binlog被阻塞，现象：主从延迟，直到Q6执行完成。</p>
+</li>
+<li><p>从“时刻4”开始，mysqldump释放了MDL读锁，现象：没有影响，备份拿到的是DDL前的表结构。</p>
+</li>
+</ol>
+<hr>
+<p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
+<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+        <category>MySQL</category>
+        <category>MySQL实战45讲</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+        <tag>MySQL</tag>
+        <tag>MySQL实战45讲</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>06 | 全局锁和表锁 ：给表加个字段怎么有这么多阻碍？</title>
     <url>/24d654e1.html</url>
     <content><![CDATA[<p>今天我要跟你聊聊MySQL的锁。数据库锁设计的初衷是处理并发问题。作为多用户共享的资源，当出现并发访问的时候，数据库需要合理地控制资源的访问规则。而锁就是用来实现这些访问规则的重要数据结构。</p>
@@ -544,101 +639,6 @@
       </tags>
   </entry>
   <entry>
-    <title>07 | 行锁功过：怎么减少行锁对性能的影响？</title>
-    <url>/4f0e1d85.html</url>
-    <content><![CDATA[<p>在上一篇文章中，我跟你介绍了MySQL的全局锁和表级锁，今天我们就来讲讲MySQL的行锁。</p>
-<span id="more"></span>
-
-<p>MySQL的行锁是在引擎层由各个引擎自己实现的。但并不是所有的引擎都支持行锁，比如MyISAM引擎就不支持行锁。不支持行锁意味着并发控制只能使用表锁，对于这种引擎的表，同一张表上任何时刻只能有一个更新在执行，这就会影响到业务并发度。InnoDB是支持行锁的，这也是MyISAM被InnoDB替代的重要原因之一。</p>
-<p>我们今天就主要来聊聊InnoDB的行锁，以及如何通过减少锁冲突来提升业务并发度。</p>
-<p>顾名思义，行锁就是针对数据表中行记录的锁。这很好理解，比如事务A更新了一行，而这时候事务B也要更新同一行，则必须等事务A的操作完成后才能进行更新。</p>
-<p>当然，数据库中还有一些没那么一目了然的概念和设计，这些概念如果理解和使用不当，容易导致程序出现非预期行为，比如两阶段锁。</p>
-<h1 id="从两阶段锁说起"><a href="#从两阶段锁说起" class="headerlink" title="从两阶段锁说起"></a>从两阶段锁说起</h1><p>我先给你举个例子。在下面的操作序列中，事务B的update语句执行时会是什么现象呢？假设字段id是表t的主键。</p>
-<p><img src="https://flzc.gitee.io/mynote/blog/51f501f718e420244b0a2ec2ce858710.webp"><br>这个问题的结论取决于事务A在执行完两条update语句后，持有哪些锁，以及在什么时候释放。你可以验证一下：实际上事务B的update语句会被阻塞，直到事务A执行commit之后，事务B才能继续执行。</p>
-<p>知道了这个答案，你一定知道了事务A持有的两个记录的行锁，都是在commit的时候才释放的。</p>
-<p>也就是说，在InnoDB事务中，行锁是在需要的时候才加上的，但并不是不需要了就立刻释放，而是要等到事务结束时才释放。这个就是两阶段锁协议。</p>
-<p>知道了这个设定，对我们使用事务有什么帮助呢？那就是，如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁尽量往后放。我给你举个例子。</p>
-<p>假设你负责实现一个电影票在线交易业务，顾客A要在影院B购买电影票。我们简化一点，这个业务需要涉及到以下操作：</p>
-<ol>
-<li><p>从顾客A账户余额中扣除电影票价；</p>
-</li>
-<li><p>给影院B的账户余额增加这张电影票价；</p>
-</li>
-<li><p>记录一条交易日志。</p>
-</li>
-</ol>
-<p>也就是说，要完成这个交易，我们需要update两条记录，并insert一条记录。当然，为了保证交易的原子性，我们要把这三个操作放在一个事务中。那么，你会怎样安排这三个语句在事务中的顺序呢？</p>
-<p>试想如果同时有另外一个顾客C要在影院B买票，那么这两个事务冲突的部分就是语句2了。因为它们要更新同一个影院账户的余额，需要修改同一行数据。</p>
-<p>根据两阶段锁协议，不论你怎样安排语句顺序，所有的操作需要的行锁都是在事务提交的时候才释放的。所以，如果你把语句2安排在最后，比如按照3、1、2这样的顺序，那么影院账户余额这一行的锁时间就最少。这就最大程度地减少了事务之间的锁等待，提升了并发度。</p>
-<p>好了，现在由于你的正确设计，影院余额这一行的行锁在一个事务中不会停留很长时间。但是，这并没有完全解决你的困扰。</p>
-<p>如果这个影院做活动，可以低价预售一年内所有的电影票，而且这个活动只做一天。于是在活动时间开始的时候，你的MySQL就挂了。你登上服务器一看，CPU消耗接近100%，但整个数据库每秒就执行不到100个事务。这是什么原因呢？</p>
-<p>这里，我就要说到死锁和死锁检测了。</p>
-<h1 id="死锁和死锁检测"><a href="#死锁和死锁检测" class="headerlink" title="死锁和死锁检测"></a>死锁和死锁检测</h1><p>当并发系统中不同线程出现循环资源依赖，涉及的线程都在等待别的线程释放资源时，就会导致这几个线程都进入无限等待的状态，称为死锁。这里我用数据库中的行锁举个例子。</p>
-<p><img src="https://flzc.gitee.io/mynote/blog/4d0eeec7b136371b79248a0aed005a52.webp"><br>这时候，事务A在等待事务B释放id=2的行锁，而事务B在等待事务A释放id=1的行锁。 事务A和事务B在互相等待对方的资源释放，就是进入了死锁状态。当出现死锁以后，有两种策略：</p>
-<ul>
-<li>一种策略是，直接进入等待，直到超时。这个超时时间可以通过参数innodb_lock_wait_timeout来设置。</li>
-<li>另一种策略是，发起死锁检测，发现死锁后，主动回滚死锁链条中的某一个事务，让其他事务得以继续执行。将参数innodb_deadlock_detect设置为on，表示开启这个逻辑。</li>
-</ul>
-<p>在InnoDB中，innodb_lock_wait_timeout的默认值是50s，意味着如果采用第一个策略，当出现死锁以后，第一个被锁住的线程要过50s才会超时退出，然后其他线程才有可能继续执行。对于在线服务来说，这个等待时间往往是无法接受的。</p>
-<p>但是，我们又不可能直接把这个时间设置成一个很小的值，比如1s。这样当出现死锁的时候，确实很快就可以解开，但如果不是死锁，而是简单的锁等待呢？所以，超时时间设置太短的话，会出现很多误伤。</p>
-<p>所以，正常情况下我们还是要采用第二种策略，即：主动死锁检测，而且innodb_deadlock_detect的默认值本身就是on。主动死锁检测在发生死锁的时候，是能够快速发现并进行处理的，但是它也是有额外负担的。</p>
-<p>你可以想象一下这个过程：每当一个事务被锁的时候，就要看看它所依赖的线程有没有被别人锁住，如此循环，最后判断是否出现了循环等待，也就是死锁。</p>
-<p>那如果是我们上面说到的所有事务都要更新同一行的场景呢？</p>
-<p>每个新来的被堵住的线程，都要判断会不会由于自己的加入导致了死锁，这是一个时间复杂度是O(n)的操作。假设有1000个并发线程要同时更新同一行，那么死锁检测操作就是100万这个量级的。虽然最终检测的结果是没有死锁，但是这期间要消耗大量的CPU资源。因此，你就会看到CPU利用率很高，但是每秒却执行不了几个事务。</p>
-<p>根据上面的分析，我们来讨论一下，怎么解决由这种热点行更新导致的性能问题呢？问题的症结在于，死锁检测要耗费大量的CPU资源。</p>
-<p><strong>一种头痛医头的方法，就是如果你能确保这个业务一定不会出现死锁，可以临时把死锁检测关掉。</strong>但是这种操作本身带有一定的风险，因为业务设计的时候一般不会把死锁当做一个严重错误，毕竟出现死锁了，就回滚，然后通过业务重试一般就没问题了，这是业务无损的。而关掉死锁检测意味着可能会出现大量的超时，这是业务有损的。</p>
-<p><strong>另一个思路是控制并发度。</strong>根据上面的分析，你会发现如果并发能够控制住，比如同一行同时最多只有10个线程在更新，那么死锁检测的成本很低，就不会出现这个问题。一个直接的想法就是，在客户端做并发控制。但是，你会很快发现这个方法不太可行，因为客户端很多。我见过一个应用，有600个客户端，这样即使每个客户端控制到只有5个并发线程，汇总到数据库服务端以后，峰值并发数也可能要达到3000。</p>
-<p>因此，这个并发控制要做在数据库服务端。如果你有中间件，可以考虑在中间件实现；如果你的团队有能修改MySQL源码的人，也可以做在MySQL里面。基本思路就是，对于相同行的更新，在进入引擎之前排队。这样在InnoDB内部就不会有大量的死锁检测工作了。</p>
-<p>可能你会问，如果团队里暂时没有数据库方面的专家，不能实现这样的方案，能不能从设计上优化这个问题呢？</p>
-<p>你可以考虑通过将一行改成逻辑上的多行来减少锁冲突。还是以影院账户为例，可以考虑放在多条记录上，比如10个记录，影院的账户总额等于这10个记录的值的总和。这样每次要给影院账户加金额的时候，随机选其中一条记录来加。这样每次冲突概率变成原来的1/10，可以减少锁等待个数，也就减少了死锁检测的CPU消耗。</p>
-<p>这个方案看上去是无损的，但其实这类方案需要根据业务逻辑做详细设计。如果账户余额可能会减少，比如退票逻辑，那么这时候就需要考虑当一部分行记录变成0的时候，代码要有特殊处理。</p>
-<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>今天，我和你介绍了MySQL的行锁，涉及了两阶段锁协议、死锁和死锁检测这两大部分内容。</p>
-<p>其中，我以两阶段协议为起点，和你一起讨论了在开发的时候如何安排正确的事务语句。这里的原则/我给你的建议是：如果你的事务中需要锁多个行，要把最可能造成锁冲突、最可能影响并发度的锁的申请时机尽量往后放。</p>
-<p>但是，调整语句顺序并不能完全避免死锁。所以我们引入了死锁和死锁检测的概念，以及提供了三个方案，来减少死锁对数据库的影响。减少死锁的主要方向，就是控制访问相同资源的并发事务量。</p>
-<p>最后，我给你留下一个问题吧。如果你要删除一个表里面的前10000行数据，有以下三种方法可以做到：</p>
-<ul>
-<li>第一种，直接执行delete from T limit 10000;</li>
-<li>第二种，在一个连接中循环执行20次 delete from T limit 500;</li>
-<li>第三种，在20个连接中同时执行delete from T limit 500。</li>
-</ul>
-<p>你会选择哪一种方法呢？为什么呢？</p>
-<p>你可以把你的思考和观点写在留言区里，我会在下一篇文章的末尾和你讨论这个问题。感谢你的收听，也欢迎你把这篇文章分享给更多的朋友一起阅读。</p>
-<h1 id="上期问题时间"><a href="#上期问题时间" class="headerlink" title="上期问题时间"></a>上期问题时间</h1><p>上期我给你留的问题是：当备库用–single-transaction做逻辑备份的时候，如果从主库的binlog传来一个DDL语句会怎么样？</p>
-<p>假设这个DDL是针对表t1的， 这里我把备份过程中几个关键的语句列出来：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">Q1:<span class="built_in">SET</span> SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ;</span><br><span class="line">Q2:<span class="built_in">START</span> TRANSACTION  WITH CONSISTENT SNAPSHOT；</span><br><span class="line">/* other tables */</span><br><span class="line">Q3:SAVEPOINT <span class="built_in">sp</span>;</span><br><span class="line">/* 时刻 <span class="number">1</span> */</span><br><span class="line">Q4:show create table `t1`;</span><br><span class="line">/* 时刻 <span class="number">2</span> */</span><br><span class="line">Q5:<span class="built_in">SELECT</span> * FROM `t1`;</span><br><span class="line">/* 时刻 <span class="number">3</span> */</span><br><span class="line">Q6:ROLLBACK TO SAVEPOINT <span class="built_in">sp</span>;</span><br><span class="line">/* 时刻 <span class="number">4</span> */</span><br><span class="line">/* other tables */</span><br></pre></td></tr></table></figure>
-
-<p>在备份开始的时候，为了确保RR（可重复读）隔离级别，再设置一次RR隔离级别(Q1);</p>
-<p>启动事务，这里用 WITH CONSISTENT SNAPSHOT确保这个语句执行完就可以得到一个一致性视图（Q2)；</p>
-<p>设置一个保存点，这个很重要（Q3）；</p>
-<p>show create 是为了拿到表结构(Q4)，然后正式导数据 （Q5），回滚到SAVEPOINT sp，在这里的作用是释放 t1的MDL锁 （Q6）。当然这部分属于“超纲”，上文正文里面都没提到。</p>
-<p>DDL从主库传过来的时间按照效果不同，我打了四个时刻。题目设定为小表，我们假定到达后，如果开始执行，则很快能够执行完成。</p>
-<p>参考答案如下：</p>
-<ol>
-<li><p>如果在Q4语句执行之前到达，现象：没有影响，备份拿到的是DDL后的表结构。</p>
-</li>
-<li><p>如果在“时刻 2”到达，则表结构被改过，Q5执行的时候，报 Table definition has changed, please retry transaction，现象：mysqldump终止；</p>
-</li>
-<li><p>如果在“时刻2”和“时刻3”之间到达，mysqldump占着t1的MDL读锁，binlog被阻塞，现象：主从延迟，直到Q6执行完成。</p>
-</li>
-<li><p>从“时刻4”开始，mysqldump释放了MDL读锁，现象：没有影响，备份拿到的是DDL前的表结构。</p>
-</li>
-</ol>
-<hr>
-<p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
-<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-        <category>MySQL</category>
-        <category>MySQL实战45讲</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-        <tag>MySQL</tag>
-        <tag>MySQL实战45讲</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>11 | 怎么给字符串字段加索引？</title>
     <url>/bc52c5bf.html</url>
     <content><![CDATA[<p>现在，几乎所有的系统都支持邮箱登录，如何在邮箱这样的字段上建立合理的索引，是我们今天要讨论的问题。</p>
@@ -683,15 +683,15 @@
 
 <p><strong>如果使用的是index1</strong>（即email整个字符串的索引结构），执行顺序是这样的：</p>
 <ol>
-<li>从index1索引树找到满足索引值是’<a href="mailto:&#122;&#104;&#97;&#x6e;&#x67;&#x73;&#115;&#x78;&#121;&#x7a;&#x40;&#x78;&#x78;&#120;&#46;&#99;&#x6f;&#x6d;">&#122;&#104;&#97;&#x6e;&#x67;&#x73;&#115;&#x78;&#121;&#x7a;&#x40;&#x78;&#x78;&#120;&#46;&#99;&#x6f;&#x6d;</a>’的这条记录，取得ID2的值；</li>
+<li>从index1索引树找到满足索引值是’<a href="mailto:&#x7a;&#x68;&#97;&#x6e;&#x67;&#115;&#115;&#120;&#x79;&#x7a;&#x40;&#x78;&#120;&#x78;&#x2e;&#x63;&#111;&#109;">&#x7a;&#x68;&#97;&#x6e;&#x67;&#115;&#115;&#120;&#x79;&#x7a;&#x40;&#x78;&#120;&#x78;&#x2e;&#x63;&#111;&#109;</a>’的这条记录，取得ID2的值；</li>
 <li>到主键上查到主键值是ID2的行，判断email的值是正确的，将这行记录加入结果集；</li>
-<li>取index1索引树上刚刚查到的位置的下一条记录，发现已经不满足email=‘<a href="mailto:&#122;&#x68;&#97;&#110;&#103;&#115;&#115;&#x78;&#x79;&#x7a;&#64;&#120;&#120;&#120;&#46;&#x63;&#111;&#x6d;">&#122;&#x68;&#97;&#110;&#103;&#115;&#115;&#x78;&#x79;&#x7a;&#64;&#120;&#120;&#120;&#46;&#x63;&#111;&#x6d;</a>’的条件了，循环结束。</li>
+<li>取index1索引树上刚刚查到的位置的下一条记录，发现已经不满足email=‘<a href="mailto:&#x7a;&#x68;&#x61;&#x6e;&#x67;&#115;&#115;&#x78;&#x79;&#122;&#x40;&#120;&#x78;&#x78;&#46;&#x63;&#111;&#x6d;">&#x7a;&#x68;&#x61;&#x6e;&#x67;&#115;&#115;&#x78;&#x79;&#122;&#x40;&#120;&#x78;&#x78;&#46;&#x63;&#111;&#x6d;</a>’的条件了，循环结束。</li>
 </ol>
 <p>这个过程中，只需要回主键索引取一次数据，所以系统认为只扫描了一行。</p>
 <p><strong>如果使用的是index2</strong>（即email(6)索引结构），执行顺序是这样的：</p>
 <ol>
 <li>从index2索引树找到满足索引值是’zhangs’的记录，找到的第一个是ID1；</li>
-<li>到主键上查到主键值是ID1的行，判断出email的值不是’<a href="mailto:&#x7a;&#104;&#x61;&#110;&#x67;&#115;&#115;&#120;&#121;&#122;&#64;&#x78;&#x78;&#x78;&#x2e;&#99;&#x6f;&#109;">&#x7a;&#104;&#x61;&#110;&#x67;&#115;&#115;&#120;&#121;&#122;&#64;&#x78;&#x78;&#x78;&#x2e;&#99;&#x6f;&#109;</a>’，这行记录丢弃；</li>
+<li>到主键上查到主键值是ID1的行，判断出email的值不是’<a href="mailto:&#x7a;&#104;&#97;&#x6e;&#103;&#115;&#115;&#x78;&#121;&#122;&#x40;&#120;&#x78;&#120;&#x2e;&#x63;&#x6f;&#x6d;">&#x7a;&#104;&#97;&#x6e;&#103;&#115;&#115;&#x78;&#121;&#122;&#x40;&#120;&#x78;&#120;&#x2e;&#x63;&#x6f;&#x6d;</a>’，这行记录丢弃；</li>
 <li>取index2上刚刚查到的位置的下一条记录，发现仍然是’zhangs’，取出ID2，再到ID索引上取整行然后判断，这次值对了，将这行记录加入结果集；</li>
 <li>重复上一步，直到在idxe2上取到的值不是’zhangs’时，循环结束。</li>
 </ol>
@@ -7316,6 +7316,188 @@
       </tags>
   </entry>
   <entry>
+    <title>33 | 我查这么多数据，会不会把数据库内存打爆</title>
+    <url>/1e50aa7c.html</url>
+    <content><![CDATA[<p>我经常会被问到这样一个问题：我的主机内存只有100G，现在要对一个200G的大表做全表扫描，会不会把数据库主机的内存用光了？</p>
+<span id="more"></span>
+
+<p>这个问题确实值得担心，被系统OOM（out of memory）可不是闹着玩的。但是，反过来想想，逻辑备份的时候，可不就是做整库扫描吗？如果这样就会把内存吃光，逻辑备份不是早就挂了？</p>
+<p>所以说，对大表做全表扫描，看来应该是没问题的。但是，这个流程到底是怎么样的呢？</p>
+<h1 id="全表扫描对server层的影响"><a href="#全表扫描对server层的影响" class="headerlink" title="全表扫描对server层的影响"></a>全表扫描对server层的影响</h1><p>假设，我们现在要对一个200G的InnoDB表db1. t，执行一个全表扫描。当然，你要把扫描结果保存在客户端，会使用类似这样的命令：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql <span class="operator">-</span>h$host <span class="operator">-</span>P$port <span class="operator">-</span>u$<span class="keyword">user</span> <span class="operator">-</span>p$pwd <span class="operator">-</span>e &quot;select * from db1.t&quot; <span class="operator">&gt;</span> $target_file</span><br></pre></td></tr></table></figure>
+
+<p>你已经知道了，InnoDB的数据是保存在主键索引上的，所以全表扫描实际上是直接扫描表t的主键索引。这条查询语句由于没有其他的判断条件，所以查到的每一行都可以直接放到结果集里面，然后返回给客户端。</p>
+<p>那么，这个“结果集”存在哪里呢？</p>
+<p>实际上，服务端并不需要保存一个完整的结果集。取数据和发数据的流程是这样的：</p>
+<ol>
+<li>获取一行，写到net_buffer中。这块内存的大小是由参数net_buffer_length定义的，默认是16k。</li>
+<li>重复获取行，直到net_buffer写满，调用网络接口发出去。</li>
+<li>如果发送成功，就清空net_buffer，然后继续取下一行，并写入net_buffer。</li>
+<li>如果发送函数返回EAGAIN或WSAEWOULDBLOCK，就表示本地网络栈（socket send buffer）写满了，进入等待。直到网络栈重新可写，再继续发送。</li>
+</ol>
+<p>这个过程对应的流程图如下所示。</p>
+<p><img src="https://static001.geekbang.org/resource/image/a0/bd/a027c300d7dde8cea4fad8f34b670ebd.jpg"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图1 查询结果发送流程</b>
+    </div>
+    <br>
+</center>
+
+<p>从这个流程中，你可以看到：</p>
+<ol>
+<li>一个查询在发送过程中，占用的MySQL内部的内存最大就是net_buffer_length这么大，并不会达到200G；</li>
+<li>socket send buffer 也不可能达到200G（默认定义/proc/sys/net/core/wmem_default），如果socket send buffer被写满，就会暂停读数据的流程。</li>
+</ol>
+<p>也就是说，<strong>MySQL是“边读边发的”</strong>，这个概念很重要。这就意味着，如果客户端接收得慢，会导致MySQL服务端由于结果发不出去，这个事务的执行时间变长。</p>
+<p>比如下面这个状态，就是我故意让客户端不去读socket receive buffer中的内容，然后在服务端show processlist看到的结果。</p>
+<p><img src="https://static001.geekbang.org/resource/image/18/c3/183a704d4495bebbc13c524695b5b6c3.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图2 服务端发送阻塞</b>
+    </div>
+    <br>
+</center>
+
+<p>如果你看到State的值一直处于<strong>“Sending to client”</strong>，就表示服务器端的网络栈写满了。</p>
+<p>我在上一篇文章中曾提到，如果客户端使用–quick参数，会使用mysql_use_result方法。这个方法是读一行处理一行。你可以想象一下，假设有一个业务的逻辑比较复杂，每读一行数据以后要处理的逻辑如果很慢，就会导致客户端要过很久才会去取下一行数据，可能就会出现如图2所示的这种情况。</p>
+<p>因此，<strong>对于正常的线上业务来说，如果一个查询的返回结果不会很多的话，我都建议你使用mysql_store_result这个接口，直接把查询结果保存到本地内存。</strong></p>
+<p>当然前提是查询返回结果不多。在<a href="https://time.geekbang.org/column/article/78427">第30篇文章</a>评论区，有同学说到自己因为执行了一个大查询导致客户端占用内存近20G，这种情况下就需要改用mysql_use_result接口了。</p>
+<p>另一方面，如果你在自己负责维护的MySQL里看到很多个线程都处于“Sending to client”这个状态，就意味着你要让业务开发同学优化查询结果，并评估这么多的返回结果是否合理。</p>
+<p>而如果要快速减少处于这个状态的线程的话，将net_buffer_length参数设置为一个更大的值是一个可选方案。</p>
+<p>与“Sending to client”长相很类似的一个状态是 <strong>“Sending data”</strong> ，这是一个经常被误会的问题。有同学问我说，在自己维护的实例上看到很多查询语句的状态是“Sending data”，但查看网络也没什么问题啊，为什么Sending data要这么久？</p>
+<p>实际上，一个查询语句的状态变化是这样的（注意：这里，我略去了其他无关的状态）：</p>
+<ul>
+<li>MySQL查询语句进入执行阶段后，首先把状态设置成“Sending data”；</li>
+<li>然后，发送执行结果的列相关的信息（meta data) 给客户端；</li>
+<li>再继续执行语句的流程；</li>
+<li>执行完成后，把状态设置成空字符串。</li>
+</ul>
+<p>也就是说，“Sending data”并不一定是指“正在发送数据”，而可能是处于执行器过程中的任意阶段。比如，你可以构造一个锁等待的场景，就能看到Sending data状态。</p>
+<p><img src="https://static001.geekbang.org/resource/image/76/4b/7640b0d82965bf8b305514f30425424b.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图3 读全表被锁</b>
+    </div>
+    <br>
+</center>
+
+<p><img src="https://static001.geekbang.org/resource/image/84/c0/84533515cf36be65582309fbb85e13c0.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 4 Sending data状态</b>
+    </div>
+    <br>
+</center>
+
+<p>可以看到，session B明显是在等锁，状态显示为Sending data。</p>
+<p>也就是说，仅当一个线程处于“等待客户端接收结果”的状态，才会显示”Sending to client”；而如果显示成“Sending data”，它的意思只是“正在执行”。</p>
+<p>现在你知道了，查询的结果是分段发给客户端的，因此扫描全表，查询返回大量的数据，并不会把内存打爆。</p>
+<p>在server层的处理逻辑我们都清楚了，在InnoDB引擎里面又是怎么处理的呢？ 扫描全表会不会对引擎系统造成影响呢？</p>
+<h1 id="全表扫描对InnoDB的影响"><a href="#全表扫描对InnoDB的影响" class="headerlink" title="全表扫描对InnoDB的影响"></a>全表扫描对InnoDB的影响</h1><p>在<a href="https://time.geekbang.org/column/article/68633">第2</a>和<a href="https://time.geekbang.org/column/article/73161">第15篇</a>文章中，我介绍WAL机制的时候，和你分析了InnoDB内存的一个作用，是保存更新的结果，再配合redo log，就避免了随机写盘。</p>
+<p>内存的数据页是在Buffer Pool (BP)中管理的，在WAL里Buffer Pool 起到了加速更新的作用。而实际上，Buffer Pool 还有一个更重要的作用，就是加速查询。</p>
+<p>在第2篇文章的评论区有同学问道，由于有WAL机制，当事务提交的时候，磁盘上的数据页是旧的，那如果这时候马上有一个查询要来读这个数据页，是不是要马上把redo log应用到数据页呢？</p>
+<p>答案是不需要。因为这时候内存数据页的结果是最新的，直接读内存页就可以了。你看，这时候查询根本不需要读磁盘，直接从内存拿结果，速度是很快的。所以说，Buffer Pool还有加速查询的作用。</p>
+<p>而Buffer Pool对查询的加速效果，依赖于一个重要的指标，即：<strong>内存命中率</strong>。</p>
+<p>你可以在show engine innodb status结果中，查看一个系统当前的BP命中率。一般情况下，一个稳定服务的线上系统，要保证响应时间符合要求的话，内存命中率要在99%以上。</p>
+<p>执行show engine innodb status ，可以看到“Buffer pool hit rate”字样，显示的就是当前的命中率。比如图5这个命中率，就是99.0%。</p>
+<p><img src="https://static001.geekbang.org/resource/image/c7/2e/c70a95ee99826812c292c46de508982e.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图5 show engine innodb status显示内存命中率</b>
+    </div>
+    <br>
+</center>
+
+<p>如果所有查询需要的数据页都能够直接从内存得到，那是最好的，对应的命中率就是100%。但，这在实际生产上是很难做到的。</p>
+<p>InnoDB Buffer Pool的大小是由参数 innodb_buffer_pool_size确定的，一般建议设置成可用物理内存的60%~80%。</p>
+<p>在大约十年前，单机的数据量是上百个G，而物理内存是几个G；现在虽然很多服务器都能有128G甚至更高的内存，但是单机的数据量却达到了T级别。</p>
+<p>所以，innodb_buffer_pool_size小于磁盘的数据量是很常见的。如果一个 Buffer Pool满了，而又要从磁盘读入一个数据页，那肯定是要淘汰一个旧数据页的。</p>
+<p>InnoDB内存管理用的是最近最少使用 (Least Recently Used, LRU)算法，这个算法的核心就是淘汰最久未使用的数据。</p>
+<p>下图是一个LRU算法的基本模型。</p>
+<p><img src="https://static001.geekbang.org/resource/image/e0/65/e0ac92febac50a5d881f1188ea5bfd65.jpg"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图6 基本LRU算法</b>
+    </div>
+    <br>
+</center>
+
+<p>InnoDB管理Buffer Pool的LRU算法，是用链表来实现的。</p>
+<ol>
+<li>在图6的状态1里，链表头部是P1，表示P1是最近刚刚被访问过的数据页；假设内存里只能放下这么多数据页；</li>
+<li>这时候有一个读请求访问P3，因此变成状态2，P3被移到最前面；</li>
+<li>状态3表示，这次访问的数据页是不存在于链表中的，所以需要在Buffer Pool中新申请一个数据页Px，加到链表头部。但是由于内存已经满了，不能申请新的内存。于是，会清空链表末尾Pm这个数据页的内存，存入Px的内容，然后放到链表头部。</li>
+<li>从效果上看，就是最久没有被访问的数据页Pm，被淘汰了。</li>
+</ol>
+<p>这个算法乍一看上去没什么问题，但是如果考虑到要做一个全表扫描，会不会有问题呢？</p>
+<p>假设按照这个算法，我们要扫描一个200G的表，而这个表是一个历史数据表，平时没有业务访问它。</p>
+<p>那么，按照这个算法扫描的话，就会把当前的Buffer Pool里的数据全部淘汰掉，存入扫描过程中访问到的数据页的内容。也就是说Buffer Pool里面主要放的是这个历史数据表的数据。</p>
+<p>对于一个正在做业务服务的库，这可不妙。你会看到，Buffer Pool的内存命中率急剧下降，磁盘压力增加，SQL语句响应变慢。</p>
+<p>所以，InnoDB不能直接使用这个LRU算法。实际上，InnoDB对LRU算法做了改进。</p>
+<p><img src="https://static001.geekbang.org/resource/image/25/9e/25e18920dd204cf99eec2d62755fe99e.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 7 改进的LRU算法</b>
+    </div>
+    <br>
+</center>
+
+<p>在InnoDB实现上，按照5:3的比例把整个LRU链表分成了young区域和old区域。图中LRU_old指向的就是old区域的第一个位置，是整个链表的5/8处。也就是说，靠近链表头部的5/8是young区域，靠近链表尾部的3/8是old区域。</p>
+<p>改进后的LRU算法执行流程变成了下面这样。</p>
+<ol>
+<li>图7中状态1，要访问数据页P3，由于P3在young区域，因此和优化前的LRU算法一样，将其移到链表头部，变成状态2。</li>
+<li>之后要访问一个新的不存在于当前链表的数据页，这时候依然是淘汰掉数据页Pm，但是新插入的数据页Px，是放在LRU_old处。</li>
+<li>处于old区域的数据页，每次被访问的时候都要做下面这个判断：<ul>
+<li>若这个数据页在LRU链表中存在的时间超过了1秒，就把它移动到链表头部；</li>
+<li>如果这个数据页在LRU链表中存在的时间短于1秒，位置保持不变。1秒这个时间，是由参数innodb_old_blocks_time控制的。其默认值是1000，单位毫秒。</li>
+</ul>
+</li>
+</ol>
+<p>这个策略，就是为了处理类似全表扫描的操作量身定制的。还是以刚刚的扫描200G的历史数据表为例，我们看看改进后的LRU算法的操作逻辑：</p>
+<ol>
+<li>扫描过程中，需要新插入的数据页，都被放到old区域;</li>
+<li>一个数据页里面有多条记录，这个数据页会被多次访问到，但由于是顺序扫描，这个数据页第一次被访问和最后一次被访问的时间间隔不会超过1秒，因此还是会被保留在old区域；</li>
+<li>再继续扫描后续的数据，之前的这个数据页之后也不会再被访问到，于是始终没有机会移到链表头部（也就是young区域），很快就会被淘汰出去。</li>
+</ol>
+<p>可以看到，这个策略最大的收益，就是在扫描这个大表的过程中，虽然也用到了Buffer Pool，但是对young区域完全没有影响，从而保证了Buffer Pool响应正常业务的查询命中率。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>今天，我用“大查询会不会把内存用光”这个问题，和你介绍了MySQL的查询结果，发送给客户端的过程。</p>
+<p>由于MySQL采用的是边算边发的逻辑，因此对于数据量很大的查询结果来说，不会在server端保存完整的结果集。所以，如果客户端读结果不及时，会堵住MySQL的查询过程，但是不会把内存打爆。</p>
+<p>而对于InnoDB引擎内部，由于有淘汰策略，大查询也不会导致内存暴涨。并且，由于InnoDB对LRU算法做了改进，冷数据的全表扫描，对Buffer Pool的影响也能做到可控。</p>
+<p>当然，我们前面文章有说过，全表扫描还是比较耗费IO资源的，所以业务高峰期还是不能直接在线上主库执行全表扫描的。</p>
+<p>最后，我给你留一个思考题吧。</p>
+<p>我在文章中说到，如果由于客户端压力太大，迟迟不能接收结果，会导致MySQL无法发送结果而影响语句执行。但，这还不是最糟糕的情况。</p>
+<p>你可以设想出由于客户端的性能问题，对数据库影响更严重的例子吗？或者你是否经历过这样的场景？你又是怎么优化的？</p>
+<p>你可以把你的经验和分析写在留言区，我会在下一篇文章的末尾和你讨论这个问题。感谢你的收听，也欢迎你把这篇文章分享给更多的朋友一起阅读。</p>
+<h1 id="上期问题时间"><a href="#上期问题时间" class="headerlink" title="上期问题时间"></a>上期问题时间</h1><p>上期的问题是，如果一个事务被kill之后，持续处于回滚状态，从恢复速度的角度看，你是应该重启等它执行结束，还是应该强行重启整个MySQL进程。</p>
+<p>因为重启之后该做的回滚动作还是不能少的，所以从恢复速度的角度来说，应该让它自己结束。</p>
+<p>当然，如果这个语句可能会占用别的锁，或者由于占用IO资源过多，从而影响到了别的语句执行的话，就需要先做主备切换，切到新主库提供服务。</p>
+<p>切换之后别的线程都断开了连接，自动停止执行。接下来还是等它自己执行完成。这个操作属于我们在文章中说到的，减少系统压力，加速终止逻辑。</p>
+<p>评论区留言点赞板：</p>
+<blockquote>
+<p>@HuaMax 的回答中提到了对其他线程的影响；<br>@夹心面包 @Ryoma @曾剑 同学提到了重启后依然继续做回滚操作的逻辑。</p>
+</blockquote>
+<p>@700：<br>老师，您好。根据文章内容，提炼如下信息：<br>如果你看到 State 的值一直处于“Sending to client”，就表示服务器端的网络栈写满了。<br>如何处理？<br>1)使用 mysql_store_result 这个接口，直接把查询结果保存到本地内存。<br>2)优化查询结果，并评估这么多的返回结果是否合理。<br>3)而如果要快速减少处于这个状态的线程的话，将 net_buffer_length 参数设置为一个更大的值是一个可选方案。<br>对于第3)方案不是很懂，“Sending to client” 表示服务器端的网路栈写满了，那不是应该加大 socket send buffer 吗？跟加大 net_buffer_length 有什么关系？net_buffer_length 加再大，但 socket send buffer 很小的话，网络栈不还是处于写满状态？</p>
+<p>@作者 回复：<br>好问题👍 很好的思考👍</p>
+<p>是这样的，net_buffer_length 的最大值是 1G，这个值比 socket send buffer大（一般是几M）</p>
+<p>比如假设一个业务，他的平均查询结果都是10M （当然这个业务有有问题，最终是要通过业务解决）</p>
+<p>但是如果我把net_buffer_length 改成10M，就不会有“Sending to client” 的情况。虽然网络栈还是慢慢发的，但是那些没发完的都缓存在net_buffer中，对于执行器来说，都是“已经写出去了”。</p>
+<hr>
+<p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
+<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+        <category>MySQL</category>
+        <category>MySQL实战45讲</category>
+      </categories>
+      <tags>
+        <tag>数据库</tag>
+        <tag>MySQL</tag>
+        <tag>MySQL实战45讲</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>34 | 到底可不可以使用join</title>
     <url>/6cf4ff93.html</url>
     <content><![CDATA[<p>在实际生产中，关于join语句使用的问题，一般会集中在以下两类：</p>
@@ -7527,188 +7709,6 @@
 <blockquote>
 <p>@老杨同志 提到了更新之间会互相等锁的问题。同一个事务，更新之后要尽快提交，不要做没必要的查询，尤其是不要执行需要返回大量数据的查询；<br>@长杰 同学提到了undo表空间变大，db服务堵塞，服务端磁盘空间不足的例子。</p>
 </blockquote>
-<hr>
-<p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
-<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-        <category>MySQL</category>
-        <category>MySQL实战45讲</category>
-      </categories>
-      <tags>
-        <tag>数据库</tag>
-        <tag>MySQL</tag>
-        <tag>MySQL实战45讲</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>33 | 我查这么多数据，会不会把数据库内存打爆</title>
-    <url>/1e50aa7c.html</url>
-    <content><![CDATA[<p>我经常会被问到这样一个问题：我的主机内存只有100G，现在要对一个200G的大表做全表扫描，会不会把数据库主机的内存用光了？</p>
-<span id="more"></span>
-
-<p>这个问题确实值得担心，被系统OOM（out of memory）可不是闹着玩的。但是，反过来想想，逻辑备份的时候，可不就是做整库扫描吗？如果这样就会把内存吃光，逻辑备份不是早就挂了？</p>
-<p>所以说，对大表做全表扫描，看来应该是没问题的。但是，这个流程到底是怎么样的呢？</p>
-<h1 id="全表扫描对server层的影响"><a href="#全表扫描对server层的影响" class="headerlink" title="全表扫描对server层的影响"></a>全表扫描对server层的影响</h1><p>假设，我们现在要对一个200G的InnoDB表db1. t，执行一个全表扫描。当然，你要把扫描结果保存在客户端，会使用类似这样的命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">mysql <span class="operator">-</span>h$host <span class="operator">-</span>P$port <span class="operator">-</span>u$<span class="keyword">user</span> <span class="operator">-</span>p$pwd <span class="operator">-</span>e &quot;select * from db1.t&quot; <span class="operator">&gt;</span> $target_file</span><br></pre></td></tr></table></figure>
-
-<p>你已经知道了，InnoDB的数据是保存在主键索引上的，所以全表扫描实际上是直接扫描表t的主键索引。这条查询语句由于没有其他的判断条件，所以查到的每一行都可以直接放到结果集里面，然后返回给客户端。</p>
-<p>那么，这个“结果集”存在哪里呢？</p>
-<p>实际上，服务端并不需要保存一个完整的结果集。取数据和发数据的流程是这样的：</p>
-<ol>
-<li>获取一行，写到net_buffer中。这块内存的大小是由参数net_buffer_length定义的，默认是16k。</li>
-<li>重复获取行，直到net_buffer写满，调用网络接口发出去。</li>
-<li>如果发送成功，就清空net_buffer，然后继续取下一行，并写入net_buffer。</li>
-<li>如果发送函数返回EAGAIN或WSAEWOULDBLOCK，就表示本地网络栈（socket send buffer）写满了，进入等待。直到网络栈重新可写，再继续发送。</li>
-</ol>
-<p>这个过程对应的流程图如下所示。</p>
-<p><img src="https://static001.geekbang.org/resource/image/a0/bd/a027c300d7dde8cea4fad8f34b670ebd.jpg"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图1 查询结果发送流程</b>
-    </div>
-    <br>
-</center>
-
-<p>从这个流程中，你可以看到：</p>
-<ol>
-<li>一个查询在发送过程中，占用的MySQL内部的内存最大就是net_buffer_length这么大，并不会达到200G；</li>
-<li>socket send buffer 也不可能达到200G（默认定义/proc/sys/net/core/wmem_default），如果socket send buffer被写满，就会暂停读数据的流程。</li>
-</ol>
-<p>也就是说，<strong>MySQL是“边读边发的”</strong>，这个概念很重要。这就意味着，如果客户端接收得慢，会导致MySQL服务端由于结果发不出去，这个事务的执行时间变长。</p>
-<p>比如下面这个状态，就是我故意让客户端不去读socket receive buffer中的内容，然后在服务端show processlist看到的结果。</p>
-<p><img src="https://static001.geekbang.org/resource/image/18/c3/183a704d4495bebbc13c524695b5b6c3.png"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图2 服务端发送阻塞</b>
-    </div>
-    <br>
-</center>
-
-<p>如果你看到State的值一直处于<strong>“Sending to client”</strong>，就表示服务器端的网络栈写满了。</p>
-<p>我在上一篇文章中曾提到，如果客户端使用–quick参数，会使用mysql_use_result方法。这个方法是读一行处理一行。你可以想象一下，假设有一个业务的逻辑比较复杂，每读一行数据以后要处理的逻辑如果很慢，就会导致客户端要过很久才会去取下一行数据，可能就会出现如图2所示的这种情况。</p>
-<p>因此，<strong>对于正常的线上业务来说，如果一个查询的返回结果不会很多的话，我都建议你使用mysql_store_result这个接口，直接把查询结果保存到本地内存。</strong></p>
-<p>当然前提是查询返回结果不多。在<a href="https://time.geekbang.org/column/article/78427">第30篇文章</a>评论区，有同学说到自己因为执行了一个大查询导致客户端占用内存近20G，这种情况下就需要改用mysql_use_result接口了。</p>
-<p>另一方面，如果你在自己负责维护的MySQL里看到很多个线程都处于“Sending to client”这个状态，就意味着你要让业务开发同学优化查询结果，并评估这么多的返回结果是否合理。</p>
-<p>而如果要快速减少处于这个状态的线程的话，将net_buffer_length参数设置为一个更大的值是一个可选方案。</p>
-<p>与“Sending to client”长相很类似的一个状态是 <strong>“Sending data”</strong> ，这是一个经常被误会的问题。有同学问我说，在自己维护的实例上看到很多查询语句的状态是“Sending data”，但查看网络也没什么问题啊，为什么Sending data要这么久？</p>
-<p>实际上，一个查询语句的状态变化是这样的（注意：这里，我略去了其他无关的状态）：</p>
-<ul>
-<li>MySQL查询语句进入执行阶段后，首先把状态设置成“Sending data”；</li>
-<li>然后，发送执行结果的列相关的信息（meta data) 给客户端；</li>
-<li>再继续执行语句的流程；</li>
-<li>执行完成后，把状态设置成空字符串。</li>
-</ul>
-<p>也就是说，“Sending data”并不一定是指“正在发送数据”，而可能是处于执行器过程中的任意阶段。比如，你可以构造一个锁等待的场景，就能看到Sending data状态。</p>
-<p><img src="https://static001.geekbang.org/resource/image/76/4b/7640b0d82965bf8b305514f30425424b.png"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图3 读全表被锁</b>
-    </div>
-    <br>
-</center>
-
-<p><img src="https://static001.geekbang.org/resource/image/84/c0/84533515cf36be65582309fbb85e13c0.png"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图 4 Sending data状态</b>
-    </div>
-    <br>
-</center>
-
-<p>可以看到，session B明显是在等锁，状态显示为Sending data。</p>
-<p>也就是说，仅当一个线程处于“等待客户端接收结果”的状态，才会显示”Sending to client”；而如果显示成“Sending data”，它的意思只是“正在执行”。</p>
-<p>现在你知道了，查询的结果是分段发给客户端的，因此扫描全表，查询返回大量的数据，并不会把内存打爆。</p>
-<p>在server层的处理逻辑我们都清楚了，在InnoDB引擎里面又是怎么处理的呢？ 扫描全表会不会对引擎系统造成影响呢？</p>
-<h1 id="全表扫描对InnoDB的影响"><a href="#全表扫描对InnoDB的影响" class="headerlink" title="全表扫描对InnoDB的影响"></a>全表扫描对InnoDB的影响</h1><p>在<a href="https://time.geekbang.org/column/article/68633">第2</a>和<a href="https://time.geekbang.org/column/article/73161">第15篇</a>文章中，我介绍WAL机制的时候，和你分析了InnoDB内存的一个作用，是保存更新的结果，再配合redo log，就避免了随机写盘。</p>
-<p>内存的数据页是在Buffer Pool (BP)中管理的，在WAL里Buffer Pool 起到了加速更新的作用。而实际上，Buffer Pool 还有一个更重要的作用，就是加速查询。</p>
-<p>在第2篇文章的评论区有同学问道，由于有WAL机制，当事务提交的时候，磁盘上的数据页是旧的，那如果这时候马上有一个查询要来读这个数据页，是不是要马上把redo log应用到数据页呢？</p>
-<p>答案是不需要。因为这时候内存数据页的结果是最新的，直接读内存页就可以了。你看，这时候查询根本不需要读磁盘，直接从内存拿结果，速度是很快的。所以说，Buffer Pool还有加速查询的作用。</p>
-<p>而Buffer Pool对查询的加速效果，依赖于一个重要的指标，即：<strong>内存命中率</strong>。</p>
-<p>你可以在show engine innodb status结果中，查看一个系统当前的BP命中率。一般情况下，一个稳定服务的线上系统，要保证响应时间符合要求的话，内存命中率要在99%以上。</p>
-<p>执行show engine innodb status ，可以看到“Buffer pool hit rate”字样，显示的就是当前的命中率。比如图5这个命中率，就是99.0%。</p>
-<p><img src="https://static001.geekbang.org/resource/image/c7/2e/c70a95ee99826812c292c46de508982e.png"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图5 show engine innodb status显示内存命中率</b>
-    </div>
-    <br>
-</center>
-
-<p>如果所有查询需要的数据页都能够直接从内存得到，那是最好的，对应的命中率就是100%。但，这在实际生产上是很难做到的。</p>
-<p>InnoDB Buffer Pool的大小是由参数 innodb_buffer_pool_size确定的，一般建议设置成可用物理内存的60%~80%。</p>
-<p>在大约十年前，单机的数据量是上百个G，而物理内存是几个G；现在虽然很多服务器都能有128G甚至更高的内存，但是单机的数据量却达到了T级别。</p>
-<p>所以，innodb_buffer_pool_size小于磁盘的数据量是很常见的。如果一个 Buffer Pool满了，而又要从磁盘读入一个数据页，那肯定是要淘汰一个旧数据页的。</p>
-<p>InnoDB内存管理用的是最近最少使用 (Least Recently Used, LRU)算法，这个算法的核心就是淘汰最久未使用的数据。</p>
-<p>下图是一个LRU算法的基本模型。</p>
-<p><img src="https://static001.geekbang.org/resource/image/e0/65/e0ac92febac50a5d881f1188ea5bfd65.jpg"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图6 基本LRU算法</b>
-    </div>
-    <br>
-</center>
-
-<p>InnoDB管理Buffer Pool的LRU算法，是用链表来实现的。</p>
-<ol>
-<li>在图6的状态1里，链表头部是P1，表示P1是最近刚刚被访问过的数据页；假设内存里只能放下这么多数据页；</li>
-<li>这时候有一个读请求访问P3，因此变成状态2，P3被移到最前面；</li>
-<li>状态3表示，这次访问的数据页是不存在于链表中的，所以需要在Buffer Pool中新申请一个数据页Px，加到链表头部。但是由于内存已经满了，不能申请新的内存。于是，会清空链表末尾Pm这个数据页的内存，存入Px的内容，然后放到链表头部。</li>
-<li>从效果上看，就是最久没有被访问的数据页Pm，被淘汰了。</li>
-</ol>
-<p>这个算法乍一看上去没什么问题，但是如果考虑到要做一个全表扫描，会不会有问题呢？</p>
-<p>假设按照这个算法，我们要扫描一个200G的表，而这个表是一个历史数据表，平时没有业务访问它。</p>
-<p>那么，按照这个算法扫描的话，就会把当前的Buffer Pool里的数据全部淘汰掉，存入扫描过程中访问到的数据页的内容。也就是说Buffer Pool里面主要放的是这个历史数据表的数据。</p>
-<p>对于一个正在做业务服务的库，这可不妙。你会看到，Buffer Pool的内存命中率急剧下降，磁盘压力增加，SQL语句响应变慢。</p>
-<p>所以，InnoDB不能直接使用这个LRU算法。实际上，InnoDB对LRU算法做了改进。</p>
-<p><img src="https://static001.geekbang.org/resource/image/25/9e/25e18920dd204cf99eec2d62755fe99e.png"></p>
-<center>
-    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
-        <b>图 7 改进的LRU算法</b>
-    </div>
-    <br>
-</center>
-
-<p>在InnoDB实现上，按照5:3的比例把整个LRU链表分成了young区域和old区域。图中LRU_old指向的就是old区域的第一个位置，是整个链表的5/8处。也就是说，靠近链表头部的5/8是young区域，靠近链表尾部的3/8是old区域。</p>
-<p>改进后的LRU算法执行流程变成了下面这样。</p>
-<ol>
-<li>图7中状态1，要访问数据页P3，由于P3在young区域，因此和优化前的LRU算法一样，将其移到链表头部，变成状态2。</li>
-<li>之后要访问一个新的不存在于当前链表的数据页，这时候依然是淘汰掉数据页Pm，但是新插入的数据页Px，是放在LRU_old处。</li>
-<li>处于old区域的数据页，每次被访问的时候都要做下面这个判断：<ul>
-<li>若这个数据页在LRU链表中存在的时间超过了1秒，就把它移动到链表头部；</li>
-<li>如果这个数据页在LRU链表中存在的时间短于1秒，位置保持不变。1秒这个时间，是由参数innodb_old_blocks_time控制的。其默认值是1000，单位毫秒。</li>
-</ul>
-</li>
-</ol>
-<p>这个策略，就是为了处理类似全表扫描的操作量身定制的。还是以刚刚的扫描200G的历史数据表为例，我们看看改进后的LRU算法的操作逻辑：</p>
-<ol>
-<li>扫描过程中，需要新插入的数据页，都被放到old区域;</li>
-<li>一个数据页里面有多条记录，这个数据页会被多次访问到，但由于是顺序扫描，这个数据页第一次被访问和最后一次被访问的时间间隔不会超过1秒，因此还是会被保留在old区域；</li>
-<li>再继续扫描后续的数据，之前的这个数据页之后也不会再被访问到，于是始终没有机会移到链表头部（也就是young区域），很快就会被淘汰出去。</li>
-</ol>
-<p>可以看到，这个策略最大的收益，就是在扫描这个大表的过程中，虽然也用到了Buffer Pool，但是对young区域完全没有影响，从而保证了Buffer Pool响应正常业务的查询命中率。</p>
-<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>今天，我用“大查询会不会把内存用光”这个问题，和你介绍了MySQL的查询结果，发送给客户端的过程。</p>
-<p>由于MySQL采用的是边算边发的逻辑，因此对于数据量很大的查询结果来说，不会在server端保存完整的结果集。所以，如果客户端读结果不及时，会堵住MySQL的查询过程，但是不会把内存打爆。</p>
-<p>而对于InnoDB引擎内部，由于有淘汰策略，大查询也不会导致内存暴涨。并且，由于InnoDB对LRU算法做了改进，冷数据的全表扫描，对Buffer Pool的影响也能做到可控。</p>
-<p>当然，我们前面文章有说过，全表扫描还是比较耗费IO资源的，所以业务高峰期还是不能直接在线上主库执行全表扫描的。</p>
-<p>最后，我给你留一个思考题吧。</p>
-<p>我在文章中说到，如果由于客户端压力太大，迟迟不能接收结果，会导致MySQL无法发送结果而影响语句执行。但，这还不是最糟糕的情况。</p>
-<p>你可以设想出由于客户端的性能问题，对数据库影响更严重的例子吗？或者你是否经历过这样的场景？你又是怎么优化的？</p>
-<p>你可以把你的经验和分析写在留言区，我会在下一篇文章的末尾和你讨论这个问题。感谢你的收听，也欢迎你把这篇文章分享给更多的朋友一起阅读。</p>
-<h1 id="上期问题时间"><a href="#上期问题时间" class="headerlink" title="上期问题时间"></a>上期问题时间</h1><p>上期的问题是，如果一个事务被kill之后，持续处于回滚状态，从恢复速度的角度看，你是应该重启等它执行结束，还是应该强行重启整个MySQL进程。</p>
-<p>因为重启之后该做的回滚动作还是不能少的，所以从恢复速度的角度来说，应该让它自己结束。</p>
-<p>当然，如果这个语句可能会占用别的锁，或者由于占用IO资源过多，从而影响到了别的语句执行的话，就需要先做主备切换，切到新主库提供服务。</p>
-<p>切换之后别的线程都断开了连接，自动停止执行。接下来还是等它自己执行完成。这个操作属于我们在文章中说到的，减少系统压力，加速终止逻辑。</p>
-<p>评论区留言点赞板：</p>
-<blockquote>
-<p>@HuaMax 的回答中提到了对其他线程的影响；<br>@夹心面包 @Ryoma @曾剑 同学提到了重启后依然继续做回滚操作的逻辑。</p>
-</blockquote>
-<p>@700：<br>老师，您好。根据文章内容，提炼如下信息：<br>如果你看到 State 的值一直处于“Sending to client”，就表示服务器端的网络栈写满了。<br>如何处理？<br>1)使用 mysql_store_result 这个接口，直接把查询结果保存到本地内存。<br>2)优化查询结果，并评估这么多的返回结果是否合理。<br>3)而如果要快速减少处于这个状态的线程的话，将 net_buffer_length 参数设置为一个更大的值是一个可选方案。<br>对于第3)方案不是很懂，“Sending to client” 表示服务器端的网路栈写满了，那不是应该加大 socket send buffer 吗？跟加大 net_buffer_length 有什么关系？net_buffer_length 加再大，但 socket send buffer 很小的话，网络栈不还是处于写满状态？</p>
-<p>@作者 回复：<br>好问题👍 很好的思考👍</p>
-<p>是这样的，net_buffer_length 的最大值是 1G，这个值比 socket send buffer大（一般是几M）</p>
-<p>比如假设一个业务，他的平均查询结果都是10M （当然这个业务有有问题，最终是要通过业务解决）</p>
-<p>但是如果我把net_buffer_length 改成10M，就不会有“Sending to client” 的情况。虽然网络栈还是慢慢发的，但是那些没发完的都缓存在net_buffer中，对于执行器来说，都是“已经写出去了”。</p>
 <hr>
 <p>《MySQL实战45讲》原文：<a href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
 <p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
