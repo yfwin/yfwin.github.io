@@ -2999,102 +2999,16 @@ windows 系统设置完要刷新一下 dns，</p>
  <code>Node.js</code>  实现异步的核心是事件，也就是说，它把每一个任务都当成 <code>事件</code> 来处理，然后通过 <code>Event Loop</code>  模拟了异步的效果，为了更具体、更清晰的理解和接受这个事实，下面我们用伪代码来描述一下其工作原理 。</p>
 <h3 id="1定义事件队列"><a class="anchor" href="#1定义事件队列">#</a> 【1】定义事件队列</h3>
 <p>既然是队列，那就是一个先进先出 ( <code>FIFO</code> ) 的数据结构，我们用 <code>JS数组</code> 来描述，如下：</p>
-<pre><code class="language-JavaScript">/**
- * 定义事件队列
- * 入队：push()
- * 出队：shift()
- * 空队列：length == 0
- */
-globalEventQueue: []
-</code></pre>
-<p>我们利用数组来模拟队列结构：数组的第一个元素是队列的头部，数组的最后一个元素是队列的尾部，push () 就是在队列尾部插入一个元素，shift () 就是从队列头部弹出一个元素。这样就实现了一个简单的事件队列。</p>
+<figure class="highlight js"><figcaption data-lang="JavaScript"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token comment">/**</pre></td></tr><tr><td data-num="2"></td><td><pre> * 定义事件队列</pre></td></tr><tr><td data-num="3"></td><td><pre> * 入队：push ()</pre></td></tr><tr><td data-num="4"></td><td><pre> * 出队：shift ()</pre></td></tr><tr><td data-num="5"></td><td><pre> * 空队列：length == 0</pre></td></tr><tr><td data-num="6"></td><td><pre> */</span></pre></td></tr><tr><td data-num="7"></td><td><pre>globalEventQueue<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span></pre></td></tr></table></figure><p>我们利用数组来模拟队列结构：数组的第一个元素是队列的头部，数组的最后一个元素是队列的尾部，push () 就是在队列尾部插入一个元素，shift () 就是从队列头部弹出一个元素。这样就实现了一个简单的事件队列。</p>
 <h3 id="2定义接收请求入口"><a class="anchor" href="#2定义接收请求入口">#</a> 【2】定义接收请求入口</h3>
 <p>每一个请求都会被拦截并进入处理函数，如下所示：</p>
-<pre><code class="language-JavaScript">/**
- * 接收用户请求
- * 每一个请求都会进入到该函数
- * 传递参数request和response
- */
-processHttpRequest: function(request, response) &#123;
-
-  // 定义一个事件对象
-  var event = createEvent(&#123;
-    params: request.params, // 传递请求参数
-    result: null, // 存放请求结果
-    callback: function () &#123; &#125; // 指定回调函数
-  &#125;);
-
-  // 在队列的尾部添加该事件  
-  globalEventQueue.push(event);
-&#125;
-</code></pre>
-<p>这个函数很简单，就是把用户的请求包装成事件，放到队列里，然后继续接收其他请求。</p>
+<figure class="highlight js"><figcaption data-lang="JavaScript"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token comment">/**</pre></td></tr><tr><td data-num="2"></td><td><pre> * 接收用户请求</pre></td></tr><tr><td data-num="3"></td><td><pre> * 每一个请求都会进入到该函数</pre></td></tr><tr><td data-num="4"></td><td><pre> * 传递参数 request 和 response</pre></td></tr><tr><td data-num="5"></td><td><pre> */</span></pre></td></tr><tr><td data-num="6"></td><td><pre><span class="token function-variable function">processHttpRequest</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">request<span class="token punctuation">,</span> response</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="7"></td><td><pre></pre></td></tr><tr><td data-num="8"></td><td><pre>  <span class="token comment">// 定义一个事件对象</span></pre></td></tr><tr><td data-num="9"></td><td><pre>  <span class="token keyword">var</span> event <span class="token operator">=</span> <span class="token function">createEvent</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="10"></td><td><pre>    params<span class="token operator">:</span> request<span class="token punctuation">.</span>params<span class="token punctuation">,</span> <span class="token comment">// 传递请求参数</span></pre></td></tr><tr><td data-num="11"></td><td><pre>    result<span class="token operator">:</span> <span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token comment">// 存放请求结果</span></pre></td></tr><tr><td data-num="12"></td><td><pre>    <span class="token function-variable function">callback</span><span class="token operator">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span> <span class="token comment">// 指定回调函数</span></pre></td></tr><tr><td data-num="13"></td><td><pre>  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="14"></td><td><pre></pre></td></tr><tr><td data-num="15"></td><td><pre>  <span class="token comment">// 在队列的尾部添加该事件  </span></pre></td></tr><tr><td data-num="16"></td><td><pre>  globalEventQueue<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="17"></td><td><pre><span class="token punctuation">&#125;</span></pre></td></tr></table></figure><p>这个函数很简单，就是把用户的请求包装成事件，放到队列里，然后继续接收其他请求。</p>
 <h3 id="3定义-event-loop"><a class="anchor" href="#3定义-event-loop">#</a> 【3】定义 Event Loop</h3>
 <p>当主线程处于空闲时就开始循环事件队列，所以我们还要定义一个函数来循环事件队列：</p>
-<pre><code class="language-JavaScript">/**
- * 事件循环主体，主线程择机执行
- * 循环遍历事件队列
- * 处理非IO任务
- * 处理IO任务
- * 执行回调，返回给上层
- */
-eventLoop: function() &#123;
-  // 如果队列不为空，就继续循环
-  while (this.globalEventQueue.length &gt; 0) &#123;
-
-    // 从队列的头部拿出一个事件
-    var event = this.globalEventQueue.shift();
-
-    // 如果是耗时任务
-    if (isIOTask(event)) &#123;
-      // 从线程池里拿出一个线程
-      var thread = getThreadFromThreadPool();
-      // 交给线程处理
-      thread.handleIOTask(event)
-    &#125; else &#123;
-      // 非耗时任务处理后，直接返回结果
-      var result = handleEvent(event);
-      // 最终通过回调函数返回给V8，再由V8返回给应用程序
-      event.callback.call(null, result);
-    &#125;
-  &#125;
-&#125;
-</code></pre>
-<p>主线程不停的检测事件队列，对于 I/O 任务，就交给线程池来处理，非 I/O 任务就自己处理并返回。</p>
+<figure class="highlight js"><figcaption data-lang="JavaScript"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token comment">/**</pre></td></tr><tr><td data-num="2"></td><td><pre> * 事件循环主体，主线程择机执行</pre></td></tr><tr><td data-num="3"></td><td><pre> * 循环遍历事件队列</pre></td></tr><tr><td data-num="4"></td><td><pre> * 处理非 IO 任务</pre></td></tr><tr><td data-num="5"></td><td><pre> * 处理 IO 任务</pre></td></tr><tr><td data-num="6"></td><td><pre> * 执行回调，返回给上层</pre></td></tr><tr><td data-num="7"></td><td><pre> */</span></pre></td></tr><tr><td data-num="8"></td><td><pre><span class="token function-variable function">eventLoop</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="9"></td><td><pre>  <span class="token comment">// 如果队列不为空，就继续循环</span></pre></td></tr><tr><td data-num="10"></td><td><pre>  <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>globalEventQueue<span class="token punctuation">.</span>length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="11"></td><td><pre></pre></td></tr><tr><td data-num="12"></td><td><pre>    <span class="token comment">// 从队列的头部拿出一个事件</span></pre></td></tr><tr><td data-num="13"></td><td><pre>    <span class="token keyword">var</span> event <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>globalEventQueue<span class="token punctuation">.</span><span class="token function">shift</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="14"></td><td><pre></pre></td></tr><tr><td data-num="15"></td><td><pre>    <span class="token comment">// 如果是耗时任务</span></pre></td></tr><tr><td data-num="16"></td><td><pre>    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isIOTask</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="17"></td><td><pre>      <span class="token comment">// 从线程池里拿出一个线程</span></pre></td></tr><tr><td data-num="18"></td><td><pre>      <span class="token keyword">var</span> thread <span class="token operator">=</span> <span class="token function">getThreadFromThreadPool</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="19"></td><td><pre>      <span class="token comment">// 交给线程处理</span></pre></td></tr><tr><td data-num="20"></td><td><pre>      thread<span class="token punctuation">.</span><span class="token function">handleIOTask</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span></pre></td></tr><tr><td data-num="21"></td><td><pre>    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="22"></td><td><pre>      <span class="token comment">// 非耗时任务处理后，直接返回结果</span></pre></td></tr><tr><td data-num="23"></td><td><pre>      <span class="token keyword">var</span> result <span class="token operator">=</span> <span class="token function">handleEvent</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="24"></td><td><pre>      <span class="token comment">// 最终通过回调函数返回给 V8，再由 V8 返回给应用程序</span></pre></td></tr><tr><td data-num="25"></td><td><pre>      event<span class="token punctuation">.</span><span class="token function">callback</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="26"></td><td><pre>    <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="27"></td><td><pre>  <span class="token punctuation">&#125;</span></pre></td></tr><tr><td data-num="28"></td><td><pre><span class="token punctuation">&#125;</span></pre></td></tr></table></figure><p>主线程不停的检测事件队列，对于 I/O 任务，就交给线程池来处理，非 I/O 任务就自己处理并返回。</p>
 <h3 id="4处理-io-任务"><a class="anchor" href="#4处理-io-任务">#</a> 【4】处理 I/O 任务</h3>
 <p>线程池接到任务以后，直接处理 IO 操作，比如读取数据库：</p>
-<pre><code class="language-JavaScript">/**
- * 处理IO任务
- * 完成后将事件添加到队列尾部
- * 释放线程
- */
-handleIOTask: function(event) &#123;
-  //当前线程
-  var curThread = this;
-
-  // 操作数据库
-  var optDatabase = function (params, callback) &#123;
-    var result = readDataFromDb(params);
-    callback.call(null, result)
-  &#125;;
-
-  // 执行IO任务
-  optDatabase(event.params, function (result) &#123;
-    // 返回结果存入事件对象中
-    event.result = result;
-
-    // IO完成后，将不再是耗时任务
-    event.isIOTask = false;
-
-    // 将该事件重新添加到队列的尾部
-    this.globalEventQueue.push(event);
-
-    // 释放当前线程
-    releaseThread(curThread)
-  &#125;)
-&#125;
-</code></pre>
-<p>当 I/O 任务完成以后就执行回调，把请求结果存入事件中，并将该事件重新放入队列中，等待循环，最后释放当前线程，当主线程再次循环到该事件时，就直接处理了。</p>
+<figure class="highlight js"><figcaption data-lang="JavaScript"></figcaption><table><tr><td data-num="1"></td><td><pre><span class="token comment">/**</pre></td></tr><tr><td data-num="2"></td><td><pre> * 处理 IO 任务</pre></td></tr><tr><td data-num="3"></td><td><pre> * 完成后将事件添加到队列尾部</pre></td></tr><tr><td data-num="4"></td><td><pre> * 释放线程</pre></td></tr><tr><td data-num="5"></td><td><pre> */</span></pre></td></tr><tr><td data-num="6"></td><td><pre><span class="token function-variable function">handleIOTask</span><span class="token operator">:</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="7"></td><td><pre>  <span class="token comment">// 当前线程</span></pre></td></tr><tr><td data-num="8"></td><td><pre>  <span class="token keyword">var</span> curThread <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="9"></td><td><pre></pre></td></tr><tr><td data-num="10"></td><td><pre>  <span class="token comment">// 操作数据库</span></pre></td></tr><tr><td data-num="11"></td><td><pre>  <span class="token keyword">var</span> <span class="token function-variable function">optDatabase</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">params<span class="token punctuation">,</span> callback</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="12"></td><td><pre>    <span class="token keyword">var</span> result <span class="token operator">=</span> <span class="token function">readDataFromDb</span><span class="token punctuation">(</span>params<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="13"></td><td><pre>    <span class="token function">callback</span><span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span></pre></td></tr><tr><td data-num="14"></td><td><pre>  <span class="token punctuation">&#125;</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="15"></td><td><pre></pre></td></tr><tr><td data-num="16"></td><td><pre>  <span class="token comment">// 执行 IO 任务</span></pre></td></tr><tr><td data-num="17"></td><td><pre>  <span class="token function">optDatabase</span><span class="token punctuation">(</span>event<span class="token punctuation">.</span>params<span class="token punctuation">,</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">result</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span></pre></td></tr><tr><td data-num="18"></td><td><pre>    <span class="token comment">// 返回结果存入事件对象中</span></pre></td></tr><tr><td data-num="19"></td><td><pre>    event<span class="token punctuation">.</span>result <span class="token operator">=</span> result<span class="token punctuation">;</span></pre></td></tr><tr><td data-num="20"></td><td><pre></pre></td></tr><tr><td data-num="21"></td><td><pre>    <span class="token comment">// IO 完成后，将不再是耗时任务</span></pre></td></tr><tr><td data-num="22"></td><td><pre>    event<span class="token punctuation">.</span>isIOTask <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="23"></td><td><pre></pre></td></tr><tr><td data-num="24"></td><td><pre>    <span class="token comment">// 将该事件重新添加到队列的尾部</span></pre></td></tr><tr><td data-num="25"></td><td><pre>    <span class="token keyword">this</span><span class="token punctuation">.</span>globalEventQueue<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>event<span class="token punctuation">)</span><span class="token punctuation">;</span></pre></td></tr><tr><td data-num="26"></td><td><pre></pre></td></tr><tr><td data-num="27"></td><td><pre>    <span class="token comment">// 释放当前线程</span></pre></td></tr><tr><td data-num="28"></td><td><pre>    <span class="token function">releaseThread</span><span class="token punctuation">(</span>curThread<span class="token punctuation">)</span></pre></td></tr><tr><td data-num="29"></td><td><pre>  <span class="token punctuation">&#125;</span><span class="token punctuation">)</span></pre></td></tr><tr><td data-num="30"></td><td><pre><span class="token punctuation">&#125;</span></pre></td></tr></table></figure><p>当 I/O 任务完成以后就执行回调，把请求结果存入事件中，并将该事件重新放入队列中，等待循环，最后释放当前线程，当主线程再次循环到该事件时，就直接处理了。</p>
 <p>总结以上过程我们发现，Node.js 只用了一个主线程来接收请求，但它接收请求以后并没有直接做处理，而是放到了事件队列中，然后又去接收其他请求了，空闲的时候，再通过 Event Loop 来处理这些事件，从而实现了异步效果，当然对于 IO 类任务还需要依赖于系统层面的线程池来处理。</p>
 <p>因此，我们可以简单的理解为： <code>Node.js 本身是一个多线程平台，而它对 JavaScript 层面的任务处理是单线程的</code> 。</p>
 <h2 id="cpu密集型是短板"><a class="anchor" href="#cpu密集型是短板">#</a> CPU 密集型是短板</h2>
