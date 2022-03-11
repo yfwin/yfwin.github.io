@@ -193,9 +193,9 @@
     <link href="https://yfwin.github.io/75d8272f.html"/>
     <id>https://yfwin.github.io/75d8272f.html</id>
     <published>2022-03-07T07:51:21.000Z</published>
-    <updated>2022-03-07T09:13:38.666Z</updated>
+    <updated>2022-03-11T04:10:53.649Z</updated>
     
-    <content type="html"><![CDATA[<p>这里是 Hexo 博客通用设置的一些技巧。</p><span id="more"></span><h2 id="hexo-d后-custom-domain-被置空"><a class="anchor" href="#hexo-d后-custom-domain-被置空">#</a>  <code>hexo d</code>  后 Custom domain 被置空</h2><p>Hexo 博客部署在 GitHub 上，当手动填写了 Custom domain 后，在下一次 hexo d 后会被置空。<br />解决方案是：在 Hexo 目录下的 source 文件夹下创建名称为 CNAME 得文件，将域名 <code>blog.qmzbe.top</code>  写在里面（只能写一个）。然后执行</p><figure class="highlight bash"><figcaption data-lang="bash"></figcaption><table><tr><td data-num="1"></td><td><pre>hexo clean <span class="token operator">&amp;&amp;</span> hexo g <span class="token operator">&amp;&amp;</span> hexo d</pre></td></tr></table></figure><p>GitHub Pages 出现以下显示就可以了。<br /><img data-src="https://github.com/yfwin/file/blob/gh-pages/212.png?raw=true" alt="" /></p>]]></content>
+    <content type="html"><![CDATA[<p>这里是 Hexo 博客通用设置的一些技巧。</p><span id="more"></span><h2 id="hexo-d后-custom-domain-被置空"><a class="anchor" href="#hexo-d后-custom-domain-被置空">#</a>  <code>hexo d</code>  后 Custom domain 被置空</h2><p>Hexo 博客部署在 GitHub 上，当手动填写了 Custom domain 后，在下一次 hexo d 后会被置空。<br />解决方案是：在 Hexo 目录下的 source 文件夹下创建名称为 CNAME 得文件，将域名 <code>blog.qmzbe.top</code>  写在里面（只能写一个）。然后执行</p><figure class="highlight bash"><figcaption data-lang="bash"></figcaption><table><tr><td data-num="1"></td><td><pre>hexo clean <span class="token operator">&amp;&amp;</span> hexo g <span class="token operator">&amp;&amp;</span> hexo d</pre></td></tr></table></figure><p>GitHub Pages 出现以下显示就可以了。<br /><img data-src="https://user-images.githubusercontent.com/35981799/157800439-0b7b58f7-5d02-4b2d-ab8b-39a2c634fa90.png" alt="image" /></p>]]></content>
     
     
     <summary type="html">&lt;p&gt;这里是 Hexo 博客通用设置的一些技巧。&lt;/p&gt;</summary>
