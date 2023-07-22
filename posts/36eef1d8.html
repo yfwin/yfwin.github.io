@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.qmzbe.top","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Spring Initializr  tomcat安装及配置教程_百度搜索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot 相关资料（未整理）">
+<meta property="og:url" content="https://blog.qmzbe.top/posts/36eef1d8.html">
+<meta property="og:site_name" content="逸风小站">
+<meta property="og:description" content="Spring Initializr  tomcat安装及配置教程_百度搜索">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://start.spring.io&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://apache.org&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://www.one-tab.com/web/images/default-bookmark-icon.png">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://kaotop.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://656463.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://pianshen.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://zoukankan.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://www.one-tab.com/web/images/default-bookmark-icon.png">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://wjhsh.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://thinbug.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://likecs.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://eclipse.org&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://pianshen.com&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://oschina.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://oschina.net&size=32">
+<meta property="og:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://eclipse.org&size=32">
+<meta property="article:published_time" content="2022-09-17T17:09:48.000Z">
+<meta property="article:modified_time" content="2022-09-17T17:09:48.000Z">
+<meta property="article:author" content="万般自然">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://start.spring.io&size=32">
+
+
+<link rel="canonical" href="https://blog.qmzbe.top/posts/36eef1d8.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.qmzbe.top/posts/36eef1d8.html","path":"posts/36eef1d8.html","title":"SpringBoot 相关资料（未整理）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SpringBoot 相关资料（未整理） | 逸风小站</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?4828a05518ca3d19193b3a86a213fd60"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">逸风小站</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">帝王有剑，不斩苍蝇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">39</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">34</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="万般自然"
+      src="https://s1.ax1x.com/2023/07/09/pCgDTD1.jpg">
+  <p class="site-author-name" itemprop="name">万般自然</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yfwin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yfwin" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:biubiu200@163.com" title="E-Mail → mailto:biubiu200@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/5648936534" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;5648936534" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.qmzbe.top/" title="https:&#x2F;&#x2F;blog.qmzbe.top">逸风小站</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.cnblogs.com/qmzbe" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qmzbe" rel="noopener" target="_blank">CNBLOG</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.qmzbe.top/" title="https:&#x2F;&#x2F;blog.qmzbe.top">逸风小站2</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.cnblogs.com/qmzbe" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qmzbe" rel="noopener" target="_blank">CNBLOG2</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.qmzbe.top/posts/36eef1d8.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s1.ax1x.com/2023/07/09/pCgDTD1.jpg">
+      <meta itemprop="name" content="万般自然">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SpringBoot 相关资料（未整理） | 逸风小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot 相关资料（未整理）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-18 01:09:48" itemprop="dateCreated datePublished" datetime="2022-09-18T01:09:48+08:00">2022-09-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="SpringBoot 相关资料（未整理）" href="/posts/36eef1d8.html#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::97e557005e02de2852aeef871a62de24" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://start.spring.io&size=32"> <a target="_blank" rel="noopener" href="https://start.spring.io/">Spring Initializr</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=utf-8&f=3&rsv_bp=1&tn=baidu&wd=tomcat%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B&oq=tomcat&rsv_pq=e4b616100020b44c&rsv_t=b27bV6tuL8tkeRVtAnl3+LClQK8lFQ5ZvRM4LPl0NBgjyKXEa8/FXm/MShM&rqlang=cn&rsv_enter=1&rsv_dl=ts_0&rsv_btype=t&rsv_sug3=8&rsv_sug1=10&rsv_sug7=100&rsv_sug2=1&prefixsug=tomcat&rsp=0&rsv_sug4=3622">tomcat安装及配置教程_百度搜索</a></p>
+<span id="more"></span>
+
+
+
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32"> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/022414ls/p/16418740.html">Tomcat安装及配置教程 - 谜语+ - 博客园</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://apache.org&size=32"> <a target="_blank" rel="noopener" href="https://tomcat.apache.org/download-80.cgi">Apache Tomcat® - Apache Tomcat 8 Software Downloads</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40527797/article/details/122813537">(20条消息) springBoot+JSP搭建项目_那清澈的漓江的博客-CSDN博客_springboot+jsp</a></p>
+<p><img src="https://www.one-tab.com/web/images/default-bookmark-icon.png"> <a target="_blank" rel="noopener" href="http://localhost:8080/demo/">HTTP状态 404 - 未找到</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/superfreak/article/details/115212488">(20条消息) 手把手教你：SpringBoot开发JSP_superfreak的博客-CSDN博客_springbootjsp开发</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/superfreak/article/details/115082381">(20条消息) 手把手教你：创建一个SpringBoot项目并打包为war_superfreak的博客-CSDN博客</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36182135/article/details/81507639">(20条消息) Spring Boot（一）： 快速构建web项目_方木丶的博客-CSDN博客_springboot创建web项目</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_56281219/article/details/117121783?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-117121783-blog-122772127.pc_relevant_multi_platform_featuressortv2dupreplace&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-117121783-blog-122772127.pc_relevant_multi_platform_featuressortv2dupreplace&utm_relevant_index=2">(20条消息) springboot搭建web项目完整步骤(简易，一看就会！)_不想掉头发+1的博客-CSDN博客_springbootweb项目</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=tomcat%E8%AF%B7%E6%B1%82%E7%9A%84%E8%B5%84%E6%BA%90%5B/demo-0.0.1-SNAPSHOT/%5D%E4%B8%8D%E5%8F%AF%E7%94%A8&oq=%25E8%25AF%25B7%25E6%25B1%2582%25E7%259A%2584%25E8%25B5%2584%25E6%25BA%2590%255B%252Fdemo-0.0.1-SNAPSHOT%252F%255D%25E4%25B8%258D%25E5%258F%25AF%25E7%2594%25A8&rsv_pq=d2623d2d004461d5&rsv_t=ac958VzvbGkIZN55nJiD5Ld6AMr6Zf/LUtJVmiaticSJKMSDi38wpsu+OOY&rqlang=cn&rsv_enter=0&rsv_dl=tb&rsv_btype=t&inputT=3173&rsv_sug3=17&rsv_sug2=0&prefixsug=tomcat%25E8%25AF%25B7%25E6%25B1%2582%25E7%259A%2584%25E8%25B5%2584%25E6%25BA%2590%255B%252Fdemo-0.0.1-SNAPSHOT%252F%255D%25E4%25B8%258D%25E5%258F%25AF%25E7%2594%25A8&rsp=1&rsv_sug4=4269">tomcat请求的资源[&#x2F;demo-0.0.1-SNAPSHOT&#x2F;]不可用_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://kaotop.com&size=32"> [Tomcat出现404的解决方法[类型 状态报告 消息 请求的资源[&#x2F;]不可用 描述 源服务器未能找到目标资源的表示或者是不愿公开一个已经存在的资源]_Linux-考高分网](<a target="_blank" rel="noopener" href="http://www.kaotop.com/it/914810.html">http://www.kaotop.com/it/914810.html</a>)</p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://656463.com&size=32"> <a target="_blank" rel="noopener" href="https://www.656463.com/wenda/TomcatqqdzybkyIntelliJIDEAJavaEE_263">Tomcat - 请求的资源不可用 - IntelliJ IDEA - Java EE [重复](Tomcat - The requested resource is not available - IntelliJ IDEA - Java EE [duplicate])_电脑培训</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> [(20条消息) Tomcat出现404的解决方法[类型 状态报告 消息 请求的资源[&#x2F;]不可用 描述 源服务器未能找到目标资源的表示或者是不愿公开一个已经存在的资源]_代码匪徒的博客-CSDN博客_tomcat404请求的资源不可用](<a target="_blank" rel="noopener" href="https://blog.csdn.net/munangs/article/details/120259865">https://blog.csdn.net/munangs/article/details/120259865</a>)</p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40306266/article/details/116563024?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-116563024-blog-120259865.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-116563024-blog-120259865.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=2">(20条消息) tomcat运行web项目报错：请求的资源[&#x2F;]不可用_你知道爬上树的感觉吗的博客-CSDN博客_tomcat请求的资源不可用</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> [(20条消息) Tomcat出现404的解决方法[类型 状态报告 消息 请求的资源[&#x2F;]不可用 描述 源服务器未能找到目标资源的表示或者是不愿公开一个已经存在的资源]_代码匪徒的博客-CSDN博客_tomcat404请求的资源不可用](<a target="_blank" rel="noopener" href="https://blog.csdn.net/munangs/article/details/120259865?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-120259865-blog-116563024.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-120259865-blog-116563024.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=2">https://blog.csdn.net/munangs/article/details/120259865?spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-120259865-blog-116563024.pc_relevant_multi_platform_whitelistv3&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-120259865-blog-116563024.pc_relevant_multi_platform_whitelistv3&amp;utm_relevant_index=2</a>)</p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://pianshen.com&size=32"> <a target="_blank" rel="noopener" href="https://www.pianshen.com/article/50601950656/">SpringBoot项目打war包2种方法 - 程序员大本营</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/Luo_Tuo/article/details/108734675">(20条消息) SpringBoot项目打war包2种方法_Luo_Tuo的博客-CSDN博客_springboot 打war包命令</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32"> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/dengsir39/p/16496813.html">IDEA中web项目打成war包并在本地tomcat部署(超细版) - 艾码的日常生活 - 博客园</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://zoukankan.com&size=32"> <a target="_blank" rel="noopener" href="http://t.zoukankan.com/dsn727455218-p-11363458.html">IDEA中将工程打包成war包及部署到Tomcat流程 - 走看看</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_50596156/article/details/114284993">(20条消息) 使用idea打包war包部署_Mr°卢的博客-CSDN博客_idea打war包部署</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_38560145/article/details/86530401?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-86530401-blog-114284993.t5_download_0_7w&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-86530401-blog-114284993.t5_download_0_7w&utm_relevant_index=1">(20条消息) idea中项目打war包的方式_小姜戈的博客-CSDN博客_idea打war包方式</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/jiong9412/article/details/126551794">(20条消息) war包部署到Tomcat下运行步骤_无薪法师的博客-CSDN博客_war包部署到tomcat如何启动</a></p>
+<p><img src="https://www.one-tab.com/web/images/default-bookmark-icon.png"> <a target="_blank" rel="noopener" href="http://localhost:9090/">Title</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=springboot%E9%A1%B9%E7%9B%AE%E6%89%93%E6%88%90war%E5%8C%85%E9%83%A8%E7%BD%B2%E5%88%B0tomcat%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98&oq=idea%25E5%259C%25A8%25E6%2589%2593war%25E5%258C%2585%25E4%25B9%258B%25E5%2589%258D%25E9%259C%2580%25E8%25A6%2581%25E4%25BF%25AE%25E6%2594%25B9%25E4%25BB%2580%25E4%25B9%2588&rsv_pq=952d2a95004aa4a4&rsv_t=7deetCMSsKkBq6MaGJP+Ca2v8xipFyCiLZmiCLf6WY/5mzkXBURfFOiO/d0&rqlang=cn&rsv_enter=1&rsv_dl=tb&rsv_btype=t&inputT=811&rsv_n=2&rsv_sug3=24&rsv_sug1=25&rsv_sug7=100&rsv_sug2=0&rsv_sug4=811">springboot项目打成war包部署到tomcat遇到的一些问题_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_67392409/article/details/123683958">(20条消息) springboot打war包部署到tomcat后无法访问的解决方法_普通网友的博客-CSDN博客_tomcat运行war包后无法访问</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://wjhsh.net&size=32"> <a target="_blank" rel="noopener" href="http://wjhsh.net/wangxuemei-p-8360398.html">IDEA 工具项目的配置及如何打war包</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/wupan6688/article/details/103629664">(20条消息) springboot项目用maven打包生成的.jar.original是什么？_清风烈酒的博客-CSDN博客_jar.original</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=UTF-8&wd=tomcat10%E5%85%BC%E5%AE%B9java8%E5%90%97">tomcat10兼容java8吗_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://thinbug.com&size=32"> <a target="_blank" rel="noopener" href="https://www.thinbug.com/q/46859797">java - 哪个tomcat版本适合java 8 - Thinbug</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=UTF-8&wd=idea%E6%89%93%E5%8C%85war%E5%8C%85%EF%BC%8Ctomcat%E9%83%A8%E7%BD%B2%E8%AE%BF%E9%97%AE%E5%87%BA%E7%8E%B0%E8%AF%B7%E6%B1%82%E7%9A%84%E8%B5%84%E6%BA%90%5B/demo-0.0.1-SNAPSHOT/%5D%E4%B8%8D%E5%8F%AF%E7%94%A8">idea打包war包,tomcat部署访问出现请求的资源[&#x2F;demo-0.0.1-SNAPSHOT&#x2F;]不可用_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://ask.csdn.net/questions/7597551?locationNum=5">(20条消息) Java idea打包war包部署到tomcat无法访问-Java-CSDN问答</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=UTF-8&wd=%E9%85%8D%E7%BD%AE%E4%B8%8B%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E8%AE%BF%E9%97%AE%E8%B7%AF%E5%BE%84%E7%9A%84%E6%98%A0%E5%B0%84">配置下静态资源访问路径的映射_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32"> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/KJXY/articles/15133988.html">Springboot 静态资源路径虚拟映射配置 - KJXY - 博客园</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/Acer2016/article/details/103530287">(20条消息) IntelliJ IDEA 项目打WAR包（步奏），部署到Tomcat（解决不能加载项目静态资源文件的方法）_BU凡的博客-CSDN博客_tomcat部署war包找不到文件</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&tn=baidu&wd=html%E6%80%8E%E4%B9%88%E7%94%A8tomcat%E9%83%A8%E7%BD%B2&oq=%2526%252339%253Borg.springframework.web.servlet.config.annotation.WebMvc%2526lt%253Bonfigurer%2526%252339%253B%2520%25E4%25B8%258D%25E6%2598%25AF%25E5%25B0%2581&rsv_pq=daba554b0068fbf5&rsv_t=5057MOdpQlXa16CnjPZ+zTuDN+bmOdBuG6dHNRK7rvM3ATJ1TSF2i8IOJWs&rqlang=cn&rsv_enter=1&rsv_dl=tb&rsv_sug3=18&rsv_sug1=17&rsv_sug7=101&rsv_sug2=0&rsv_btype=t&inputT=9145&rsv_sug4=11616">html怎么用tomcat部署_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/wqs147258/article/details/116167807">(20条消息) HTML页面部署到Tomcat_manson欧文的博客-CSDN博客_html部署到tomcat</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://cnblogs.com&size=32"> <a target="_blank" rel="noopener" href="https://www.cnblogs.com/zj-0909/p/15108419.html">Tomcat部署html静态网站的五种方式 - 屠剑 - 博客园</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/wuyomhchang/article/details/123640035">(20条消息) tomact上部署HTML静态页面的方法—教程超详细_吴永畅的博客-CSDN博客_tomcat部署静态html</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_32828777/article/details/105611542">(20条消息) SpringMVC之接口WebMvcConfigurer_像我这么帅的一般都是主角哦的博客-CSDN博客</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/prettyboy2ge/article/details/108470611?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-108470611-blog-105611542.pc_relevant_multi_platform_whitelistv6&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-108470611-blog-105611542.pc_relevant_multi_platform_whitelistv6&utm_relevant_index=2">(20条消息) SpringBoot 使用 WebMvcConfigurer接口或者WebMvcConfigureSupport定义静态资源地址不生效_朝阳前的黑暗的博客-CSDN博客</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44503987/article/details/110806124">(20条消息) springboot解决WebMvcConfigurerAdapter失效问题_良木66的博客-CSDN博客_webmvcconfigureradapter不能用了</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38164123/article/details/80392904?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-80392904-blog-110806124.t5_download_comparev1&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-80392904-blog-110806124.t5_download_comparev1&utm_relevant_index=1">(20条消息) SpringBoot2.0 以上 WebMvcConfigurerAdapter 方法过时 解决办法_java_代码搬运工的博客-CSDN博客</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?wd=%E9%9D%99%E6%80%81%E7%BD%91%E9%A1%B5%E9%83%A8%E7%BD%B2%E5%88%B0tomcat&rsf=100631202&rsp=0&f=1&rs_src=0&rsv_pq=db8943f8006d23dd&rsv_t=8aaeSdJBVK7dejPwd0h/nEAyeKjX9B6kxWO0ts3juYZYiSBcjBBshSEPoko">静态网页部署到tomcat_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45046181/article/details/125031646">(20条消息) tomcat部署静态网页_漠上尘的博客-CSDN博客_tomcat部署静态页面</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://likecs.com&size=32"> <a target="_blank" rel="noopener" href="https://www.likecs.com/show-204524070.html">Tomcat+solr 请求的资源[&#x2F;solr&#x2F;index.html]不可用 - 爱码网</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> [(20条消息) Tomcat出现404的解决方法[类型 状态报告 消息 请求的资源[&#x2F;]不可用 描述 源服务器未能找到目标资源的表示或者是不愿公开一个已经存在的资源]_代码匪徒的博客-CSDN博客_tomcat404请求的资源不可用](<a target="_blank" rel="noopener" href="https://blog.csdn.net/munangs/article/details/120259865">https://blog.csdn.net/munangs/article/details/120259865</a>)</p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/munangs/article/details/120261733?spm=1001.2014.3001.5502">(20条消息) 配置javaweb 和tomcat环境和一些注意事项_代码匪徒的博客-CSDN博客</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40306266/article/details/116563024?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-116563024-blog-120259865.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-116563024-blog-120259865.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=2">(20条消息) tomcat运行web项目报错：请求的资源[&#x2F;]不可用_你知道爬上树的感觉吗的博客-CSDN博客_tomcat请求的资源不可用</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=UTF-8&wd=tomcat%E5%A6%82%E4%BD%95%E8%BF%90%E8%A1%8Cwar">tomcat如何运行war_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_54849873/article/details/124095072">(20条消息) war包部署到Tomcat下运行步骤_普通网友的博客-CSDN博客_tomcat运行war包</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40062320/article/details/81393326?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-81393326-blog-124095072.topnsimilarv1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-81393326-blog-124095072.topnsimilarv1&utm_relevant_index=5">(20条消息) 使用war包部署在Tomcat中运行_a xin-pc的博客-CSDN博客_war包部署到tomcat</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/inter_peng/article/details/42833587?spm=1001.2101.3001.6650.9&utm_medium=distribute.pc_relevant.none-task-blog-2~default~ESLANDING~default-9-42833587-blog-81393326.relrec_prioritylanding&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~ESLANDING~default-9-42833587-blog-81393326.relrec_prioritylanding&utm_relevant_index=16">(20条消息) 将Web项目War包部署到Tomcat服务器基本步骤_inter_peng的博客-CSDN博客_tomcat运行war包</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://baidu.com&size=32"> <a target="_blank" rel="noopener" href="https://www.baidu.com/s?ie=utf-8&f=3&rsv_bp=1&tn=baidu&wd=eclipse%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B&oq=eclipse%25E4%25B8%258B%25E8%25BD%25BD%25E6%2585%25A2&rsv_pq=e63b5d3c00182d61&rsv_t=97477L29jE5R86oIdHLevf7OPkGpNzq08R8uZlZG8Dh1TnSYCT7gBuoyu6s&rqlang=cn&rsv_enter=1&rsv_dl=ts_0&rsv_btype=t&rsv_sug3=4&rsv_sug1=5&rsv_sug7=100&rsv_sug2=1&prefixsug=eclipse%25E5%25AE%2589%25E8%25A3%2585&rsp=0&inputT=2766&rsv_sug4=4963">eclipse安装教程_百度搜索</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45344586/article/details/123942685">(20条消息) 超详细Eclipse安装教程_极小白的博客-CSDN博客_eclipse安装教程</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38566465/article/details/79484286?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-79484286-blog-123942685.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-2-79484286-blog-123942685.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=5">(20条消息) Eclipse安装教程 ——最详细安装java_命里良人的博客-CSDN博客_eclipse安装教程</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://xierulucky.blog.csdn.net/article/details/82914600?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-82914600-blog-79484286.pc_relevant_aa&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~Rate-1-82914600-blog-79484286.pc_relevant_aa&utm_relevant_index=2">(20条消息) Eclipse最新最简最详细安装教程_rothschildlhl的博客-CSDN博客_eclipse安装教程</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://eclipse.org&size=32"> <a target="_blank" rel="noopener" href="https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/2022-09/R/eclipse-jee-2022-09-R-win32-x86_64.zip&mirror_id=1290">Thank You for Downloading Eclipse | The Eclipse Foundation</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_51013944/article/details/116142472?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-116142472-blog-79484286.pc_relevant_aa&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-116142472-blog-79484286.pc_relevant_aa&utm_relevant_index=1">(20条消息) eclipse安装教程（2021最新版）超级易懂到吐血_肌肉猛男ing的博客-CSDN博客_eclipse安装教程</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://csdn.net&size=32"> <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44963853/article/details/121688690">(20条消息) eclipse下载速度过慢的解决方法_一个写代码的骚年的博客-CSDN博客_eclipse下载慢</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://pianshen.com&size=32"> <a target="_blank" rel="noopener" href="https://www.pianshen.com/article/9386748353/">www.pianshen.com</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://oschina.net&size=32"> <a target="_blank" rel="noopener" href="https://www.oschina.net/p/eclipse?hmsr=aladdin1e1">Eclipse首页、文档和下载 - 跨平台开源集成开发环境 - OSCHINA - 中文开源技术交流社区</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://oschina.net&size=32"> <a target="_blank" rel="noopener" href="https://www.oschina.net/news/118726/eclipse-4-17-released">Eclipse 4.17 稳定版发布 - OSCHINA - 中文开源技术交流社区</a></p>
+<p><img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://eclipse.org&size=32"> <a target="_blank" rel="noopener" href="https://download.eclipse.org/eclipse/downloads/drops4/R-4.17-202009021800/">Not Found | The Eclipse Foundation</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringBoot/" rel="tag"><i class="fa fa-tag"></i> SpringBoot</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/20cc180f.html" rel="prev" title="2023国考行测模考大赛（第三十二季）错题整理">
+                  <i class="fa fa-chevron-left"></i> 2023国考行测模考大赛（第三十二季）错题整理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2fe6597a.html" rel="next" title="考研政治必备（1）">
+                  考研政治必备（1） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="97e557005e02de2852aeef871a62de24"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">万般自然</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/yfwin" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cywLPGpqB","appkey":"188c9fc5e25427db76ebbf6d6a829c0d","count":true}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>

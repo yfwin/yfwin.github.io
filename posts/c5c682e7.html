@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.qmzbe.top","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、数据结构绪论数据结构的基本概念 数据结构是一门研究非数值计算的程序设计问题中，计算机的操作对象以及它们之间的关系和操作的学科。 数据元素是数据的基本单位，在计算机程序中通常作为一个整体进行考虑和处理。 数据结构包含三个方面的含义：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构知识点大汇总">
+<meta property="og:url" content="https://blog.qmzbe.top/posts/c5c682e7.html">
+<meta property="og:site_name" content="逸风小站">
+<meta property="og:description" content="一、数据结构绪论数据结构的基本概念 数据结构是一门研究非数值计算的程序设计问题中，计算机的操作对象以及它们之间的关系和操作的学科。 数据元素是数据的基本单位，在计算机程序中通常作为一个整体进行考虑和处理。 数据结构包含三个方面的含义：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-07bfa931348a5e0f453f2897111cde65_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-67422d086f8325df4da74c70f4092e98_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-313aca63d8026554b8aa54bb779b8ed7_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-d6aa238b9019852e39685d50e46ccd7e_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-dafe9fa237716a0282ab6b0d8a41aeaa_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-0aea97a0064d87736684facb51d1a7bb_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-8acf1b8ccd6ff04473d0bc9e904cf4ef_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-908d4962568fef15335d30bec58e47b4_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-ae8a1f489ec672b23d4e8a20c79b9247_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-7041bb4dffb31fb337b759074273a251_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-2aed58857ffe85c71cbd16955318155e_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3d298000b4f6e33c8aa11dfcf1940f33_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-5cc2bcd52d2644cdf8dc9fcdc722c2ce_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-4632549a9b499795f6c8ff0230bbf728_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-388edc6deae96ba68aad04bb03dda7e4_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-196c9909863cdfb930f7f231208ff196_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-92476273c6e989e2c7ee5c7888e8a585_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-6fe7742fa810cd5e76335ca97763c783_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-189a8060f9b811eff5666564339fd620_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-46dba8149a5e89d3534ca8f7b1e45e67_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-ea205a362c153ea51793c05ef9037e06_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-46fea85644349f1ac44e153d100316a7_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-e2ea9c980699ce5478cf1aa5b12f189e_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-aef6fb70ba86d5f0d1c334bd3e35ead2_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-7b2eb6ec4c4afc5a38e143fe2858ad56_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-8a6dc704741de67f5af3ed3b2498bfd8_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-5556b06d6943e623028a635ec83e4dfd_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-271421379bfbc66a11edded2efec4f3f_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-711bcd436a8d8a3d936115f5e9d94a93_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-621913a57aee74643bc1f802e8277900_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-041979b4cc9207654471910437d99b68_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-a1d1250730ebc633905d2d2f98a539fd_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-dd768ec6c7cf2fd3d4dc067bb28af257_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-867cc4cebca6dfe73c6c4660d11281da_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-d5091c84f3bb17c3a3f80b9299e5a712_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-08c65046288af6eec904c99bac9b3521_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-2f3ead4f984573e74a42ec2ca150ed8d_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-5573d1c0ae9d45f6e842b65b213ea768_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-3d1329ee06a8af52e0e13fed06752e61_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-46c3c361da816a3731d362a90ba31c5b_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-df835b40632839a2fe21412dc758ff61_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-741400706272320f63a07ff56f7a2e39_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-d46aea143363ba5c029c698aa3b780ce_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-d70af15008ff1a2670561fa899bffff4_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-e15fd358174b0a3ce0cceadc0e0071bf_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-59480682f50923d591333d0f0de66a14_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-afcc91bf4a024b52a5d5cd1c05b11948_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-7ddabab9f742b2c3123c8b554c2bdf54_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-ef1b6a08a9ea8339529c8d5b3d0b70db_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-f95d173ae01a4e6c2ce19aa1dc8f4bb1_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-030e5698e1f15ff3c169b1d25ee581b6_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-09ad2d1b7726cceec9edf10cef951fcb_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-c5f509ba99249451c5bdc079beb843ee_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-ff97b41170c164359bedb08d56df9232_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-097b7d4f32bf6362978180317a67f760_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-3524e6e2fabc998fca223b2e8103be92_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-71bd76abde0630e076018b4cc9813295_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-4f64babba980661101c860292051b41b_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-e59c370bf8167372c1a63b15dc376f7c_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-f149aa0d8def82ff2bc7a70b06ffa902_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-b51cd6229e3b75260bdf8058d1b03761_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-fe2cb246b9153b00ece2b3d37e669a17_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-c264b3477ac072cd03fac04592f78032_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-c15b59df68a00259090e50db09501cba_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-3c0d469afa97b78429961f4b228c6339_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-5f962101334171d06ecbbcea4f4c0bbb_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-348dcd05ae84ca4cb9981553605da917_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-a4f40a1d04e1b423a7560b627f8f1038_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-1fad89f6d6336f99549529e20be1d90b_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-c4f0b14a987da1643a163604e31d1a63_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-f9dcdb97748c12b8406aa02d4dd1c221_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b05604ca687147e7596f17610ed8ade7_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-9b820d3da70078490e68019778fd9ecf_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-46328ccca1e8cdbd19180ea3c9d13001_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-89bec5d9f147e731b57c467f7c4a04ed_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-569b75211a6f368156d5a4802ed9d995_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-d96a77305c0f9d4f1aef885e388c5e4c_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-6b292b56c8f8ee9c02360b4a46c127cc_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-d1d20d6bdbcfd07aecce409dff520863_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-bb466b5d26ee92abfb9ba9462ee82dcd_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-9638df1cce39e8e667e525f67d522b39_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-410f23c6c5a0d63c33341718a6b9ec87_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-07fc76e90f6eba5c81e202f82720da09_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-e0513e95e8551c2336e2d1b6aa203d8e_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-d722c9262e4568f8459bb1b36a4d0ccb_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-9e6b96511bba7e0bfc61c741d6df49bf_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-ab880b7cd2a935d7c2bcb52fc9384462_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-4fa18c09ccd8980f4fd61bc953e8a7c6_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-a12de4b3a2f7def6d5236ca36806ac2e_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-e71d3acbf1eae570bd56f79a05dd4f67_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-e315fe13a160309d99f05332d5f1eae3_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-bfa6c12941657481f9a824c8ba6792d4_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-cfd1a60b381ed63552fd1494e2801cc9_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-32826d965d82aef69b2d6b2de093e286_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-3fb7b01a361016edc19cdb4db44df68c_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-45166f01b1713990693d917e164e57a7_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-158f362ebf57930bb7424b65243c6220_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-4a30ec8edf854f6f536213fa8b856f54_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-fcafd439a830245230ba507e8fdb6f84_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-f7ca6a3bec6440be4810a3ca910b8866_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-364b6bca5c21b940bbe181fd3e884665_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-c201b5978b9e75da1a63f316df0f1bf9_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-cffbafc4b8aca7338f8bb4c287ffef12_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-5c722411aa1dc1546c8d38f845cf70f9_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-dd2c3b5a25db448f7e14c7c838117caa_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-d093d7e95f9363e3a0b5d8ee4ed66218_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-acebcee1f04847bf2cddcfca3ca8472c_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-7e054cf57b7ad311a6a62ae651c361d7_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-73b3b4886c0b3c16bea791a35933da7f_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-cbfd61a20d4388e0aa0d0c85ae492303_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-89896a608bc97dd7b02959a95479239a_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-4a40b13ded1ab09561aa3194cdf62d56_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-75335b40b49c565d443fd0f254dcd997_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-7340f665e2a76030dac5f069441768f9_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-2d902b482c9bfc3c4023f93975f55c35_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-7b7e6f9284420f7179c0499210a168f4_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-89b579149293c7614d1efb2a23b875d2_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b5c8c9056fd9e649c35ccc8ffffa9293_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-39a2fe8f528da3d30d8bfe1b3416fcb1_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-cdb70ddaa4bd9adabe55b66918a6576e_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-1384c855eb90ba3b2a075a088484a777_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-565af1c82a37bbcaa40662de517e02a6_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b0fc1e3af056ad05d821c849fcf0c933_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-ebc008a72d0346aa30c53d17521261fe_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-da05e5b91fcbdee274a80f260a1bffd9_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-932a6ee9d7e226a147fbd162fbb3171b_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-ff9820661a85440a7090d1d963ba4a64_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-f1f37e5823ded1ab82797683fc57929f_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-e0721ff4266b55f007c4dcf45c9ad5c2_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-b6004ac08f1ea0edb36e74eeddc9a004_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-898b62b1e07d4cbf7d62d35b407f726a_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-c2b9e203ed113106d9a72d58f13ff0d6_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-5d251e1f73050127ca348344c439d340_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-9802eb430abc1345021b4f56a7c6a639_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-26beb2744798de6279592111d840ff20_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-1eded28a6c9d6129be6f5a84a89bb5b6_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3d9723493cb92b1dceea6fd8d4c6f47f_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-5e2c2aebe0deb21f83dcd9f0a62498af_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-b754f200e69ca0e72db6c1a0b676d5b2_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-e7353bb409a39f36f35412576ed8579d_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-318825cc62d124831c26685ed3ca8933_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-19dac4222b10899605f87c57917c2357_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-20eb2071edd11a3a5fb6c7a331c8f0db_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-182212d4ddd5eba45b9abf1553f8eeff_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-73eed0b789590d6c650f0f9be3beb0fb_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-248cfa705e298ded89418718a9846add_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-e6e4bfead2aeb45a7b232c977beed62d_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-7a3d824439a5b9164db941d2c94d4aa5_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b4eaa724705ddb6c39c163dea5771c73_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-b96933846f2342a41c05d76dcd964a74_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-0424337ad0155df6d7cb3b16fa5f9811_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-7cec0693ed949aa5db677cb18a897d54_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-88436415aa05c7666ca7e24b68b7e884_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-5c38f41c4b6525a3f7725fb7aab52e6e_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-6b34a36b55c380c6307b9c7ccc674632_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-38042047c903f7718522e1320a7f0924_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-18a2e968aaa112328e30444c5a5df14c_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-4d0a225ec9d1287d9268b51da2a3e6da_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-9a1669c14a23cfa1a3b323db06d2e684_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-0c91562b56802740bc0eec16e90036eb_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-4b061381e87d81efcbd6730409ad78ab_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-2bf34f44fdcaa606edb4cddc6a9efc3b_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-cdbd914cf05baf30d749cd3399acf652_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-6eec2a13a886e486f09cd8be59fc5b7e_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-50f69c3dd2e4af536d50dc7f51f19b00_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-8a71f949bfc3b5ef659d25e4bc16be24_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-cd6130fb4f03a2e589c39aaa9f9dc0aa_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-525d63865679b0c5597796af8db00daa_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-66b1ee571f72e29926f7ac81f1d7a455_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-31a03c499e8a4c6ff5918e12a8427c3f_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-850375302f240f94b51b1f37e34df9f0_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-01a5370b8a97ad3f8481faa20e8ab563_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-6ea23892923da7aa515a7baf97d53f7c_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-a0647ebd6e070673cab51c21dc44326f_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-6266d16a2656e49c1c72ed5fa6e058b0_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-127eb9aee4af3ca40a3c5be03fb212f6_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-243c37778e45c7f36be9035920f9df7e_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-47b174e43604a738cdda6258014f3fe3_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-4620b8bb7033cf4c7ebe0b4628b8a6aa_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-5013242dc8e11050f2be919f7874736b_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3ebc90e3e5e1bc31f3a8e68accf1ea1b_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-2f68f42770246a61568b989816e537ac_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-aa0bcf0127a3f2e2eea1fe6377beb2ff_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-f3562b387ec14edacad070169cbd19f6_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-605946f8172abf5f0316c61a8d08cc29_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-0ff6d379e1a9feff5fd5bc098a92efb4_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-017252d075231658722611b56bdb637e_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-59f31f72bd266c751597d049ee8e3d2c_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-f8b2120971d4a03c3eb77999bfa9b28e_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-273be6dd3c7a73cd7df161e6c6f2b841_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-b92284c31c7351bec4f37c6564c749ed_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-a6d5b7a19af79289526863e43fd866ba_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-a5abd9717b616c92429099a8d5097415_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-736f8cb98694a799a74267bd20a89d8b_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-b9d04df7464bb91f79ab7a5c947925ec_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-4a109e794500190e850213e0cf027d3c_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b57fd4d106a395adb1ba029b45246ef7_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b0b6d3905367135fb1584c224ed3e6df_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-d830a17f2e7ac11ae59c5c0c2aeb1475_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-54c172d59fce29ce724eefcfa89d6640_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-354bd6d15c2c0f7a2aa4c8192b529473_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-33fbb89147607aaef6a5d9046f72ad3f_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-bd4baba2f92ed0906f66ce8a20c8dd23_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-f5af39fc4823ef6e9caab7b2f060b801_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-49f71ff12f2fee38ff7e658e0bf262de_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-93ffc448eaa12f18d548cecc4ad1d160_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-5cebe8c793a33d433af155d0be6cb0fe_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-4ac66d90825dce34f91a7abdee6de351_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-23ffe0d1734ca0757cbd7b699a1a4c9b_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-79e651a533ce3cdc9afcdfa248bda53d_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-05a6c89908dd5b56218967579db8ca4e_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-93bd74dd2039ae10e0adb770e01122f9_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-77f79022377831b77c2e739202a70c4b_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-d17db867beea2b1c52595e23bd9d7f9b_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-96dfbc2e25e6572337bd198b147fd64a_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-9f3ec5ae8c5567e61e2a38ff87ddfbc4_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-4b49658a480bc793e48734c455322ca3_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-b8de974aa1a5ab2c9f70eabbb2e88a9f_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-b557271cd97f55ade3b94f6af1ac52e1_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-8369d17082aacc39eaab5abe873b3284_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-e4849575ddc414257c6e2ed5de9999c0_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-b9bfda64c1cba23987db18f0d4dd0ab6_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3b370c6ed7f560a2163865105f7440ab_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-b28f2a643fe27cd5f6c77421d9a724a2_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-e0faddffc63c09bf33ed6a712fb1be40_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-e032b99429b09ac21f35451a079cc743_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-31e65a286021ef6205abe5e23bfc7def_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-9ade5187387faf0316ecc24e51c855e8_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-a9d11d804119df752210ab361d2879b9_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-3c12e90f6a5c0d92ab1bad6ed3a8d8ea_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-e34a587ca376a080cc2e06b0aa586934_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-bfa2b7bc5b9b1fc5381bf9d076881f83_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-b7fb1a7f720688cd40d4c1e0ad4dbc58_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-77ff4f5f8a96ef92f45f330ef108911c_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-9e8eadb29de8691c0ced2da8c32181b0_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-59790a5fcd0fa63fceb65d9e41a10709_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-9892e93ca4883953a567dfc486b08837_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-b4c3c797a5620f6bf4252bddbfde2f7a_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-b14adba88ca336e7d4be471397ef0ac0_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-1426061199f769f10abc4af3bed1f491_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-d78f8d022380eecc943016d4e4850427_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-a2e0ff965b4adfbfed32ff9e62759701_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-361e5056a41c19a0da3d7afa800d7c75_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-3b3ba87f91a665fffa2423ea5ca45303_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-c5ece32bbccab146d279eb22bba26054_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-7f770d2907e439b42042ed88c6eea845_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-e645b040765473726c0029532f618f98_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-02186906d89113f54b161b168a54aac5_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-304e1efdafd4bf06b267ff2c008f781c_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-ede0338c77f80a24db92a5fee83e39e5_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-ee9abac705d8a769c3daa6b4fbe87781_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-1578fa8ac4f337eac48c9883649093fd_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-49cd7755e2f7992df69daa038b31f6aa_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-d23e0d60b74208d22092e7f610a8e6e5_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-ff9293caaf5eddd04bf3e2e88e462323_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-ceb600ce9bd9be42de54038ae88f0369_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-03cc9fa82a7a609408aca212b895d437_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-8198936de84625935098c00fd83c1dfd_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-9350310b1fe1cbed41527691382e2eeb_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-6ab565bc998aee8724f9ea9a931328cd_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-55622d1fbdd1d216d97c5cddf7493ab6_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-48e22c84194642bfc5cc73b19bd172f7_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-228934afb8c6e511693db0605de4d801_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-85bc9fc4e1f02fbc674483db81c1d2c4_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-22f3d130bbaf0652c8636de5ecb7771b_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-0be6a77668831c3fc077356c8288664d_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-a77545b2cdf5f7ceff3326c6840f4a9b_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-231b3b8253a854fc1f18a8c5cbb23f88_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-96b835f3e775a56923bf25d380fa18c7_720w.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-2f231ae2ab9467a488c0268c5541f5bc_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-d206b6a46d55e5ef79a45d0cf2cb0abf_720w.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/80/v2-2232659ce12832f66b2f2b0a65fcda1e_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-e63548dcc8884b1a9e96563f8e01a06b_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-1c55566b808ba87a7b4985cf85b932d9_720w.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/80/v2-1033d236087ef5c066b0c7aa8e68fa1f_720w.jpg">
+<meta property="og:image" content="https://pic2.zhimg.com/80/v2-e42a01c7457ce1c1d0811434b369a6c5_720w.jpg">
+<meta property="article:published_time" content="2022-03-10T03:32:58.000Z">
+<meta property="article:modified_time" content="2022-09-01T14:45:33.000Z">
+<meta property="article:author" content="万般自然">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic2.zhimg.com/80/v2-07bfa931348a5e0f453f2897111cde65_720w.jpg">
+
+
+<link rel="canonical" href="https://blog.qmzbe.top/posts/c5c682e7.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.qmzbe.top/posts/c5c682e7.html","path":"posts/c5c682e7.html","title":"数据结构知识点大汇总"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>数据结构知识点大汇总 | 逸风小站</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?4828a05518ca3d19193b3a86a213fd60"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">逸风小站</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">帝王有剑，不斩苍蝇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">39</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">34</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%BB%AA%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">一、数据结构绪论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">数据结构的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%88%E7%8E%87%E5%88%86%E6%9E%90"><span class="nav-number">1.2.</span> <span class="nav-text">算法的效率分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E7%BA%BF%E6%80%A7%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">二、线性表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E8%A1%A8%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">线性表的类型定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E8%A1%A8%E7%9A%84%E9%A1%BA%E5%BA%8F%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.2.</span> <span class="nav-text">线性表的顺序表示和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E8%A1%A8%E7%9A%84%E9%93%BE%E5%BC%8F%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.3.</span> <span class="nav-text">线性表的链式表示和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E9%93%BE%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.4.</span> <span class="nav-text">单链表的基本操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E9%93%BE%E8%A1%A8"><span class="nav-number">2.5.</span> <span class="nav-text">循环链表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E5%90%91%E9%93%BE%E8%A1%A8"><span class="nav-number">2.6.</span> <span class="nav-text">双向链表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%A0%88%E5%92%8C%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">三、栈和队列</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.</span> <span class="nav-text">栈的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%A0%88"><span class="nav-number">3.2.</span> <span class="nav-text">顺序栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E6%A0%88"><span class="nav-number">3.3.</span> <span class="nav-text">链栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E6%A0%88%E5%92%8C%E9%93%BE%E5%BC%8F%E6%A0%88%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">3.4.</span> <span class="nav-text">顺序栈和链式栈的比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">3.5.</span> <span class="nav-text">队列的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%BA%E5%BA%8F%E9%98%9F%E5%88%97"><span class="nav-number">3.6.</span> <span class="nav-text">顺序队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%93%BE%E5%BC%8F%E9%98%9F%E5%88%97"><span class="nav-number">3.7.</span> <span class="nav-text">链式队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E9%98%9F%E5%88%97"><span class="nav-number">3.8.</span> <span class="nav-text">循环队列</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%95%B0%E7%BB%84%E5%92%8C%E5%B9%BF%E4%B9%89%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">四、数组和广义表</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">4.1.</span> <span class="nav-text">数组的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E7%9A%84%E9%A1%BA%E5%BA%8F%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.2.</span> <span class="nav-text">数组的顺序表示和实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9F%A9%E9%98%B5%E7%9A%84%E5%8E%8B%E7%BC%A9%E5%AD%98%E5%82%A8"><span class="nav-number">4.3.</span> <span class="nav-text">矩阵的压缩存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E7%9F%A9%E9%98%B5"><span class="nav-number">4.4.</span> <span class="nav-text">对称矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%A7%92%E7%9F%A9%E9%98%B5"><span class="nav-number">4.5.</span> <span class="nav-text">三角矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%80%E7%96%8F%E7%9F%A9%E9%98%B5"><span class="nav-number">4.6.</span> <span class="nav-text">稀疏矩阵</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89%E8%A1%A8"><span class="nav-number">4.7.</span> <span class="nav-text">广义表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E4%B9%89%E8%A1%A8%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">4.8.</span> <span class="nav-text">广义表的存储结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%A0%91"><span class="nav-number">5.</span> <span class="nav-text">五、树</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.</span> <span class="nav-text">树的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">5.2.</span> <span class="nav-text">树的性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">5.3.</span> <span class="nav-text">二叉树的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">5.4.</span> <span class="nav-text">二叉树的性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">5.5.</span> <span class="nav-text">二叉树的存储结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E9%93%BE%E5%BC%8F%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">5.6.</span> <span class="nav-text">二叉树的链式存储结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%8D%E5%8E%86%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">5.7.</span> <span class="nav-text">遍历二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%B4%A2%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">5.8.</span> <span class="nav-text">线索二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">5.9.</span> <span class="nav-text">树的存储结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%AE%E6%9E%97%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.10.</span> <span class="nav-text">森林与二叉树的转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%A4%AB%E6%9B%BC%E6%A0%91"><span class="nav-number">5.11.</span> <span class="nav-text">哈夫曼树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%9B%BE"><span class="nav-number">6.</span> <span class="nav-text">六、图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">6.1.</span> <span class="nav-text">图的概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">6.2.</span> <span class="nav-text">图的存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5"><span class="nav-number">6.2.1.</span> <span class="nav-text">邻接矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="nav-number">6.2.2.</span> <span class="nav-text">邻接表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E5%AD%97%E9%93%BE%E8%A1%A8"><span class="nav-number">6.2.3.</span> <span class="nav-text">十字链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E5%A4%9A%E9%87%8D%E8%A1%A8"><span class="nav-number">6.2.4.</span> <span class="nav-text">邻接多重表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E9%81%8D%E5%8E%86"><span class="nav-number">6.3.</span> <span class="nav-text">图的遍历</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2"><span class="nav-number">6.4.</span> <span class="nav-text">深度优先搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2"><span class="nav-number">6.5.</span> <span class="nav-text">广度优先搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E5%90%91%E5%9B%BE%E7%9A%84%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E5%92%8C%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">6.6.</span> <span class="nav-text">无向图的连通分量和生成树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91"><span class="nav-number">6.7.</span> <span class="nav-text">最小生成树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%89%E5%90%91%E6%97%A0%E7%8E%AF%E5%9B%BE"><span class="nav-number">6.8.</span> <span class="nav-text">有向无环图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F"><span class="nav-number">6.9.</span> <span class="nav-text">拓扑排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E8%B7%AF%E5%BE%84"><span class="nav-number">6.10.</span> <span class="nav-text">关键路径</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E6%9F%A5%E6%89%BE"><span class="nav-number">7.</span> <span class="nav-text">七、查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">7.1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%9F%A5%E6%89%BE%E8%A1%A8"><span class="nav-number">7.2.</span> <span class="nav-text">静态查找表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E6%9F%A5%E6%89%BE%E8%A1%A8"><span class="nav-number">7.3.</span> <span class="nav-text">动态查找表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91"><span class="nav-number">7.4.</span> <span class="nav-text">二叉排序树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-number">7.5.</span> <span class="nav-text">平衡二叉树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91"><span class="nav-number">7.6.</span> <span class="nav-text">B-树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%A0%91-1"><span class="nav-number">7.7.</span> <span class="nav-text">B+树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">7.8.</span> <span class="nav-text">哈希表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="nav-number">7.9.</span> <span class="nav-text">哈希函数的构造方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%86%B2%E7%AA%81%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">7.10.</span> <span class="nav-text">处理冲突的方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%A2%E9%BB%91%E6%A0%91"><span class="nav-number">7.11.</span> <span class="nav-text">红黑树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E6%8E%92%E5%BA%8F"><span class="nav-number">8.</span> <span class="nav-text">八、排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E6%A6%82%E8%BF%B0"><span class="nav-number">8.1.</span> <span class="nav-text">排序概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">8.2.</span> <span class="nav-text">插入排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%8E%92%E5%BA%8F"><span class="nav-number">8.3.</span> <span class="nav-text">交换排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">8.4.</span> <span class="nav-text">选择排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F"><span class="nav-number">8.5.</span> <span class="nav-text">归并排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F"><span class="nav-number">8.6.</span> <span class="nav-text">基数排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93"><span class="nav-number">8.7.</span> <span class="nav-text">排序算法总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="万般自然"
+      src="https://s1.ax1x.com/2023/07/09/pCgDTD1.jpg">
+  <p class="site-author-name" itemprop="name">万般自然</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yfwin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yfwin" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:biubiu200@163.com" title="E-Mail → mailto:biubiu200@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/5648936534" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;5648936534" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.qmzbe.top/" title="https:&#x2F;&#x2F;blog.qmzbe.top">逸风小站</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.cnblogs.com/qmzbe" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qmzbe" rel="noopener" target="_blank">CNBLOG</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.qmzbe.top/" title="https:&#x2F;&#x2F;blog.qmzbe.top">逸风小站2</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.cnblogs.com/qmzbe" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qmzbe" rel="noopener" target="_blank">CNBLOG2</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.qmzbe.top/posts/c5c682e7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s1.ax1x.com/2023/07/09/pCgDTD1.jpg">
+      <meta itemprop="name" content="万般自然">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="数据结构知识点大汇总 | 逸风小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据结构知识点大汇总
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-10 11:32:58" itemprop="dateCreated datePublished" datetime="2022-03-10T11:32:58+08:00">2022-03-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-01 22:45:33" itemprop="dateModified" datetime="2022-09-01T22:45:33+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" itemprop="url" rel="index"><span itemprop="name">数据结构</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="数据结构知识点大汇总" href="/posts/c5c682e7.html#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::53a7c6cd5a54f052a07a6e58b1065ab3" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一、数据结构绪论"><a href="#一、数据结构绪论" class="headerlink" title="一、数据结构绪论"></a>一、数据结构绪论</h1><h2 id="数据结构的基本概念"><a href="#数据结构的基本概念" class="headerlink" title="数据结构的基本概念"></a>数据结构的基本概念</h2><ul>
+<li>数据结构是一门研究非数值计算的程序设计问题中，计算机的操作对象以及它们之间的关系和操作的学科。</li>
+<li>数据元素是数据的基本单位，在计算机程序中通常作为一个整体进行考虑和处理。</li>
+<li>数据结构包含三个方面的含义：</li>
+</ul>
+<span id="more"></span>
+
+<p><img src="https://pic2.zhimg.com/80/v2-07bfa931348a5e0f453f2897111cde65_720w.jpg"></p>
+<ul>
+<li>逻辑结构：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-67422d086f8325df4da74c70f4092e98_720w.jpg"></p>
+<ul>
+<li>物理结构：数据的逻辑结构在计算机中的表示，称此为物理结构，或称存储结构。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-313aca63d8026554b8aa54bb779b8ed7_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-d6aa238b9019852e39685d50e46ccd7e_720w.jpg"></p>
+<ul>
+<li>数据类型：一个值的集合以及定义在这个值集上的一组操作的总称。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-dafe9fa237716a0282ab6b0d8a41aeaa_720w.jpg"></p>
+<ul>
+<li>抽象数据类型：通常由用户定义，用以表示应用问题的数据模型以及定义在该模型上的一组操作。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-0aea97a0064d87736684facb51d1a7bb_720w.jpg"></p>
+<ul>
+<li>算法是描述计算机解决给定问题的操作过程，即为决解某一特定问题而由若干条指令组成的有穷序列。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-8acf1b8ccd6ff04473d0bc9e904cf4ef_720w.jpg"></p>
+<h2 id="算法的效率分析"><a href="#算法的效率分析" class="headerlink" title="算法的效率分析"></a>算法的效率分析</h2><ul>
+<li>事后统计法：收集该算法实际的执行时间和实际占用空间的统计资料。</li>
+<li>事前分析估算法：在算法运行之前分析该算法的时间复杂度和空间复杂度，来判断算法的效率。</li>
+<li>时间复杂度分析：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-908d4962568fef15335d30bec58e47b4_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-ae8a1f489ec672b23d4e8a20c79b9247_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-7041bb4dffb31fb337b759074273a251_720w.jpg"></p>
+<ul>
+<li>常见函数的时间复杂度按数量递增排列及增长率：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-2aed58857ffe85c71cbd16955318155e_720w.jpg"></p>
+<h1 id="二、线性表"><a href="#二、线性表" class="headerlink" title="二、线性表"></a>二、线性表</h1><h2 id="线性表的类型定义"><a href="#线性表的类型定义" class="headerlink" title="线性表的类型定义"></a>线性表的类型定义</h2><ul>
+<li>线性表是n(n&gt;0)个相同类型数据元素构成的有限序列，其中n为线性表的长度。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-3d298000b4f6e33c8aa11dfcf1940f33_720w.jpg"></p>
+<ul>
+<li>线性表的基本操作：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-5cc2bcd52d2644cdf8dc9fcdc722c2ce_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-4632549a9b499795f6c8ff0230bbf728_720w.jpg"></p>
+<h2 id="线性表的顺序表示和实现"><a href="#线性表的顺序表示和实现" class="headerlink" title="线性表的顺序表示和实现"></a>线性表的顺序表示和实现</h2><ul>
+<li>线性表的顺序存储结构：用一组地址连续的存储单元依次存储线性表的元素。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-388edc6deae96ba68aad04bb03dda7e4_720w.jpg"></p>
+<ul>
+<li>线性表的顺序存储，也成为向量存储，又可以说是一维数组存储。线性表中结点存放的物理顺序与逻辑顺序完全一致，它叫向量存储。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-196c9909863cdfb930f7f231208ff196_720w.jpg"></p>
+<ul>
+<li><p>线性表顺序存储结构在插入或删除数据元素时比较繁琐，但是它比较适合存取数据元素。</p>
+</li>
+<li><p>线性表的插入操作：在第i个元素之前插入一个元素时，需将第n至第i（共n-i+1）个元素向后移动一个位置。</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-92476273c6e989e2c7ee5c7888e8a585_720w.jpg"></p>
+<ul>
+<li>线性表的删除操作：删除第i个元素时需将从第i+1至第n（共n-i）个元素一次向前移动一个位置</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-6fe7742fa810cd5e76335ca97763c783_720w.jpg"></p>
+<h2 id="线性表的链式表示和实现"><a href="#线性表的链式表示和实现" class="headerlink" title="线性表的链式表示和实现"></a>线性表的链式表示和实现</h2><ul>
+<li>用一组任意的存储单元（可能不连续）存储线性表的数据元素。</li>
+<li>在链式存储结构中，每个存储结点不仅包含数据元素本身的信息，还必须包含每个元素之间逻辑关系的信息，即包含直接后继结点的地址信息（指针域）。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-189a8060f9b811eff5666564339fd620_720w.jpg"></p>
+<ul>
+<li>逻辑顺序与物理顺序有可能不一致；属顺序存取的存储结构，即存取每个元素必须从第一个元素开始遍历，直到找到需要访问的元素，所以所花时间不一定相等。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-46dba8149a5e89d3534ca8f7b1e45e67_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-ea205a362c153ea51793c05ef9037e06_720w.jpg"></p>
+<ul>
+<li>链表的创建方式</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-46fea85644349f1ac44e153d100316a7_720w.jpg"></p>
+<ul>
+<li>结点类的定义：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-e2ea9c980699ce5478cf1aa5b12f189e_720w.jpg"></p>
+<h2 id="单链表的基本操作"><a href="#单链表的基本操作" class="headerlink" title="单链表的基本操作"></a>单链表的基本操作</h2><ul>
+<li>插入方式——头插法：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-aef6fb70ba86d5f0d1c334bd3e35ead2_720w.jpg"></p>
+<ul>
+<li>插入方式——尾插法：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-7b2eb6ec4c4afc5a38e143fe2858ad56_720w.jpg"></p>
+<ul>
+<li>查找运算——按序号查找：在链表中，即使知道被访问结点的序号i，也不能像顺序表中那么直接按序号i访问结点，而只能从链表的头指针除法，顺着链域next逐个结点往下搜索，直至搜索到第i个结点为止。链表不是随机存取结构，只能顺序存取。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-8a6dc704741de67f5af3ed3b2498bfd8_720w.jpg"></p>
+<ul>
+<li>查找运算——按数值查找：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-5556b06d6943e623028a635ec83e4dfd_720w.jpg"></p>
+<ul>
+<li>删除结点：将被删除结点的前驱指针连接被删除结点的后继指针</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-271421379bfbc66a11edded2efec4f3f_720w.jpg"></p>
+<h2 id="循环链表"><a href="#循环链表" class="headerlink" title="循环链表"></a>循环链表</h2><ul>
+<li>表中尾结点的指针域指向头结点，形成一个环。从表中任意一个点出发都可以找到表中其他的结点。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-711bcd436a8d8a3d936115f5e9d94a93_720w.jpg"></p>
+<ul>
+<li>循环链表的操作和线性链表的操作基本一致，但循环链表中没有NULL指针，故遍历操作时，终止条件不再是判断p或p.next是否为空，而是判断他们是否等于某一指定指针，如头指针或尾指针。</li>
+</ul>
+<h2 id="双向链表"><a href="#双向链表" class="headerlink" title="双向链表"></a>双向链表</h2><ul>
+<li>双向链表是在单链表的每个结点里再增加一个指向其直接前驱的指针域prior。这样就形成了链表中有两个方向不同的链，故称为双向链表。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-621913a57aee74643bc1f802e8277900_720w.jpg"></p>
+<ul>
+<li>双线链表——头插法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-041979b4cc9207654471910437d99b68_720w.jpg"></p>
+<ul>
+<li>双向链表——尾插法：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-a1d1250730ebc633905d2d2f98a539fd_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-dd768ec6c7cf2fd3d4dc067bb28af257_720w.jpg"></p>
+<ul>
+<li>插入操作</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-867cc4cebca6dfe73c6c4660d11281da_720w.jpg"></p>
+<h1 id="三、栈和队列"><a href="#三、栈和队列" class="headerlink" title="三、栈和队列"></a>三、栈和队列</h1><h2 id="栈的概念"><a href="#栈的概念" class="headerlink" title="栈的概念"></a>栈的概念</h2><ul>
+<li>栈是限制在表的一端进行插入和删除运算的线性表，通常称插入、删除的这一端为栈顶，另一端为栈底。当表中没有元素时成为空栈。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-d5091c84f3bb17c3a3f80b9299e5a712_720w.jpg"></p>
+<ul>
+<li>栈的进出顺序判断：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-08c65046288af6eec904c99bac9b3521_720w.jpg"></p>
+<ul>
+<li>栈的基本操作：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-2f3ead4f984573e74a42ec2ca150ed8d_720w.jpg"></p>
+<h2 id="顺序栈"><a href="#顺序栈" class="headerlink" title="顺序栈"></a>顺序栈</h2><ul>
+<li>顺序栈利用一组地址连续的存储单元依次存放自栈底到栈顶的数据元素，同时由于栈的操作的特殊性，还必须附设一个位置指针top来动态地指示栈顶元素的顺序栈中的位置。通常以top&#x3D;0表示空栈。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-5573d1c0ae9d45f6e842b65b213ea768_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-3d1329ee06a8af52e0e13fed06752e61_720w.jpg"></p>
+<ul>
+<li>顺序栈的基本运算：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-46c3c361da816a3731d362a90ba31c5b_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-df835b40632839a2fe21412dc758ff61_720w.jpg"></p>
+<h2 id="链栈"><a href="#链栈" class="headerlink" title="链栈"></a>链栈</h2><p>采用链表作为存储结构实现的栈。为便于操作，采用带头结点的单链表实现栈。因为栈的插入和删除操作仅限制在表头位置进行，所以链表的表头指针就作为栈顶指针。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-741400706272320f63a07ff56f7a2e39_720w.jpg"></p>
+<h2 id="顺序栈和链式栈的比较"><a href="#顺序栈和链式栈的比较" class="headerlink" title="顺序栈和链式栈的比较"></a>顺序栈和链式栈的比较</h2><p>实现链式栈和顺序栈的操作都是需要常数时间，即时间复杂度为O（1），主要从空间和时间两个方面考虑。初始时，顺序堆栈必须说明一个固定的长度，当堆栈不够满时，造成一些空间的浪费，而链式堆栈的长度可变则使长度不需要预先设定，相对比较节省空间，但是在每个节点中设置了一个指针域，从而产生了结构开销。</p>
+<h2 id="队列的概念"><a href="#队列的概念" class="headerlink" title="队列的概念"></a>队列的概念</h2><ul>
+<li>队列是一种先进先出的线性表，它只允许在表的一端进行插入，而在另一端删除元素。在队列中，允许插入数据一端成为队尾（rear），允许删除的那一端称为队头（front）。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-d46aea143363ba5c029c698aa3b780ce_720w.jpg"></p>
+<ul>
+<li>队列的基本操作：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-d70af15008ff1a2670561fa899bffff4_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-e15fd358174b0a3ce0cceadc0e0071bf_720w.jpg"></p>
+<h2 id="顺序队列"><a href="#顺序队列" class="headerlink" title="顺序队列"></a>顺序队列</h2><ul>
+<li>顺序队列利用一组地址连续的存储单元依次存放自队首到队尾的数据元素，同时由于队的操作的特殊性，还必须附两个位置指针front和rear来动态地指示队首元素和队尾元素在顺序队列中的位置。通常front&#x3D;rear表示空队列。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-59480682f50923d591333d0f0de66a14_720w.jpg"></p>
+<ul>
+<li>队列同堆栈一样也有上溢和下溢现象。以外，队列中还存在“假溢出”现象。所谓“假溢出”是指在入队和出队操作中，头尾指针不断增加而不减小或只减小而不增加，致使被删除元素的空间无法重新利用，最后造成队列中有空闲空间，但是不能够插入元素，也不能够删除元素的现象。</li>
+</ul>
+<h2 id="链式队列"><a href="#链式队列" class="headerlink" title="链式队列"></a>链式队列</h2><p>采用链表作为存储结构实现的队列。为便于操作，采用带头结点的单链表实现队列。因为队列的插入和删除操作位置不同，所以链表需要设置表头指针和表尾指针分别指队首和队尾。</p>
+<h2 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h2><ul>
+<li>假设向量的空间是m,只要在入出队列时，将队首和队尾的指针对m做求模运算即可实现队首和队尾指针的循环，即队首和队尾指针的取值范围是0到m-1之间。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-afcc91bf4a024b52a5d5cd1c05b11948_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-7ddabab9f742b2c3123c8b554c2bdf54_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-ef1b6a08a9ea8339529c8d5b3d0b70db_720w.jpg"></p>
+<ul>
+<li>判断队空和队满的方法</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-f95d173ae01a4e6c2ce19aa1dc8f4bb1_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-030e5698e1f15ff3c169b1d25ee581b6_720w.jpg"></p>
+<h1 id="四、数组和广义表"><a href="#四、数组和广义表" class="headerlink" title="四、数组和广义表"></a>四、数组和广义表</h1><h2 id="数组的定义"><a href="#数组的定义" class="headerlink" title="数组的定义"></a>数组的定义</h2><ul>
+<li>数组是我们熟悉的数据类型，数组中各元素具有统一的类型，并且数组元素的下标一般具有固定的上界和下界，因此，数组的处理比其它复杂的结构更为简单。</li>
+<li>任何数组A都可以看作一个线性表。数组维数确定后，数据元素个数和元素之间的关系不再发生改变，适合顺序存储。</li>
+<li>数组的基本操作</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-09ad2d1b7726cceec9edf10cef951fcb_720w.jpg"></p>
+<h2 id="数组的顺序表示和实现"><a href="#数组的顺序表示和实现" class="headerlink" title="数组的顺序表示和实现"></a>数组的顺序表示和实现</h2><ul>
+<li>行优先顺序</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-c5f509ba99249451c5bdc079beb843ee_720w.jpg"></p>
+<ul>
+<li>列优先顺序</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-ff97b41170c164359bedb08d56df9232_720w.jpg"></p>
+<h2 id="矩阵的压缩存储"><a href="#矩阵的压缩存储" class="headerlink" title="矩阵的压缩存储"></a>矩阵的压缩存储</h2><ul>
+<li>有些特殊矩阵，非零元素呈某种规律分布或者矩阵中出现大量的零元素的情况下，会占用许多单元去存储重复的非零元素或零元素，这对高阶矩阵会造成极大的浪费，为了节省存储空间，对这类矩阵进行压缩存储——即为多个相同的非零元素只分配一个存储空间；对零元素不分配空间。</li>
+<li>特殊矩阵：所谓特殊矩阵是指非零元素或零元素的分布有一定规律的矩阵，如对称矩阵、三角矩阵、对角矩阵等等。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-097b7d4f32bf6362978180317a67f760_720w.jpg"></p>
+<h2 id="对称矩阵"><a href="#对称矩阵" class="headerlink" title="对称矩阵"></a>对称矩阵</h2><p><img src="https://pic3.zhimg.com/80/v2-3524e6e2fabc998fca223b2e8103be92_720w.jpg"></p>
+<ul>
+<li><p>对称矩阵中元素关于主对角线对称，故只要存储矩阵中上三角或下三角中的元素，让每两个对称的元素共享一个存储空间，这样能节约近一半的存储空间。</p>
+</li>
+<li><p>n2 个元素可以压缩到 n（n+1）&#x2F;2个空间中。</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-71bd76abde0630e076018b4cc9813295_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-4f64babba980661101c860292051b41b_720w.jpg"></p>
+<h2 id="三角矩阵"><a href="#三角矩阵" class="headerlink" title="三角矩阵"></a>三角矩阵</h2><ul>
+<li>以主对角线划分，三角矩阵有上三角和下三角两种。上三角矩阵它的下三角中的元素均为常数。下三角矩阵正好相反，它的主对角线上方均为常数。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-e59c370bf8167372c1a63b15dc376f7c_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-f149aa0d8def82ff2bc7a70b06ffa902_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-b51cd6229e3b75260bdf8058d1b03761_720w.jpg"></p>
+<h2 id="稀疏矩阵"><a href="#稀疏矩阵" class="headerlink" title="稀疏矩阵"></a>稀疏矩阵</h2><p><img src="https://pic4.zhimg.com/80/v2-fe2cb246b9153b00ece2b3d37e669a17_720w.jpg"></p>
+<p>除了记录非零元素的值之外，还必须同时几下它所在的行和列的位置。稀疏矩阵的存储方法一般有三种：三元组法、行逻辑连接顺序表和十字链表法。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-c264b3477ac072cd03fac04592f78032_720w.jpg"></p>
+<h2 id="广义表"><a href="#广义表" class="headerlink" title="广义表"></a>广义表</h2><ul>
+<li>是由零个或多个原子或子表组成的优先序列，是线性表的推广。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-c15b59df68a00259090e50db09501cba_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-3c0d469afa97b78429961f4b228c6339_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-5f962101334171d06ecbbcea4f4c0bbb_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-348dcd05ae84ca4cb9981553605da917_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-a4f40a1d04e1b423a7560b627f8f1038_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-1fad89f6d6336f99549529e20be1d90b_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-c4f0b14a987da1643a163604e31d1a63_720w.jpg"></p>
+<h2 id="广义表的存储结构"><a href="#广义表的存储结构" class="headerlink" title="广义表的存储结构"></a>广义表的存储结构</h2><ul>
+<li>广义表中的数据元素可以具有不同的结构，因此，难以用顺序存储结构表示，通常采用链式存储结构，每个数据元素可用一个节点表示。由于广义表中有两种数据元素，因此需要有两种结构的节点——一种是表结点，一种是原子结点。</li>
+<li>表结点由三个域组成：标志域、指示表头的指针的指针域和指示表尾的指针域；而原子域只需两个域：标志域和值域。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-f9dcdb97748c12b8406aa02d4dd1c221_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-b05604ca687147e7596f17610ed8ade7_720w.jpg"></p>
+<ul>
+<li>表结点由三个域组成：标志域、指示表头的指针域和指向下一个元素的指针；原子结点的三个域为：标志域、值域和指向下一个元素的指针。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-9b820d3da70078490e68019778fd9ecf_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-46328ccca1e8cdbd19180ea3c9d13001_720w.jpg"></p>
+<h1 id="五、树"><a href="#五、树" class="headerlink" title="五、树"></a>五、树</h1><h2 id="树的定义"><a href="#树的定义" class="headerlink" title="树的定义"></a>树的定义</h2><p><img src="https://pic2.zhimg.com/80/v2-89bec5d9f147e731b57c467f7c4a04ed_720w.jpg"></p>
+<ul>
+<li>树的逻辑表示：树形表示法、文氏图表示法、凹入表示法、括号表示法。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-569b75211a6f368156d5a4802ed9d995_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-d96a77305c0f9d4f1aef885e388c5e4c_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-6b292b56c8f8ee9c02360b4a46c127cc_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-d1d20d6bdbcfd07aecce409dff520863_720w.jpg"></p>
+<ul>
+<li><p>结点：表示树中的元素，包括数据项及若干指向其子树的分支。</p>
+</li>
+<li><p>结点的度：结点拥有的子树树；树的度：一棵树中最大的结点度数</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-bb466b5d26ee92abfb9ba9462ee82dcd_720w.jpg"></p>
+<ul>
+<li><p>叶子结点：度为0的结点；分支结点：度不为0的结点；孩子：结点子树的根称为该结点的孩子；双亲：孩子结点的上层结点叫该结点的双亲；兄弟：同一双亲的孩子。</p>
+</li>
+<li><p>深度：树中结点的最大层次数。</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-9638df1cce39e8e667e525f67d522b39_720w.jpg"></p>
+<ul>
+<li>有序树：树中各结点的子树从左至右是有次序的，不能互换。否则称为无序树。</li>
+</ul>
+<h2 id="树的性质"><a href="#树的性质" class="headerlink" title="树的性质"></a>树的性质</h2><ul>
+<li>树中的结点数等于所有结点的度数加1。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-410f23c6c5a0d63c33341718a6b9ec87_720w.jpg"></p>
+<ul>
+<li>度为m的树中第i层上至多有mi-1 个结点（i&gt;&#x3D;1）。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-07fc76e90f6eba5c81e202f82720da09_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-e0513e95e8551c2336e2d1b6aa203d8e_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-d722c9262e4568f8459bb1b36a4d0ccb_720w.jpg"></p>
+<h2 id="二叉树的概念"><a href="#二叉树的概念" class="headerlink" title="二叉树的概念"></a>二叉树的概念</h2><p><img src="https://pic4.zhimg.com/80/v2-9e6b96511bba7e0bfc61c741d6df49bf_720w.jpg"></p>
+<ul>
+<li><p>满二叉树：定义——一棵深度为k且具有2k-1个结点的二叉树。特点——每一层上的结点数都是最大结点数。</p>
+</li>
+<li><p>完全二叉树：定义——深度为k，有n个结点的二叉树当且仅当其每一个结点都与深度为k的满二叉树中编号从1至n的结点一一对应时，称为完全二叉树。</p>
+</li>
+</ul>
+<h2 id="二叉树的性质"><a href="#二叉树的性质" class="headerlink" title="二叉树的性质"></a>二叉树的性质</h2><p><img src="https://pic3.zhimg.com/80/v2-ab880b7cd2a935d7c2bcb52fc9384462_720w.jpg"></p>
+<ul>
+<li>二叉树的第i层上至多有2i-1(i&gt;&#x3D;1)个结点。</li>
+<li>深度为K的二叉树至多有2k-1个结点。</li>
+<li>对任何一棵二叉树T，如果其叶子数为n0，度为2的结点数为n2，则n0&#x3D;n2+1。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-4fa18c09ccd8980f4fd61bc953e8a7c6_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-a12de4b3a2f7def6d5236ca36806ac2e_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-e71d3acbf1eae570bd56f79a05dd4f67_720w.jpg"></p>
+<ul>
+<li>一个有n个结点的完全二叉树，编号最大的分支结点的编号是</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-e315fe13a160309d99f05332d5f1eae3_720w.jpg"></p>
+<ul>
+<li>一个有n个结点的完全二叉树，n0的个数是不小于n&#x2F;2的最小整数。</li>
+</ul>
+<h2 id="二叉树的存储结构"><a href="#二叉树的存储结构" class="headerlink" title="二叉树的存储结构"></a>二叉树的存储结构</h2><ul>
+<li>用一组连续的存储单元存储二叉树的数据元素。在存储之前对二叉树的所有结点安排一个适当的序列，使得结点在这个序列中的相互位置能反应出结点之间的逻辑关系。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-bfa6c12941657481f9a824c8ba6792d4_720w.jpg"></p>
+<ul>
+<li>特点：结点间关系蕴含在其存储位置中；浪费空间，适于存满二叉树和完全二叉树。</li>
+</ul>
+<h2 id="二叉树的链式存储结构"><a href="#二叉树的链式存储结构" class="headerlink" title="二叉树的链式存储结构"></a>二叉树的链式存储结构</h2><ul>
+<li>用一个链表来存储一棵二叉树，二叉树中每一个结点用链表中的一个链结点来存储。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-cfd1a60b381ed63552fd1494e2801cc9_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-32826d965d82aef69b2d6b2de093e286_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-3fb7b01a361016edc19cdb4db44df68c_720w.jpg"></p>
+<h2 id="遍历二叉树"><a href="#遍历二叉树" class="headerlink" title="遍历二叉树"></a>遍历二叉树</h2><ul>
+<li>遍历方法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-45166f01b1713990693d917e164e57a7_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-158f362ebf57930bb7424b65243c6220_720w.jpg"></p>
+<ul>
+<li>利用遍历结果确定二叉树：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-4a30ec8edf854f6f536213fa8b856f54_720w.jpg"></p>
+<ul>
+<li>先序遍历算法：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//先序遍历递归算法</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">preorder</span><span class="params">(Tree t)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(t==<span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    visit(t);</span><br><span class="line">    preorder(t.left());</span><br><span class="line">    preorder(t.right());</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//先序遍历非递归算法</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">PreOrderUnrec</span><span class="params">(Bitree t)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//创建栈来存放树的结点</span></span><br><span class="line">    SqStack s;</span><br><span class="line">    StackInit(s);</span><br><span class="line">    p=t;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (p!=<span class="literal">null</span> || !StackEmpty(s))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span> (p!=<span class="literal">null</span>)             <span class="comment">//遍历左子树</span></span><br><span class="line">        &#123;</span><br><span class="line">            visite(p-&gt;data);</span><br><span class="line">            push(s,p);</span><br><span class="line">            p=p-&gt;lchild;       </span><br><span class="line">        &#125;<span class="comment">//endwhile</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (!StackEmpty(s))         <span class="comment">//通过下一次循环中的内嵌while实现右子树遍历</span></span><br><span class="line">        &#123;</span><br><span class="line">            p=pop(s);</span><br><span class="line">            p=p-&gt;rchild;        </span><br><span class="line">        &#125;<span class="comment">//endif</span></span><br><span class="line">                </span><br><span class="line">    &#125;<span class="comment">//endwhile </span></span><br><span class="line">    </span><br><span class="line">&#125;<span class="comment">//PreOrderUnrec</span></span><br><span class="line">中序遍历算法：</span><br><span class="line"> </span><br><span class="line"><span class="comment">//中序遍历递归算法</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">inorder</span><span class="params">(Tree t)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(t==<span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    inorder(t.left());</span><br><span class="line">    visit(t);</span><br><span class="line">    inorder(t.right());</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">void</span> <span class="title function_">InOrderUnrec</span><span class="params">(Bitree t)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//创建栈来存放树的结点</span></span><br><span class="line">    SqStack s;</span><br><span class="line">    StackInit(s);</span><br><span class="line">    p=t;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (p!=<span class="literal">null</span> || !StackEmpty(s))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span> (p!=<span class="literal">null</span>)             <span class="comment">//遍历左子树</span></span><br><span class="line">        &#123;</span><br><span class="line">            push(s,p);</span><br><span class="line">            p=p-&gt;lchild;       </span><br><span class="line">        &#125;<span class="comment">//endwhile</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (!StackEmpty(s))         <span class="comment">//通过下一次循环中的内嵌while实现右子树遍历</span></span><br><span class="line">        &#123;</span><br><span class="line">            p=pop(s);</span><br><span class="line">            visite(p-&gt;data);        <span class="comment">//访问根节点</span></span><br><span class="line">            p=p-&gt;rchild;        </span><br><span class="line">        &#125;<span class="comment">//endif</span></span><br><span class="line">                </span><br><span class="line">    &#125;<span class="comment">//endwhile </span></span><br><span class="line">    </span><br><span class="line">&#125;<span class="comment">//InOrderUnrec</span></span><br><span class="line">后序遍历算法：</span><br><span class="line"> </span><br><span class="line">后序遍历递归算法</span><br><span class="line"><span class="keyword">void</span> <span class="title function_">inorder</span><span class="params">(Tree t)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(t==<span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    inorder(t.left());</span><br><span class="line">    inorder(t.right());</span><br><span class="line">    visit(t);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//后序遍历非递归算法</span></span><br><span class="line">对于任一结点P，将其入栈，然后沿其左子树一直往下搜索，直到搜索到没有左孩子的结点，此时该结点出现在栈顶，但是此时不能将其出栈并访问，因此其右孩子还为被访问。所以接下来按照相同的规则对其右子树进行相同的处理，当访问完其右孩子时，该结点又出现在栈顶，此时可以将其出栈并访问。这样就保证了正确的访问顺序。可以看出，在这个过程中，每个结点都两次出现在栈顶，只有在第二次出现在栈顶时，才能访问它。因此需要多设置一个变量标识该结点是否是第一次出现在栈顶。</span><br><span class="line"><span class="keyword">void</span> <span class="title function_">postOrder2</span><span class="params">(BinTree *root)</span>    <span class="comment">//非递归后序遍历</span></span><br><span class="line">&#123;</span><br><span class="line">    stack&lt;BTNode*&gt; s;</span><br><span class="line">    BinTree *p=root;</span><br><span class="line">    BTNode *temp;</span><br><span class="line">    <span class="keyword">while</span>(p!=NULL||!s.empty())</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>(p!=NULL)              <span class="comment">//沿左子树一直往下搜索，直至出现没有左子树的结点 </span></span><br><span class="line">        &#123;</span><br><span class="line">            BTNode *btn=(BTNode *)malloc(sizeof(BTNode));</span><br><span class="line">            btn-&gt;btnode=p;</span><br><span class="line">            btn-&gt;isFirst=<span class="literal">true</span>;</span><br><span class="line">            s.push(btn);</span><br><span class="line">            p=p-&gt;lchild;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!s.empty())</span><br><span class="line">        &#123;</span><br><span class="line">            temp=s.top();</span><br><span class="line">            s.pop();</span><br><span class="line">            <span class="keyword">if</span>(temp-&gt;isFirst==<span class="literal">true</span>)     <span class="comment">//表示是第一次出现在栈顶 </span></span><br><span class="line">             &#123;</span><br><span class="line">                temp-&gt;isFirst=<span class="literal">false</span>;</span><br><span class="line">                s.push(temp);</span><br><span class="line">                p=temp-&gt;btnode-&gt;rchild;    </span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span>                        <span class="comment">//第二次出现在栈顶 </span></span><br><span class="line">             &#123;</span><br><span class="line">                cout&lt;&lt;temp-&gt;btnode-&gt;data&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">                p=NULL;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="线索二叉树"><a href="#线索二叉树" class="headerlink" title="线索二叉树"></a>线索二叉树</h2><ul>
+<li>利用二叉链表的空指针域，建立指向该结点的前驱&#x2F;后继结点的指针，方便二叉树的线性化使用。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-fcafd439a830245230ba507e8fdb6f84_720w.jpg"></p>
+<ul>
+<li>对二叉链表以某种次序遍历使其变为线索二叉树的过程叫做线索化。有先序线索二叉树、中序线索二叉树（更实用）和后序线索二叉树三种。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-f7ca6a3bec6440be4810a3ca910b8866_720w.jpg"></p>
+<ul>
+<li>建立中序线索二叉树</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-364b6bca5c21b940bbe181fd3e884665_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-c201b5978b9e75da1a63f316df0f1bf9_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-cffbafc4b8aca7338f8bb4c287ffef12_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-5c722411aa1dc1546c8d38f845cf70f9_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-dd2c3b5a25db448f7e14c7c838117caa_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-d093d7e95f9363e3a0b5d8ee4ed66218_720w.jpg"></p>
+<h2 id="树的存储结构"><a href="#树的存储结构" class="headerlink" title="树的存储结构"></a>树的存储结构</h2><ul>
+<li>双亲表示法：用一组连续空间存储树的结点，每个节点包含两个域——数据域用来存放结点本身信息，双亲域用来指示本结点的双亲结点在数组中位置。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-acebcee1f04847bf2cddcfca3ca8472c_720w.jpg"></p>
+<p>孩子表示法：采用孩子链表，每个结点的孩子结点用单链表存储，再用含n个元素的结构数组指向每个孩子链表。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-7e054cf57b7ad311a6a62ae651c361d7_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-73b3b4886c0b3c16bea791a35933da7f_720w.jpg"></p>
+<ul>
+<li>孩子兄弟表示法：用二叉链表作为树的存储结构。链表中结点的两个链域分为指向该结点的第一个孩子结点和下一个兄弟结点。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-cbfd61a20d4388e0aa0d0c85ae492303_720w.jpg"></p>
+<h2 id="森林与二叉树的转换"><a href="#森林与二叉树的转换" class="headerlink" title="森林与二叉树的转换"></a>森林与二叉树的转换</h2><ul>
+<li>将树转换为二叉树</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-89896a608bc97dd7b02959a95479239a_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-4a40b13ded1ab09561aa3194cdf62d56_720w.jpg"></p>
+<ul>
+<li>将二叉树转换为树：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-75335b40b49c565d443fd0f254dcd997_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-7340f665e2a76030dac5f069441768f9_720w.jpg"></p>
+<ul>
+<li>森林转换成二叉树：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-2d902b482c9bfc3c4023f93975f55c35_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-7b7e6f9284420f7179c0499210a168f4_720w.jpg"></p>
+<ul>
+<li>二叉树转换成森林</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-89b579149293c7614d1efb2a23b875d2_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-b5c8c9056fd9e649c35ccc8ffffa9293_720w.jpg"></p>
+<h2 id="哈夫曼树"><a href="#哈夫曼树" class="headerlink" title="哈夫曼树"></a>哈夫曼树</h2><ul>
+<li>结点的权及带权路径长度：若将树中结点赋给一个有着某种含义的数值，则这个数值称为该结点的权。结点的带权路径长度为：从根节点到该结点之间的路径长度与该结点的权的乘积。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-39a2fe8f528da3d30d8bfe1b3416fcb1_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-cdb70ddaa4bd9adabe55b66918a6576e_720w.jpg"></p>
+<ul>
+<li>在一棵二叉树中，若带权路径长度达到最小，称这样的二叉树为最优二叉树，也称哈夫曼树。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-1384c855eb90ba3b2a075a088484a777_720w.jpg"></p>
+<h1 id="六、图"><a href="#六、图" class="headerlink" title="六、图"></a>六、图</h1><h2 id="图的概念"><a href="#图的概念" class="headerlink" title="图的概念"></a>图的概念</h2><ul>
+<li>图是一种较线性表和树更为复杂的数据结构，在图形结构中，结点之间关系可以是任意的，图中任意两个数据元素之间都可能相关。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-565af1c82a37bbcaa40662de517e02a6_720w.jpg"></p>
+<ul>
+<li>有向图和无向图</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-b0fc1e3af056ad05d821c849fcf0c933_720w.jpg"></p>
+<ul>
+<li>若无向图中的每两个顶点之间都存在着一条边，则称该无向图称作完全无向图；显然完全无向图中包含着e&#x3D;n(n-1)&#x2F;2条边。若有无向图中的每两个顶点之间都存在方向相反的两条边，则称该有向图称作完全有向图；显然完全有向图中包含有e&#x3D;n(n-1)条边。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-ebc008a72d0346aa30c53d17521261fe_720w.jpg"></p>
+<ul>
+<li>与图的边或弧相关的数叫做权，带权的图称为网。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-da05e5b91fcbdee274a80f260a1bffd9_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-932a6ee9d7e226a147fbd162fbb3171b_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-ff9820661a85440a7090d1d963ba4a64_720w.jpg"></p>
+<ul>
+<li>对于有向图而言，度又分为出度和入度。顶点的出度——以顶点v为弧尾的弧的数目；顶点的入度——以顶点v为弧头的弧的数目；顶点的度为该顶点的出度和入度的和。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-f1f37e5823ded1ab82797683fc57929f_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-e0721ff4266b55f007c4dcf45c9ad5c2_720w.jpg">* 在无向图G中，如果从顶点v到顶点w存在路径，则称v到w是连通的。若图G中任意两个顶点之间都有路径相通，则称为连通图。</p>
+<ul>
+<li>若无向图为非连通图，则图中各个极大连通子图称作此图的连通分量。任何连通图的连通分量只有一个，即本身，而非连通图则有多个连通分量。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-b6004ac08f1ea0edb36e74eeddc9a004_720w.jpg"></p>
+<ul>
+<li><p>在有向图中，若任意两个顶点之间都存在一条有向路径，则称此有向图为强连通图。</p>
+</li>
+<li><p>若有向图为非强连通图，其各个强连通子图称为它的强连通分量。</p>
+</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-898b62b1e07d4cbf7d62d35b407f726a_720w.jpg"></p>
+<h2 id="图的存储结构"><a href="#图的存储结构" class="headerlink" title="图的存储结构"></a>图的存储结构</h2><h3 id="邻接矩阵"><a href="#邻接矩阵" class="headerlink" title="邻接矩阵"></a>邻接矩阵</h3><ul>
+<li>邻接矩阵是表示顶点之间相邻关系的矩阵。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-c2b9e203ed113106d9a72d58f13ff0d6_720w.jpg"></p>
+<ul>
+<li>无向图的邻接矩阵：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-5d251e1f73050127ca348344c439d340_720w.jpg"></p>
+<ul>
+<li>有向图的邻接矩阵：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-9802eb430abc1345021b4f56a7c6a639_720w.jpg"></p>
+<ul>
+<li>网的邻接矩阵：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-26beb2744798de6279592111d840ff20_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-1eded28a6c9d6129be6f5a84a89bb5b6_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-3d9723493cb92b1dceea6fd8d4c6f47f_720w.jpg"></p>
+<h3 id="邻接表"><a href="#邻接表" class="headerlink" title="邻接表"></a>邻接表</h3><ul>
+<li>邻接表存储方法是一种顺序分配与链式分配相结合的存储方法。它包括两部分：一部分是单链表，用来存放边的信息；另一部分是数组，主要用来存放顶点本身的数据信息。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-5e2c2aebe0deb21f83dcd9f0a62498af_720w.jpg"></p>
+<ul>
+<li>无向图邻接表：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-b754f200e69ca0e72db6c1a0b676d5b2_720w.jpg"></p>
+<ul>
+<li>有向图的邻接表：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-e7353bb409a39f36f35412576ed8579d_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-318825cc62d124831c26685ed3ca8933_720w.jpg"></p>
+<h3 id="十字链表"><a href="#十字链表" class="headerlink" title="十字链表"></a>十字链表</h3><ul>
+<li>十字链表是有向图的另一种链式存储结构。可以看成是将有向图的邻接表和逆邻接表结合起来得到的一种链表。在十字链表中，每条弧和每个顶点分别对应着一个结点。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-19dac4222b10899605f87c57917c2357_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-20eb2071edd11a3a5fb6c7a331c8f0db_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-182212d4ddd5eba45b9abf1553f8eeff_720w.jpg"></p>
+<h3 id="邻接多重表"><a href="#邻接多重表" class="headerlink" title="邻接多重表"></a>邻接多重表</h3><ul>
+<li>邻接多重表是无向图的另一种链式存储结构。邻接多重表和十字链表一样，每条边和每个顶点分别对应着一个结点。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-73eed0b789590d6c650f0f9be3beb0fb_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-248cfa705e298ded89418718a9846add_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-e6e4bfead2aeb45a7b232c977beed62d_720w.jpg"></p>
+<h2 id="图的遍历"><a href="#图的遍历" class="headerlink" title="图的遍历"></a>图的遍历</h2><ul>
+<li>从图中某个顶点出发游历图，访遍图中其余顶点，并且使图中的每个顶点仅被访问一次的过程</li>
+<li>根据搜索方法的不同，图的遍历有两种：深度优先搜索（DFS）和广度优先搜索（WFS）。</li>
+</ul>
+<h2 id="深度优先搜索"><a href="#深度优先搜索" class="headerlink" title="深度优先搜索"></a>深度优先搜索</h2><p><img src="https://pic2.zhimg.com/80/v2-7a3d824439a5b9164db941d2c94d4aa5_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-b4eaa724705ddb6c39c163dea5771c73_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-b96933846f2342a41c05d76dcd964a74_720w.jpg"></p>
+<ul>
+<li>连通图深度优先搜索的算法：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-0424337ad0155df6d7cb3b16fa5f9811_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-7cec0693ed949aa5db677cb18a897d54_720w.jpg"></p>
+<h2 id="广度优先搜索"><a href="#广度优先搜索" class="headerlink" title="广度优先搜索"></a>广度优先搜索</h2><p><img src="https://pic1.zhimg.com/80/v2-88436415aa05c7666ca7e24b68b7e884_720w.jpg"></p>
+<ul>
+<li>广度优先搜索是一种分层的搜索过程，每向前走一步可能访问一批顶点，不像深度优先搜索那样有回退的情况。因此，广度优先搜索不是一个递归的过程，其算法也不是递归的。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-5c38f41c4b6525a3f7725fb7aab52e6e_720w.jpg"></p>
+<ul>
+<li>连通图的广度优先搜索算法：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-6b34a36b55c380c6307b9c7ccc674632_720w.jpg"></p>
+<ul>
+<li>非连通图广度优先搜索：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-38042047c903f7718522e1320a7f0924_720w.jpg"></p>
+<h2 id="无向图的连通分量和生成树"><a href="#无向图的连通分量和生成树" class="headerlink" title="无向图的连通分量和生成树"></a>无向图的连通分量和生成树</h2><ul>
+<li>连通图生成树：一个连通图的生成树是一个极小连通子图，它含有图中全部顶点，但只有构成一棵树的n-1条边。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-18a2e968aaa112328e30444c5a5df14c_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-4d0a225ec9d1287d9268b51da2a3e6da_720w.jpg"></p>
+<ul>
+<li>当无向图为非连通图时，从图中某一顶点除法，利用深度优先搜索算法或广度优先搜索算法不可能遍历到图中的所有顶点，只能访问到该顶点所在的极大连通子图的所有顶点，该极大连通子图称为无向图的一个连通分量。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-9a1669c14a23cfa1a3b323db06d2e684_720w.jpg"></p>
+<ul>
+<li>使用不同的遍历图的方法，可以得到不同的生成树；从不同的顶点出发，也可能得到不同的生成树。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-0c91562b56802740bc0eec16e90036eb_720w.jpg"></p>
+<h2 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h2><ul>
+<li>在连通网的众多生成树中，各边权值之和最小的生成树称为最小代价生成树，简称最小生成树。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-4b061381e87d81efcbd6730409ad78ab_720w.jpg"></p>
+<ul>
+<li>生成最小生成树算法——普里姆算法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-2bf34f44fdcaa606edb4cddc6a9efc3b_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-cdbd914cf05baf30d749cd3399acf652_720w.jpg"></p>
+<ul>
+<li>生成最小生成树算法——克鲁斯卡尔算法：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-6eec2a13a886e486f09cd8be59fc5b7e_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-50f69c3dd2e4af536d50dc7f51f19b00_720w.jpg"></p>
+<h2 id="有向无环图"><a href="#有向无环图" class="headerlink" title="有向无环图"></a>有向无环图</h2><ul>
+<li>一个无环的有向图称为有向无环图，简称DAG图。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-8a71f949bfc3b5ef659d25e4bc16be24_720w.jpg"></p>
+<h2 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h2><ul>
+<li>在一个有向图中，若用顶点表示活动，有向边表示活动间的先后关系，称该有向图叫做顶点表示活动的网络，简称AOV网。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-cd6130fb4f03a2e589c39aaa9f9dc0aa_720w.jpg"></p>
+<ul>
+<li><p>按照有向图给出的次序关系，将图中顶点排成一个线性序列，对于有向图中没有限定次序关系的顶点，则可以人为加上任意的次序关系。由此所得顶点的线性序列成为拓扑有序序列。</p>
+</li>
+<li><p>拓扑排序：由某个集合上的一个偏序（集合中仅有部分成员之间可以比较）得到该集合上的一个全序（集合中全体成员之间均可以比较）的操作称为拓扑排序。</p>
+</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-525d63865679b0c5597796af8db00daa_720w.jpg"></p>
+<ul>
+<li>拓扑排序的算法：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-66b1ee571f72e29926f7ac81f1d7a455_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-31a03c499e8a4c6ff5918e12a8427c3f_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-850375302f240f94b51b1f37e34df9f0_720w.jpg"></p>
+<h2 id="关键路径"><a href="#关键路径" class="headerlink" title="关键路径"></a>关键路径</h2><ul>
+<li>在一个有向图中，若用顶点表示事件，弧表示活动，权表示活动持续时间，称该有向图叫做边表示活动的网络，简称为AOE网。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-01a5370b8a97ad3f8481faa20e8ab563_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-6ea23892923da7aa515a7baf97d53f7c_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-a0647ebd6e070673cab51c21dc44326f_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-6266d16a2656e49c1c72ed5fa6e058b0_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-127eb9aee4af3ca40a3c5be03fb212f6_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-243c37778e45c7f36be9035920f9df7e_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-47b174e43604a738cdda6258014f3fe3_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-4620b8bb7033cf4c7ebe0b4628b8a6aa_720w.jpg"></p>
+<h1 id="七、查找"><a href="#七、查找" class="headerlink" title="七、查找"></a>七、查找</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>查找表：由同一类型的数据元素（或记录）构成的集合。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-5013242dc8e11050f2be919f7874736b_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-3ebc90e3e5e1bc31f3a8e68accf1ea1b_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-2f68f42770246a61568b989816e537ac_720w.jpg"></p>
+<h2 id="静态查找表"><a href="#静态查找表" class="headerlink" title="静态查找表"></a>静态查找表</h2><ul>
+<li>静态查找是指在静态查找表上进行的查找操作，在查找表中满足条件的数据元素的存储位置或各种属性。静态查找表的查找算法主要有：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-aa0bcf0127a3f2e2eea1fe6377beb2ff_720w.jpg"></p>
+<ul>
+<li>顺序查找：从表的一端开始，顺序扫描线性表，依次将扫描到的关键字和给定值k进行比较，若当前扫描到的关键字与k相等，则查找成功；若扫描结束后，仍未找到关键字等于k的记录，则查找失败。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-f3562b387ec14edacad070169cbd19f6_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-605946f8172abf5f0316c61a8d08cc29_720w.jpg"></p>
+<ul>
+<li>折半查找：对给定值k，逐步确定待查记录所在区间，每次将搜索空间减少一半，直到查找成功或失败为止。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-0ff6d379e1a9feff5fd5bc098a92efb4_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-017252d075231658722611b56bdb637e_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-59f31f72bd266c751597d049ee8e3d2c_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-f8b2120971d4a03c3eb77999bfa9b28e_720w.jpg"></p>
+<ul>
+<li>分块查找：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-273be6dd3c7a73cd7df161e6c6f2b841_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-b92284c31c7351bec4f37c6564c749ed_720w.jpg"></p>
+<h2 id="动态查找表"><a href="#动态查找表" class="headerlink" title="动态查找表"></a>动态查找表</h2><p>表结构在查找过程中动态生成的这样一种查找表。实现动态查找方法：二叉排序树、平衡二叉树、B-树和B+树。</p>
+<h2 id="二叉排序树"><a href="#二叉排序树" class="headerlink" title="二叉排序树"></a>二叉排序树</h2><ul>
+<li>定义：左子树的所有结点均小于根的值；右子树的所有节点均大于根的值；它的左右子树也分别为二叉排序树。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-a6d5b7a19af79289526863e43fd866ba_720w.jpg"></p>
+<ul>
+<li>二叉排序树插入新结点的过程</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-a5abd9717b616c92429099a8d5097415_720w.jpg"></p>
+<ul>
+<li>二叉排序树插入新节点递归算法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-736f8cb98694a799a74267bd20a89d8b_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-b9d04df7464bb91f79ab7a5c947925ec_720w.jpg"></p>
+<ul>
+<li>二叉排序树删除结点的算法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-4a109e794500190e850213e0cf027d3c_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-b57fd4d106a395adb1ba029b45246ef7_720w.jpg"></p>
+<ul>
+<li>二叉排序树查找算法分析：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-b0b6d3905367135fb1584c224ed3e6df_720w.jpg"></p>
+<h2 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a>平衡二叉树</h2><ul>
+<li>平衡二叉树又称为AVL树，设二叉树中结点的左子树和右子树的深度分别为HL和HR。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-d830a17f2e7ac11ae59c5c0c2aeb1475_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-54c172d59fce29ce724eefcfa89d6640_720w.jpg"></p>
+<ul>
+<li>若在构造二叉排序树的同时，使其始终保持为AVL树，则此时的二叉排序树为平衡的二叉排序树。将一棵非平衡二叉排序树调整成平衡二叉排序树的“旋转”，分为：LL平衡旋转、RR平衡旋转、LR平衡旋转、RL平衡旋转。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-354bd6d15c2c0f7a2aa4c8192b529473_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-33fbb89147607aaef6a5d9046f72ad3f_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-bd4baba2f92ed0906f66ce8a20c8dd23_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-f5af39fc4823ef6e9caab7b2f060b801_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-49f71ff12f2fee38ff7e658e0bf262de_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-93ffc448eaa12f18d548cecc4ad1d160_720w.jpg"></p>
+<h2 id="B-树"><a href="#B-树" class="headerlink" title="B-树"></a>B-树</h2><ul>
+<li>B-树又称基本B树或多路平衡查找树。它是构造大型文件系统索引结构的一种数据结构类型，适合在磁盘等直接存取设备上组织动态的查找表。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-5cebe8c793a33d433af155d0be6cb0fe_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-4ac66d90825dce34f91a7abdee6de351_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-23ffe0d1734ca0757cbd7b699a1a4c9b_720w.jpg"></p>
+<ul>
+<li><p>该公式包括没有任何关键字的叶子结点。</p>
+</li>
+<li><p>B-树的查找算法思路：</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-79e651a533ce3cdc9afcdfa248bda53d_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-05a6c89908dd5b56218967579db8ca4e_720w.jpg"></p>
+<ul>
+<li>B-树的查找效率取决于以下两个因素：包含k的结点在B-树种所在的层数h；结点中ki的个数n。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-93bd74dd2039ae10e0adb770e01122f9_720w.jpg"></p>
+<ul>
+<li>B-树的生成：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-77f79022377831b77c2e739202a70c4b_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-d17db867beea2b1c52595e23bd9d7f9b_720w.jpg"></p>
+<ul>
+<li>B-树的删除：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-96dfbc2e25e6572337bd198b147fd64a_720w.jpg"></p>
+<h2 id="B-树-1"><a href="#B-树-1" class="headerlink" title="B+树"></a>B+树</h2><ul>
+<li>B+树是B-树的变形，目的在于有效地组织文件的索引结构。</li>
+<li>m阶B+树与B-树的差异：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-9f3ec5ae8c5567e61e2a38ff87ddfbc4_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-4b49658a480bc793e48734c455322ca3_720w.jpg"></p>
+<ul>
+<li>B+树种可以有两种查找方式：顺序查找——类似单链表的查找，直接在数据层进行查找。随机查找——类似B-树的查找，不同的是搜索到索引层的key与k相等时，还得继续搜索下去，直到数据层为止。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-b8de974aa1a5ab2c9f70eabbb2e88a9f_720w.jpg"></p>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p><img src="https://pic2.zhimg.com/80/v2-b557271cd97f55ade3b94f6af1ac52e1_720w.jpg"></p>
+<ul>
+<li>哈希表，根据设定的哈希函数H（key）和处理冲突的方法将一组关键字key映射到一个有限的连续的地址集上，并以关键字key在地址集中的“像”作为记录在表中的存储位置，这种表便称为哈希表，这一映射过程称为哈希造表或散列，所得存储位置称哈希地址或散列地址。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-8369d17082aacc39eaab5abe873b3284_720w.jpg"></p>
+<ul>
+<li>将不同的关键码映射到同一个哈希地址上，该现象称为冲突。</li>
+</ul>
+<h2 id="哈希函数的构造方法"><a href="#哈希函数的构造方法" class="headerlink" title="哈希函数的构造方法"></a>哈希函数的构造方法</h2><ul>
+<li>常用的哈希函数构造方法有：直接定址法、除留余数法、乘余取整法、数字分析法、平方取中法、折叠法、随机数法。</li>
+<li>直接定址法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-e4849575ddc414257c6e2ed5de9999c0_720w.jpg"></p>
+<ul>
+<li>除留余数法：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-b9bfda64c1cba23987db18f0d4dd0ab6_720w.jpg"></p>
+<ul>
+<li>乘余取整法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-3b370c6ed7f560a2163865105f7440ab_720w.jpg"></p>
+<ul>
+<li>数字分析法：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-b28f2a643fe27cd5f6c77421d9a724a2_720w.jpg"></p>
+<ul>
+<li>平方取中法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-e0faddffc63c09bf33ed6a712fb1be40_720w.jpg"></p>
+<ul>
+<li>叠加法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-e032b99429b09ac21f35451a079cc743_720w.jpg"></p>
+<ul>
+<li>随机数法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-31e65a286021ef6205abe5e23bfc7def_720w.jpg"></p>
+<h2 id="处理冲突的方法"><a href="#处理冲突的方法" class="headerlink" title="处理冲突的方法"></a>处理冲突的方法</h2><ul>
+<li>开放定址法、链地址法、再哈希法、建立一个公共溢出区</li>
+<li>开放定址法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-9ade5187387faf0316ecc24e51c855e8_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-a9d11d804119df752210ab361d2879b9_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-3c12e90f6a5c0d92ab1bad6ed3a8d8ea_720w.jpg"></p>
+<ul>
+<li>链地址法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-e34a587ca376a080cc2e06b0aa586934_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-bfa2b7bc5b9b1fc5381bf9d076881f83_720w.jpg"></p>
+<ul>
+<li>再哈希法：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-b7fb1a7f720688cd40d4c1e0ad4dbc58_720w.jpg"></p>
+<ul>
+<li>建立一个公共溢出区：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-77ff4f5f8a96ef92f45f330ef108911c_720w.jpg"></p>
+<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><ul>
+<li>红黑树，一种二叉查找树，但在每个结点上增加一个存储位表示结点颜色，可以是Red或Black。通过对任何一条从根到叶子的路径上各个结点着色方式的限制，红黑树确保没有一条路径会比其他路径长出两倍，因而是接近平衡的。</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-9e8eadb29de8691c0ced2da8c32181b0_720w.jpg"></p>
+<ul>
+<li><p>红黑树虽然本质上是一棵二叉查找树，但它在二叉查找树的基础上增加了着色和相关的性质使得红黑树相对平衡，从而保证了红黑树的查找、插入、删除的时间复杂度最坏为O(log n)。红黑树和AVL树的区别在于它使用颜色来标识结点的高度，它所追求的是局部平衡而不是AVL树中的非常严格的平衡。</p>
+</li>
+<li><p>红黑树的五个性质保证了红黑树的高度始终保持在logn:</p>
+</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-59790a5fcd0fa63fceb65d9e41a10709_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-9892e93ca4883953a567dfc486b08837_720w.jpg"></p>
+<ul>
+<li>红黑树的旋转操作：红黑树的旋转操作和AVL树一样，分为LL、RR、LR、RL四种旋转类型，差别在于旋转完成后改变的是结点的颜色，而不是平衡因子。</li>
+</ul>
+<h1 id="八、排序"><a href="#八、排序" class="headerlink" title="八、排序"></a>八、排序</h1><h2 id="排序概述"><a href="#排序概述" class="headerlink" title="排序概述"></a>排序概述</h2><ul>
+<li>排序的分类：内部排序和外部排序（若待排序记录都在内存中，称为内部排序；若待排序记录一部分在内存，一部分在外存，则称为外部排序）。稳定排序和不稳定排序。</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-b4c3c797a5620f6bf4252bddbfde2f7a_720w.jpg"></p>
+<ul>
+<li>内部排序的算法：插入排序（希尔排序）、交换排序（快速排序）、选择排序（堆排序）、归并排序、基数排序。</li>
+</ul>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><ul>
+<li>思想：每次将一个待排序的对象，按其关键码大小，插入到前面已经排好序的一组对象的适当位置上，直到对象全部插入为止。</li>
+<li>具体实现算法：直接插入排序、折半插入排序、希尔排序</li>
+<li>直接插入排序：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-b14adba88ca336e7d4be471397ef0ac0_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-1426061199f769f10abc4af3bed1f491_720w.jpg"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">InsertSort</span><span class="params">(<span class="type">int</span> a[])</span>&#123;</span><br><span class="line">    <span class="type">int</span> i,j;</span><br><span class="line">    <span class="comment">//按照有小到大的顺序排序</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">2</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">        <span class="comment">//找到无序表的第一个位置</span></span><br><span class="line">        <span class="keyword">if</span>(a[i]&lt;a[i-<span class="number">1</span>])&#123;</span><br><span class="line">            a[<span class="number">0</span>]=a[i];</span><br><span class="line">            <span class="comment">//将无序表依次向后移动</span></span><br><span class="line">            <span class="keyword">for</span>(j=i-<span class="number">1</span>;a[<span class="number">0</span>]&lt;a[j];j--)&#123;</span><br><span class="line">                a[j+<span class="number">1</span>]=a[j];</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//将数据插入相应位置</span></span><br><span class="line">            a[j+<span class="number">1</span>]=a[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">该算法的时间复杂度是：O（n2）</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic4.zhimg.com/80/v2-d78f8d022380eecc943016d4e4850427_720w.jpg"></p>
+<ul>
+<li>折半插入排序：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-a2e0ff965b4adfbfed32ff9e62759701_720w.jpg"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">BInsertSort</span><span class="params">(<span class="type">int</span> a[])</span>&#123;</span><br><span class="line">    <span class="type">int</span> i,j,high,low;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">2</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">        a[<span class="number">0</span>]=a[i];      </span><br><span class="line">        low=<span class="number">1</span>;</span><br><span class="line">        high=i-<span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> min;</span><br><span class="line">        <span class="keyword">while</span>(low&lt;=high)&#123;       <span class="comment">//使用折半查找到插入的位置</span></span><br><span class="line">            min=(high+low)/<span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(a[<span class="number">0</span>]&lt;a[min])</span><br><span class="line">                high=min-<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                low=min+<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(j=i-<span class="number">1</span>;j=&gt;high+<span class="number">1</span>;j++)    <span class="comment">//插入的位置是在high位置之后</span></span><br><span class="line">            a[j+<span class="number">1</span>]=a[j];</span><br><span class="line">        a[high+<span class="number">1</span>]=a[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic2.zhimg.com/80/v2-361e5056a41c19a0da3d7afa800d7c75_720w.jpg"></p>
+<ul>
+<li>希尔排序：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-3b3ba87f91a665fffa2423ea5ca45303_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-c5ece32bbccab146d279eb22bba26054_720w.jpg"></p>
+<p>从排序过程可以看出，希尔排序的一个特点是：子序列的构成不是简单地“逐段分割”，而是将相隔某个“增量”的记录组成一个子序列。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">SheelSort</span><span class="params">(<span class="type">int</span> a[],<span class="type">int</span> dx)</span>&#123;</span><br><span class="line">    <span class="comment">//这是对直接插入排序的修改</span></span><br><span class="line">    <span class="comment">//dx表示增量</span></span><br><span class="line">    <span class="comment">//当j&lt;=0时，插入位置已经找到</span></span><br><span class="line">    <span class="type">int</span> i,j;</span><br><span class="line">    <span class="keyword">for</span>(i=dx+<span class="number">1</span>;i&lt;a.length;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(a[i]&lt;a[i-dx])&#123;</span><br><span class="line">            a[<span class="number">0</span>]=a[i];</span><br><span class="line">            <span class="keyword">for</span>(j=i-dx;j&gt;<span class="number">0</span>&amp;&amp;a[<span class="number">0</span>]&lt;a[j];j-=dx)</span><br><span class="line">                a[j+dx]=a[j];</span><br><span class="line">            a[j+dx]=a[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic2.zhimg.com/80/v2-7f770d2907e439b42042ed88c6eea845_720w.jpg"></p>
+<h2 id="交换排序"><a href="#交换排序" class="headerlink" title="交换排序"></a>交换排序</h2><ul>
+<li>两两比较待排序记录的关键码，如果发生逆序（即排列顺序与排序后次序正好相反），则交换之，直到所有记录都排好序为止。</li>
+<li>冒泡排序：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">bubbleSort</span><span class="params">(<span class="type">int</span> a[])</span>&#123;</span><br><span class="line">    <span class="type">int</span> i,j;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;a.length-<span class="number">1</span>;i++)&#123;</span><br><span class="line">        <span class="keyword">for</span>(j=<span class="number">1</span>;j&lt;a.length-i;j++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(a[j]&gt;a[j+<span class="number">1</span>])&#123;</span><br><span class="line">                a[<span class="number">0</span>]=a[j];</span><br><span class="line">                a[j]=a[j+<span class="number">1</span>];</span><br><span class="line">                a[j+<span class="number">1</span>]=a[<span class="number">0</span>];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic1.zhimg.com/80/v2-e645b040765473726c0029532f618f98_720w.jpg"></p>
+<ul>
+<li>快速排序：</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-02186906d89113f54b161b168a54aac5_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-304e1efdafd4bf06b267ff2c008f781c_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-ede0338c77f80a24db92a5fee83e39e5_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-ee9abac705d8a769c3daa6b4fbe87781_720w.jpg"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">Partition</span><span class="params">(<span class="type">int</span> a[],<span class="type">int</span> low,<span class="type">int</span> high)</span>&#123;</span><br><span class="line">    <span class="comment">//这只是一趟快速排序的算法</span></span><br><span class="line">    a[<span class="number">0</span>]=a[low];</span><br><span class="line">    <span class="keyword">while</span>(low&lt;high)&#123;</span><br><span class="line">        <span class="comment">//从高位往低位扫描，找到数值小于关键字的位置，与low位置交换</span></span><br><span class="line">        <span class="keyword">while</span>(low&lt;high&amp;&amp;a[<span class="number">0</span>]&lt;=a[high])</span><br><span class="line">            high--;</span><br><span class="line">        a[low]=a[high];</span><br><span class="line">        <span class="comment">//从低位往高位扫描，找到数值大于关键字的位置，与high位置交换</span></span><br><span class="line">        <span class="keyword">while</span>(low&lt;high&amp;&amp;a[low]&lt;=a[<span class="number">0</span>])</span><br><span class="line">            low++;</span><br><span class="line">        a[high]=a[low];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后将关键字放入数组中</span></span><br><span class="line">    a[low]=a[<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line">快速排序平均时间复杂度和最好时间复杂度为：O（log2n），最坏时间复杂度为O（n2）。</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic2.zhimg.com/80/v2-1578fa8ac4f337eac48c9883649093fd_720w.jpg"></p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><ul>
+<li>不断从待排记录序列中选出关键字最小的记录插入已排序记录序列的后面，直到n个记录全部插入已排序记录序列中。</li>
+<li>简单选择排序：</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-49cd7755e2f7992df69daa038b31f6aa_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-d23e0d60b74208d22092e7f610a8e6e5_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-ff9293caaf5eddd04bf3e2e88e462323_720w.jpg"></p>
+<ul>
+<li>堆排序：借助于完全二叉树结构进行的排序，是一种树形选择排序。其特点是——在排序过程中，将R[1…N]看成是一棵完全二叉树的顺序存储结构，利用完全二叉树双亲结点和孩子结点之间的内在关系，在当前无序区中选择关键字最大（或最小）的记录。</li>
+</ul>
+<p><img src="https://pic2.zhimg.com/80/v2-ceb600ce9bd9be42de54038ae88f0369_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-03cc9fa82a7a609408aca212b895d437_720w.jpg"></p>
+<p>堆的根节点是堆中元素值最小（或最大）的结点，称为堆顶顶点；从根节点到每个叶节点的路径上，元素的排序序列都是递减（或递增）有序的。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-8198936de84625935098c00fd83c1dfd_720w.jpg"></p>
+<ul>
+<li>建立一个堆排序的方法：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-9350310b1fe1cbed41527691382e2eeb_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-6ab565bc998aee8724f9ea9a931328cd_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-55622d1fbdd1d216d97c5cddf7493ab6_720w.jpg"></p>
+<ul>
+<li>堆排序的过程：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-48e22c84194642bfc5cc73b19bd172f7_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-228934afb8c6e511693db0605de4d801_720w.jpg"></p>
+<ul>
+<li>堆排序算法实现：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">HeapAdjust</span><span class="params">(<span class="type">int</span> *a,<span class="type">int</span> i,<span class="type">int</span> size)</span>  <span class="comment">//调整堆 </span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> lchild=<span class="number">2</span>*i;       <span class="comment">//i的左孩子节点序号 </span></span><br><span class="line">    <span class="type">int</span> rchild=<span class="number">2</span>*i+<span class="number">1</span>;     <span class="comment">//i的右孩子节点序号 </span></span><br><span class="line">    <span class="type">int</span> max=i;            <span class="comment">//临时变量 </span></span><br><span class="line">    <span class="keyword">if</span>(i&lt;=size/<span class="number">2</span>)          <span class="comment">//如果i不是叶节点就不用进行调整 </span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(lchild&lt;=size&amp;&amp;a[lchild]&gt;a[max])</span><br><span class="line">        &#123;</span><br><span class="line">            max=lchild;</span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">if</span>(rchild&lt;=size&amp;&amp;a[rchild]&gt;a[max])</span><br><span class="line">        &#123;</span><br><span class="line">            max=rchild;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(max!=i)</span><br><span class="line">        &#123;</span><br><span class="line">            swap(a[i],a[max]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;        </span><br><span class="line">&#125;</span><br><span class="line">​</span><br><span class="line"><span class="keyword">void</span> <span class="title function_">BuildHeap</span><span class="params">(<span class="type">int</span> *a,<span class="type">int</span> size)</span>    <span class="comment">//建立堆 </span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span>(i=size/<span class="number">2</span>;i&gt;=<span class="number">1</span>;i--)    <span class="comment">//非叶节点最大序号值为size/2 </span></span><br><span class="line">    &#123;</span><br><span class="line">        HeapAdjust(a,i,size);    </span><br><span class="line">    &#125;    </span><br><span class="line">&#125; </span><br><span class="line">​</span><br><span class="line"><span class="keyword">void</span> <span class="title function_">HeapSort</span><span class="params">(<span class="type">int</span> *a,<span class="type">int</span> size)</span>    <span class="comment">//堆排序 </span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    BuildHeap(a,size);</span><br><span class="line">    <span class="keyword">for</span>(i=size;i&gt;=<span class="number">1</span>;i--)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//cout&lt;&lt;a[1]&lt;&lt;&quot; &quot;;</span></span><br><span class="line">        swap(a[<span class="number">1</span>],a[i]);           <span class="comment">//交换堆顶和最后一个元素，即每次将剩余元素中的最大者放到最后面 </span></span><br><span class="line">          <span class="comment">//BuildHeap(a,i-1);        //将余下元素重新建立为大顶堆 </span></span><br><span class="line">          HeapAdjust(a,<span class="number">1</span>,i-<span class="number">1</span>);      <span class="comment">//重新调整堆顶节点成为大顶堆</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic1.zhimg.com/80/v2-85bc9fc4e1f02fbc674483db81c1d2c4_720w.jpg"></p>
+<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><ul>
+<li>“归并”的含义是将两个或两个以上的有序表合并成一个新的有序表。</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-22f3d130bbaf0652c8636de5ecb7771b_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-0be6a77668831c3fc077356c8288664d_720w.jpg"></p>
+<ul>
+<li>两个有序表的合并算法Merge()：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-a77545b2cdf5f7ceff3326c6840f4a9b_720w.jpg"></p>
+<p><img src="https://pic1.zhimg.com/80/v2-231b3b8253a854fc1f18a8c5cbb23f88_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-96b835f3e775a56923bf25d380fa18c7_720w.jpg"></p>
+<ul>
+<li>算法分析：</li>
+</ul>
+<p><img src="https://pic1.zhimg.com/80/v2-2f231ae2ab9467a488c0268c5541f5bc_720w.jpg"></p>
+<h2 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h2><ul>
+<li>基数排序是一种借助多关键字排序的思想对单逻辑关键字进行排序的方法，即先将关键字分解成若干部分，然后通过对各部分关键字的分别排序，最终完成对全部记录的排序。</li>
+<li>多关键字的排序：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-d206b6a46d55e5ef79a45d0cf2cb0abf_720w.jpg"></p>
+<p><img src="https://pic3.zhimg.com/80/v2-2232659ce12832f66b2f2b0a65fcda1e_720w.jpg"></p>
+<ul>
+<li>链式基数排序：</li>
+</ul>
+<p><img src="https://pic4.zhimg.com/80/v2-e63548dcc8884b1a9e96563f8e01a06b_720w.jpg"></p>
+<p><img src="https://pic2.zhimg.com/80/v2-1c55566b808ba87a7b4985cf85b932d9_720w.jpg"></p>
+<p><img src="https://pic4.zhimg.com/80/v2-1033d236087ef5c066b0c7aa8e68fa1f_720w.jpg"></p>
+<h2 id="排序算法总结"><a href="#排序算法总结" class="headerlink" title="排序算法总结"></a>排序算法总结</h2><p><img src="https://pic2.zhimg.com/80/v2-e42a01c7457ce1c1d0811434b369a6c5_720w.jpg"></p>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/356047870">原文链接</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"><i class="fa fa-tag"></i> 数据结构</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/3adbb301.html" rel="prev" title="了解 API 网关">
+                  <i class="fa fa-chevron-left"></i> 了解 API 网关
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/cee822cc.html" rel="next" title="Hexo 博客主题整理，绝对精品~">
+                  Hexo 博客主题整理，绝对精品~ <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="53a7c6cd5a54f052a07a6e58b1065ab3"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">万般自然</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/yfwin" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cywLPGpqB","appkey":"188c9fc5e25427db76ebbf6d6a829c0d","count":true}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>

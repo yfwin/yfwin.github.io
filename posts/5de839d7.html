@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.qmzbe.top","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":true,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在上一篇文章最后，我给你留了一个关于加锁规则的问题。今天，我们就从这个问题说起吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="20 | 幻读是什么，幻读有什么问题">
+<meta property="og:url" content="https://blog.qmzbe.top/posts/5de839d7.html">
+<meta property="og:site_name" content="逸风小站">
+<meta property="og:description" content="在上一篇文章最后，我给你留了一个关于加锁规则的问题。今天，我们就从这个问题说起吧。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/5b/8b/5bc506e5884d21844126d26bbe6fa68b.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/7a/07/7a9ffa90ac3cc78db6a51ff9b9075607.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/dc/92/dcea7845ff0bdbee2622bf3c67d31d92.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/34/47/34ad6478281709da833856084a1e3447.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/e7/61/e7f7ca0d3dab2f48c588d714ee3ac861.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/c4/51/c435c765556c0f3735a6eda0779ff151.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/7c/98/7c37732d936650f1cda7dbf27daf7498.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/df/be/df37bf0bb9f85ea59f0540e24eb6bcbe.png">
+<meta property="og:image" content="https://static001.geekbang.org/resource/image/0d/3d/0d796060073668ca169166a8903fbf3d.png">
+<meta property="article:published_time" content="2021-12-22T16:16:40.000Z">
+<meta property="article:modified_time" content="2022-09-01T14:42:13.000Z">
+<meta property="article:author" content="万般自然">
+<meta property="article:tag" content="数据库">
+<meta property="article:tag" content="MySQL">
+<meta property="article:tag" content="MySQL实战45讲">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://static001.geekbang.org/resource/image/5b/8b/5bc506e5884d21844126d26bbe6fa68b.png">
+
+
+<link rel="canonical" href="https://blog.qmzbe.top/posts/5de839d7.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.qmzbe.top/posts/5de839d7.html","path":"posts/5de839d7.html","title":"20 | 幻读是什么，幻读有什么问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>20 | 幻读是什么，幻读有什么问题 | 逸风小站</title>
+  
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?4828a05518ca3d19193b3a86a213fd60"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">逸风小站</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">帝王有剑，不斩苍蝇</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">39</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">34</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">84</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%BB%E8%AF%BB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">幻读是什么？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B9%BB%E8%AF%BB%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">幻读有什么问题？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%B9%BB%E8%AF%BB%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">如何解决幻读？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E6%9C%9F%E9%97%AE%E9%A2%98%E6%97%B6%E9%97%B4"><span class="nav-number">5.</span> <span class="nav-text">上期问题时间</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="万般自然"
+      src="https://s1.ax1x.com/2023/07/09/pCgDTD1.jpg">
+  <p class="site-author-name" itemprop="name">万般自然</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">84</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yfwin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yfwin" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:biubiu200@163.com" title="E-Mail → mailto:biubiu200@163.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/5648936534" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;5648936534" rel="noopener me" target="_blank"><i class="fab fa-weibo fa-fw"></i></a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.qmzbe.top/" title="https:&#x2F;&#x2F;blog.qmzbe.top">逸风小站</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.cnblogs.com/qmzbe" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qmzbe" rel="noopener" target="_blank">CNBLOG</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://blog.qmzbe.top/" title="https:&#x2F;&#x2F;blog.qmzbe.top">逸风小站2</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.cnblogs.com/qmzbe" title="https:&#x2F;&#x2F;www.cnblogs.com&#x2F;qmzbe" rel="noopener" target="_blank">CNBLOG2</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.qmzbe.top/posts/5de839d7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s1.ax1x.com/2023/07/09/pCgDTD1.jpg">
+      <meta itemprop="name" content="万般自然">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="逸风小站">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="20 | 幻读是什么，幻读有什么问题 | 逸风小站">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          20 | 幻读是什么，幻读有什么问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-12-23 00:16:40" itemprop="dateCreated datePublished" datetime="2021-12-23T00:16:40+08:00">2021-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-01 22:42:13" itemprop="dateModified" datetime="2022-09-01T22:42:13+08:00">2022-09-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2/" itemprop="url" rel="index"><span itemprop="name">MySQL实战45讲</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="20 | 幻读是什么，幻读有什么问题" href="/posts/5de839d7.html#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::22bc4a04bac451d0069eb57df5075349" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>在上一篇文章最后，我给你留了一个关于加锁规则的问题。今天，我们就从这个问题说起吧。</p>
+<span id="more"></span>
+
+<p>为了便于说明问题，这一篇文章，我们就先使用一个小一点儿的表。建表和初始化语句如下（为了便于本期的例子说明，我把上篇文章中用到的表结构做了点儿修改）：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `t` (</span><br><span class="line">  `id` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `c` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  `d` <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">DEFAULT</span> <span class="keyword">NULL</span>,</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`id`),</span><br><span class="line">  KEY `c` (`c`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>),(<span class="number">5</span>,<span class="number">5</span>,<span class="number">5</span>),</span><br><span class="line">(<span class="number">10</span>,<span class="number">10</span>,<span class="number">10</span>),(<span class="number">15</span>,<span class="number">15</span>,<span class="number">15</span>),(<span class="number">20</span>,<span class="number">20</span>,<span class="number">20</span>),(<span class="number">25</span>,<span class="number">25</span>,<span class="number">25</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这个表除了主键id外，还有一个索引c，初始化语句在表中插入了6行数据。</p>
+<p>上期我留给你的问题是，下面的语句序列，是怎么加锁的，加的锁又是什么时候释放的呢？</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> d<span class="operator">=</span><span class="number">5</span> <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<p>比较好理解的是，这个语句会命中d&#x3D;5的这一行，对应的主键id&#x3D;5，因此在select 语句执行完成后，id&#x3D;5这一行会加一个写锁，而且由于两阶段锁协议，这个写锁会在执行commit语句的时候释放。</p>
+<p>由于字段d上没有索引，因此这条查询语句会做全表扫描。那么，其他被扫描到的，但是不满足条件的5行记录上，会不会被加锁呢？</p>
+<p>我们知道，InnoDB的默认事务隔离级别是可重复读，所以本文接下来没有特殊说明的部分，都是设定在可重复读隔离级别下。</p>
+<h1 id="幻读是什么？"><a href="#幻读是什么？" class="headerlink" title="幻读是什么？"></a>幻读是什么？</h1><p>现在，我们就来分析一下，如果只在id&#x3D;5这一行加锁，而其他行的不加锁的话，会怎么样。</p>
+<p>下面先来看一下这个场景：</p>
+<p><img src="https://static001.geekbang.org/resource/image/5b/8b/5bc506e5884d21844126d26bbe6fa68b.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 1 假设只在id=5这一行加行锁</b>
+    </div>
+    <br>
+</center>
+
+<p>可以看到，session A里执行了三次查询，分别是Q1、Q2和Q3。它们的SQL语句相同，都是select * from t where d&#x3D;5 for update。这个语句的意思你应该很清楚了，查所有d&#x3D;5的行，而且使用的是当前读，并且加上写锁。现在，我们来看一下这三条SQL语句，分别会返回什么结果。</p>
+<ol>
+<li>Q1只返回id&#x3D;5这一行；</li>
+<li>在T2时刻，session B把id&#x3D;0这一行的d值改成了5，因此T3时刻Q2查出来的是id&#x3D;0和id&#x3D;5这两行；</li>
+<li>在T4时刻，session C又插入一行（1,1,5），因此T5时刻Q3查出来的是id&#x3D;0、id&#x3D;1和id&#x3D;5的这三行。</li>
+</ol>
+<p>其中，Q3读到id&#x3D;1这一行的现象，被称为“幻读”。也就是说，幻读指的是一个事务在前后两次查询同一个范围的时候，后一次查询看到了前一次查询没有看到的行。</p>
+<p>这里，我需要对“幻读”做一个说明：</p>
+<ol>
+<li>在可重复读隔离级别下，普通的查询是快照读，是不会看到别的事务插入的数据的。因此，幻读在“当前读”下才会出现。</li>
+<li>上面session B的修改结果，被session A之后的select语句用“当前读”看到，不能称为幻读。幻读仅专指“新插入的行”。</li>
+</ol>
+<p>如果只从第8篇文章<a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/70562">《事务到底是隔离的还是不隔离的？》</a>我们学到的事务可见性规则来分析的话，上面这三条SQL语句的返回结果都没有问题。</p>
+<p>因为这三个查询都是加了for update，都是当前读。而当前读的规则，就是要能读到所有已经提交的记录的最新值。并且，session B和sessionC的两条语句，执行后就会提交，所以Q2和Q3就是应该看到这两个事务的操作效果，而且也看到了，这跟事务的可见性规则并不矛盾。</p>
+<p>但是，这是不是真的没问题呢？</p>
+<p>不，这里还真就有问题。</p>
+<h1 id="幻读有什么问题？"><a href="#幻读有什么问题？" class="headerlink" title="幻读有什么问题？"></a>幻读有什么问题？</h1><p><strong>首先是语义上的。</strong>session A在T1时刻就声明了，“我要把所有d&#x3D;5的行锁住，不准别的事务进行读写操作”。而实际上，这个语义被破坏了。</p>
+<p>如果现在这样看感觉还不明显的话，我再往session B和session C里面分别加一条SQL语句，你再看看会出现什么现象。</p>
+<p><img src="https://static001.geekbang.org/resource/image/7a/07/7a9ffa90ac3cc78db6a51ff9b9075607.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 2 假设只在id=5这一行加行锁--语义被破坏</b>
+    </div>
+    <br>
+</center>
+
+<p>session B的第二条语句update t set c&#x3D;5 where id&#x3D;0，语义是“我把id&#x3D;0、d&#x3D;5这一行的c值，改成了5”。</p>
+<p>由于在T1时刻，session A 还只是给id&#x3D;5这一行加了行锁， 并没有给id&#x3D;0这行加上锁。因此，session B在T2时刻，是可以执行这两条update语句的。这样，就破坏了 session A 里Q1语句要锁住所有d&#x3D;5的行的加锁声明。</p>
+<p>session C也是一样的道理，对id&#x3D;1这一行的修改，也是破坏了Q1的加锁声明。</p>
+<p><strong>其次，是数据一致性的问题。</strong></p>
+<p>我们知道，锁的设计是为了保证数据的一致性。而这个一致性，不止是数据库内部数据状态在此刻的一致性，还包含了数据和日志在逻辑上的一致性。</p>
+<p>为了说明这个问题，我给session A在T1时刻再加一个更新语句，即：update t set d&#x3D;100 where d&#x3D;5。</p>
+<p><img src="https://static001.geekbang.org/resource/image/dc/92/dcea7845ff0bdbee2622bf3c67d31d92.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 3 假设只在id=5这一行加行锁--数据一致性问题</b>
+    </div>
+    <br>
+</center>
+
+<p>update的加锁语义和select …for update 是一致的，所以这时候加上这条update语句也很合理。session A声明说“要给d&#x3D;5的语句加上锁”，就是为了要更新数据，新加的这条update语句就是把它认为加上了锁的这一行的d值修改成了100。</p>
+<p>现在，我们来分析一下图3执行完成后，数据库里会是什么结果。</p>
+<ol>
+<li>经过T1时刻，id&#x3D;5这一行变成 (5,5,100)，当然这个结果最终是在T6时刻正式提交的;</li>
+<li>经过T2时刻，id&#x3D;0这一行变成(0,5,5);</li>
+<li>经过T4时刻，表里面多了一行(1,5,5);</li>
+<li>其他行跟这个执行序列无关，保持不变。</li>
+</ol>
+<p>这样看，这些数据也没啥问题，但是我们再来看看这时候binlog里面的内容。</p>
+<ol>
+<li>T2时刻，session B事务提交，写入了两条语句；</li>
+<li>T4时刻，session C事务提交，写入了两条语句；</li>
+<li>T6时刻，session A事务提交，写入了update t set d&#x3D;100 where d&#x3D;5 这条语句。</li>
+</ol>
+<p>我统一放到一起的话，就是这样的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> d<span class="operator">=</span><span class="number">5</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">0</span>; <span class="comment">/*(0,0,5)*/</span></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> c<span class="operator">=</span><span class="number">5</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">0</span>; <span class="comment">/*(0,5,5)*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>,<span class="number">5</span>); <span class="comment">/*(1,1,5)*/</span></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> c<span class="operator">=</span><span class="number">5</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>; <span class="comment">/*(1,5,5)*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> d<span class="operator">=</span><span class="number">100</span> <span class="keyword">where</span> d<span class="operator">=</span><span class="number">5</span>;<span class="comment">/*所有d=5的行，d改成100*/</span></span><br></pre></td></tr></table></figure>
+
+<p>好，你应该看出问题了。这个语句序列，不论是拿到备库去执行，还是以后用binlog来克隆一个库，这三行的结果，都变成了 (0,5,100)、(1,5,100)和(5,5,100)。</p>
+<p>也就是说，id&#x3D;0和id&#x3D;1这两行，发生了数据不一致。这个问题很严重，是不行的。</p>
+<p>到这里，我们再回顾一下，<strong>这个数据不一致到底是怎么引入的？</strong></p>
+<p>我们分析一下可以知道，这是我们假设“select * from t where d&#x3D;5 for update这条语句只给d&#x3D;5这一行，也就是id&#x3D;5的这一行加锁”导致的。</p>
+<p>所以我们认为，上面的设定不合理，要改。</p>
+<p>那怎么改呢？我们把扫描过程中碰到的行，也都加上写锁，再来看看执行效果。</p>
+<p><img src="https://static001.geekbang.org/resource/image/34/47/34ad6478281709da833856084a1e3447.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 4 假设扫描到的行都被加上了行锁</b>
+    </div>
+    <br>
+</center>
+
+<p>由于session A把所有的行都加了写锁，所以session B在执行第一个update语句的时候就被锁住了。需要等到T6时刻session A提交以后，session B才能继续执行。</p>
+<p>这样对于id&#x3D;0这一行，在数据库里的最终结果还是 (0,5,5)。在binlog里面，执行序列是这样的：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(<span class="number">1</span>,<span class="number">1</span>,<span class="number">5</span>); <span class="comment">/*(1,1,5)*/</span></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> c<span class="operator">=</span><span class="number">5</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">1</span>; <span class="comment">/*(1,5,5)*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> d<span class="operator">=</span><span class="number">100</span> <span class="keyword">where</span> d<span class="operator">=</span><span class="number">5</span>;<span class="comment">/*所有d=5的行，d改成100*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> d<span class="operator">=</span><span class="number">5</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">0</span>; <span class="comment">/*(0,0,5)*/</span></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> c<span class="operator">=</span><span class="number">5</span> <span class="keyword">where</span> id<span class="operator">=</span><span class="number">0</span>; <span class="comment">/*(0,5,5)*/</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到，按照日志顺序执行，id&#x3D;0这一行的最终结果也是(0,5,5)。所以，id&#x3D;0这一行的问题解决了。</p>
+<p>但同时你也可以看到，id&#x3D;1这一行，在数据库里面的结果是(1,5,5)，而根据binlog的执行结果是(1,5,100)，也就是说幻读的问题还是没有解决。为什么我们已经这么“凶残”地，把所有的记录都上了锁，还是阻止不了id&#x3D;1这一行的插入和更新呢？</p>
+<p>原因很简单。在T3时刻，我们给所有行加锁的时候，id&#x3D;1这一行还不存在，不存在也就加不上锁。</p>
+<p><strong>也就是说，即使把所有的记录都加上锁，还是阻止不了新插入的记录，</strong> 这也是为什么“幻读”会被单独拿出来解决的原因。</p>
+<p>到这里，其实我们刚说明完文章的标题 ：幻读的定义和幻读有什么问题。</p>
+<p>接下来，我们再看看InnoDB怎么解决幻读的问题。</p>
+<h1 id="如何解决幻读？"><a href="#如何解决幻读？" class="headerlink" title="如何解决幻读？"></a>如何解决幻读？</h1><p>现在你知道了，产生幻读的原因是，行锁只能锁住行，但是新插入记录这个动作，要更新的是记录之间的“间隙”。因此，为了解决幻读问题，InnoDB只好引入新的锁，也就是间隙锁(Gap Lock)。</p>
+<p>顾名思义，间隙锁，锁的就是两个值之间的空隙。比如文章开头的表t，初始化插入了6个记录，这就产生了7个间隙。</p>
+<p><img src="https://static001.geekbang.org/resource/image/e7/61/e7f7ca0d3dab2f48c588d714ee3ac861.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图 5 表t主键索引上的行锁和间隙锁</b>
+    </div>
+    <br>
+</center>
+
+<p>这样，当你执行 select * from t where d&#x3D;5 for update的时候，就不止是给数据库中已有的6个记录加上了行锁，还同时加了7个间隙锁。这样就确保了无法再插入新的记录。</p>
+<p>也就是说这时候，在一行行扫描的过程中，不仅将给行加上了行锁，还给行两边的空隙，也加上了间隙锁。</p>
+<p>现在你知道了，数据行是可以加上锁的实体，数据行之间的间隙，也是可以加上锁的实体。但是间隙锁跟我们之前碰到过的锁都不太一样。</p>
+<p>比如行锁，分成读锁和写锁。下图就是这两种类型行锁的冲突关系。</p>
+<p><img src="https://static001.geekbang.org/resource/image/c4/51/c435c765556c0f3735a6eda0779ff151.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图6 两种行锁间的冲突关系</b>
+    </div>
+    <br>
+</center>
+
+<p>也就是说，跟行锁有冲突关系的是“另外一个行锁”。</p>
+<p>但是间隙锁不一样，<strong>跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作。</strong> 间隙锁之间都不存在冲突关系。</p>
+<p>这句话不太好理解，我给你举个例子：</p>
+<p><img src="https://static001.geekbang.org/resource/image/7c/98/7c37732d936650f1cda7dbf27daf7498.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图7 间隙锁之间不互锁</b>
+    </div>
+    <br>
+</center>
+
+<p>这里session B并不会被堵住。因为表t里并没有c&#x3D;7这个记录，因此session A加的是间隙锁(5,10)。而session B也是在这个间隙加的间隙锁。它们有共同的目标，即：保护这个间隙，不允许插入值。但，它们之间是不冲突的。</p>
+<p>间隙锁和行锁合称next-key lock，每个next-key lock是前开后闭区间。也就是说，我们的表t初始化以后，如果用select * from t for update要把整个表所有记录锁起来，就形成了7个next-key lock，分别是 (-∞,0]、(0,5]、(5,10]、(10,15]、(15,20]、(20, 25]、(25, +suprenum]。</p>
+<blockquote>
+<p>备注：这篇文章中，如果没有特别说明，我们把间隙锁记为开区间，把next-key lock记为前开后闭区间。</p>
+</blockquote>
+<p>你可能会问说，这个suprenum从哪儿来的呢？</p>
+<p>这是因为+∞是开区间。实现上，InnoDB给每个索引加了一个不存在的最大值suprenum，这样才符合我们前面说的“都是前开后闭区间”。</p>
+<p><strong>间隙锁和next-key lock的引入，帮我们解决了幻读的问题，但同时也带来了一些“困扰”。</strong></p>
+<p>在前面的文章中，就有同学提到了这个问题。我把他的问题转述一下，对应到我们这个例子的表来说，业务逻辑这样的：任意锁住一行，如果这一行不存在的话就插入，如果存在这一行就更新它的数据，代码如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">begin</span>;</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> t <span class="keyword">where</span> id<span class="operator">=</span>N <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*如果行不存在*/</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> t <span class="keyword">values</span>(N,N,N);</span><br><span class="line"><span class="comment">/*如果行存在*/</span></span><br><span class="line"><span class="keyword">update</span> t <span class="keyword">set</span> d<span class="operator">=</span>N <span class="keyword">set</span> id<span class="operator">=</span>N;</span><br><span class="line"></span><br><span class="line"><span class="keyword">commit</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可能你会说，这个不是insert … on duplicate key update 就能解决吗？但其实在有多个唯一键的时候，这个方法是不能满足这位提问同学的需求的。至于为什么，我会在后面的文章中再展开说明。</p>
+<p>现在，我们就只讨论这个逻辑。</p>
+<p>这个同学碰到的现象是，这个逻辑一旦有并发，就会碰到死锁。你一定也觉得奇怪，这个逻辑每次操作前用for update锁起来，已经是最严格的模式了，怎么还会有死锁呢？</p>
+<p>这里，我用两个session来模拟并发，并假设N&#x3D;9。</p>
+<p><img src="https://static001.geekbang.org/resource/image/df/be/df37bf0bb9f85ea59f0540e24eb6bcbe.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图8 间隙锁导致的死锁</b>
+    </div>
+    <br>
+</center>
+
+<p>你看到了，其实都不需要用到后面的update语句，就已经形成死锁了。我们按语句执行顺序来分析一下：</p>
+<ol>
+<li>session A 执行select … for update语句，由于id&#x3D;9这一行并不存在，因此会加上间隙锁(5,10);</li>
+<li>session B 执行select … for update语句，同样会加上间隙锁(5,10)，间隙锁之间不会冲突，因此这个语句可以执行成功；</li>
+<li>session B 试图插入一行(9,9,9)，被session A的间隙锁挡住了，只好进入等待；</li>
+<li>session A试图插入一行(9,9,9)，被session B的间隙锁挡住了。</li>
+</ol>
+<p>至此，两个session进入互相等待状态，形成死锁。当然，InnoDB的死锁检测马上就发现了这对死锁关系，让session A的insert语句报错返回了。</p>
+<p>你现在知道了，<strong>间隙锁的引入，可能会导致同样的语句锁住更大的范围，这其实是影响了并发度的</strong>。其实，这还只是一个简单的例子，在下一篇文章中我们还会碰到更多、更复杂的例子。</p>
+<p>你可能会说，为了解决幻读的问题，我们引入了这么一大串内容，有没有更简单一点的处理方法呢。</p>
+<p>我在文章一开始就说过，如果没有特别说明，今天和你分析的问题都是在可重复读隔离级别下的，间隙锁是在可重复读隔离级别下才会生效的。所以，你如果把隔离级别设置为读提交的话，就没有间隙锁了。但同时，你要解决可能出现的数据和日志不一致问题，需要把binlog格式设置为row。这，也是现在不少公司使用的配置组合。</p>
+<p>前面文章的评论区有同学留言说，他们公司就使用的是读提交隔离级别加binlog_format&#x3D;row的组合。他曾问他们公司的DBA说，你为什么要这么配置。DBA直接答复说，因为大家都这么用呀。</p>
+<p>所以，这个同学在评论区就问说，这个配置到底合不合理。</p>
+<p>关于这个问题本身的答案是，如果读提交隔离级别够用，也就是说，业务不需要可重复读的保证，这样考虑到读提交下操作数据的锁范围更小（没有间隙锁），这个选择是合理的。</p>
+<p>但其实我想说的是，配置是否合理，跟业务场景有关，需要具体问题具体分析。</p>
+<p>但是，如果DBA认为之所以这么用的原因是“大家都这么用”，那就有问题了，或者说，迟早会出问题。</p>
+<p>比如说，大家都用读提交，可是逻辑备份的时候，mysqldump为什么要把备份线程设置成可重复读呢？（这个我在前面的文章中已经解释过了，你可以再回顾下第6篇文章<a target="_blank" rel="noopener" href="https://time.geekbang.org/column/article/69862">《全局锁和表锁 ：给表加个字段怎么有这么多阻碍？》</a>的内容）</p>
+<p>然后，在备份期间，备份线程用的是可重复读，而业务线程用的是读提交。同时存在两种事务隔离级别，会不会有问题？</p>
+<p>进一步地，这两个不同的隔离级别现象有什么不一样的，关于我们的业务，“用读提交就够了”这个结论是怎么得到的？</p>
+<p>如果业务开发和运维团队这些问题都没有弄清楚，那么“没问题”这个结论，本身就是有问题的。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>今天我们从上一篇文章的课后问题说起，提到了全表扫描的加锁方式。我们发现即使给所有的行都加上行锁，仍然无法解决幻读问题，因此引入了间隙锁的概念。</p>
+<p>我碰到过很多对数据库有一定了解的业务开发人员，他们在设计数据表结构和业务SQL语句的时候，对行锁有很准确的认识，但却很少考虑到间隙锁。最后的结果，就是生产库上会经常出现由于间隙锁导致的死锁现象。</p>
+<p>行锁确实比较直观，判断规则也相对简单，间隙锁的引入会影响系统的并发度，也增加了锁分析的复杂度，但也有章可循。下一篇文章，我就会为你讲解InnoDB的加锁规则，帮你理顺这其中的“章法”。</p>
+<p>作为对下一篇文章的预习，我给你留下一个思考题。</p>
+<p><img src="https://static001.geekbang.org/resource/image/0d/3d/0d796060073668ca169166a8903fbf3d.png"></p>
+<center>
+    <div style="color:orange; border-bottom: 1px solid #d9d9d9;display: inline-block;color: # 999;padding: 2px;">
+        <b>图9 事务进入锁等待状态</b>
+    </div>
+    <br>
+</center>
+
+<p>如果你之前没有了解过本篇文章的相关内容，一定觉得这三个语句简直是风马牛不相及。但实际上，这里session B和session C的insert 语句都会进入锁等待状态。</p>
+<p>你可以试着分析一下，出现这种情况的原因是什么？</p>
+<p>这里需要说明的是，这其实是我在下一篇文章介绍加锁规则后才能回答的问题，是留给你作为预习的，其中session C被锁住这个分析是有点难度的。如果你没有分析出来，也不要气馁，我会在下一篇文章和你详细说明。</p>
+<p>你也可以说说，你的线上MySQL配置的是什么隔离级别，为什么会这么配置？你有没有碰到什么场景，是必须使用可重复读隔离级别的呢？</p>
+<p>你可以把你的碰到的场景和分析写在留言区里，我会在下一篇文章选取有趣的评论跟大家一起分享和分析。感谢你的收听，也欢迎你把这篇文章分享给更多的朋友一起阅读。</p>
+<h1 id="上期问题时间"><a href="#上期问题时间" class="headerlink" title="上期问题时间"></a>上期问题时间</h1><p>我们在本文的开头回答了上期问题。有同学的回答中还说明了读提交隔离级别下，在语句执行完成后，是只有行锁的。而且语句执行完成后，InnoDB就会把不满足条件的行行锁去掉。</p>
+<p>当然了，c&#x3D;5这一行的行锁，还是会等到commit的时候才释放的。</p>
+<p>评论区留言点赞板：</p>
+<blockquote>
+<p>@薛畅 、@张永志同学给出了正确答案。而且提到了在读提交隔离级别下，是只有行锁的。<br>@帆帆帆帆帆帆帆帆、@欧阳成 对上期的例子做了验证，需要说明一下，需要在启动配置里面增加performance_schema&#x3D;on，才能用上这个功能，performance_schema库里的表才有数据。</p>
+</blockquote>
+<hr>
+<p>《MySQL实战45讲》原文：<a target="_blank" rel="noopener" href="https://funnylog.gitee.io/mysql45/">传送门</a></p>
+<p>注：本人博客的《MySQL实战45讲》系列是搬运的，纯属收藏学习，不做任何商业盈利。如果有版权问题，请联系我删除。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"><i class="fa fa-tag"></i> 数据库</a>
+              <a href="/tags/MySQL/" rel="tag"><i class="fa fa-tag"></i> MySQL</a>
+              <a href="/tags/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2/" rel="tag"><i class="fa fa-tag"></i> MySQL实战45讲</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/20b6c3f5.html" rel="prev" title="19 | 为什么我只查一行的语句，也执行这么慢">
+                  <i class="fa fa-chevron-left"></i> 19 | 为什么我只查一行的语句，也执行这么慢
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/19432f99.html" rel="next" title="21 | 为什么我只改一行的语句，锁这么多">
+                  21 | 为什么我只改一行的语句，锁这么多 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="22bc4a04bac451d0069eb57df5075349"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">万般自然</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/yfwin" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cywLPGpqB","appkey":"188c9fc5e25427db76ebbf6d6a829c0d","count":true}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>
